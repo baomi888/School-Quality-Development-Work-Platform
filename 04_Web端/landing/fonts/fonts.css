@@ -1,0 +1,42 @@
+/* 本地子集字体 —— 落地页离线可用，无需联网。
+   由 tools/subset_fonts.py 从本机 Noto CJK 可变字体生成，勿手改。 */
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:900;
+  font-display:swap;
+  src:url('fonts/serif-900.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/serif-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/sans-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url('fonts/sans-500.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('fonts/sans-400.woff2') format('woff2');
+}

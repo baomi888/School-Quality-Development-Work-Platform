@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="zh-CN" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>质检部周工作自动化 · 一学期，十八格</title>
+<meta name="description" content="广东石油化工学院校素质拓展中心质检部周工作自动化。收表、拆分、安排检查学院、排助理、发群、现场检查——重复的交给它，判断留给你。">
+<meta name="theme-color" content="#F7F5F0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F7F5F0'/%3E%3Crect x='4' y='13' width='4' height='6' fill='%2314151A'/%3E%3Crect x='10' y='9' width='4' height='10' fill='%2314151A'/%3E%3Crect x='16' y='6' width='4' height='13' fill='%23C8322A'/%3E%3Crect x='22' y='11' width='4' height='8' fill='%23DFDAD0'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   本地子集字体（离线自足，不发任何外部请求）
+   由 tools/subset_fonts.py 从本机 Noto CJK 可变字体生成，勿手改。
+   ============================================================ */
+__FONTS__
+
+__TOKENS__
+
+__LANDING__
+</style>
+</head>
+<body>
+
+<div class="prog" id="prog" aria-hidden="true"></div>
+
+<header class="top" id="top">
+  <div class="top-in">
+    <div class="mark">质检部<span class="dot-sep">·</span>周工作自动化</div>
+    <nav>
+      <a href="#term">学期线</a>
+      <a href="#flow">每周流程</a>
+      <a href="#evid">真实产物</a>
+      <a href="#rules">规则</a>
+    </nav>
+    <button class="btn btn-p" type="button" data-go>
+      <span class="btn-txt">打开工作平台</span><span class="arw">→</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ 首屏 ============ -->
+  <section class="hero">
+    <div class="hero-in">
+      <span class="kicker rise">广东石油化工学院 · 校素质拓展中心 · 质检部</span>
+
+      <h1 class="rise" data-d="1">
+        一学期，<br><span class="em">十八格</span>。
+      </h1>
+
+      <p class="sub rise" data-d="2">
+        每周一格。收表、拆分、安排检查学院、排助理、发交流群、周末现场检查——
+        重复的交给它，判断留给你。
+      </p>
+
+      <div class="acts rise" data-d="3">
+        <button class="btn btn-p" type="button" data-go>打开工作平台<span class="arw">→</span></button>
+        <a class="btn btn-s" href="#term">先看它怎么跑</a>
+      </div>
+    </div>
+
+    <div class="hero-meta rise" data-d="3">
+      <div><b>部署</b>本地运行，127.0.0.1:8765</div>
+      <div><b>数据</b>不出这台电脑，与命令行同一份台账</div>
+      <div><b>格式</b>原表字体、边框、合并单元格一个不动</div>
+      <div><b>交接</b>台账留着全部历史，新人不用从零问</div>
+    </div>
+  </section>
+
+  <!-- ============ 记忆点：一学期 = 一条线 ============ -->
+  <section class="sec" id="term">
+    <div class="wrap term-cq">
+      <div class="head">
+        <h2>第 3 周到第 20 周，现在走到这儿</h2>
+        <span class="sub">W3 开学 → W20 期末</span>
+        <div class="lg" aria-hidden="true">
+          <span><i class="sw-done"></i>已检查</span>
+          <span><i class="sw-now"></i>本周</span>
+          <span><i class="sw-todo"></i>未开始</span>
+          <span><i class="sw-none"></i>无活动</span>
+        </div>
+      </div>
+
+      <div class="weeks-scroll" id="weeksScroll">
+        <div class="weeks" id="weeks">
+          <div class="wk done" style="--i:0"><span class="num">W3</span><div class="bar"><span style="height:38%"></span><span style="height:52%"></span></div><div class="tip">W3 · 2 活动 · 4 人次检查</div></div>
+          <div class="wk done" style="--i:1"><span class="num">W4</span><div class="bar"><span style="height:72%"></span><span style="height:64%"></span><span style="height:80%"></span></div><div class="tip">W4 · 4 活动 · 8 人次检查</div></div>
+          <div class="wk now" style="--i:2"><span class="num">W5</span><div class="bar"><span style="height:66%"></span><span style="height:88%"></span><span style="height:54%"></span></div><div class="tip">W5 · 3 活动 · 6 人次检查</div></div>
+          <div class="wk future" style="--i:3"><span class="num">W6</span><div class="bar"><span style="height:34%"></span><span style="height:30%"></span></div><div class="tip">W6 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:4"><span class="num">W7</span><div class="bar"><span style="height:44%"></span><span style="height:30%"></span></div><div class="tip">W7 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:5"><span class="num">W8</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W8 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:6"><span class="num">W9</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W9 · 待规划部发总表</div></div>
+          <div class="wk empty" style="--i:7"><span class="num">W10</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W10 · 无活动，仍出空白表</div></div>
+          <div class="wk future" style="--i:8"><span class="num">W11</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W11 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:9"><span class="num">W12</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W12 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:10"><span class="num">W13</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W13 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:11"><span class="num">W14</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W14 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:12"><span class="num">W15</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W15 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:13"><span class="num">W16</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W16 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:14"><span class="num">W17</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W17 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:15"><span class="num">W18</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W18 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:16"><span class="num">W19</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W19 · 待规划部发总表</div></div>
+          <div class="wk future" style="--i:17"><span class="num">W20</span><div class="bar"><span style="height:30%"></span></div><div class="tip">W20 · 期末，收尾归档</div></div>
+        </div>
+      </div>
+
+      <div class="term-scale">
+        <span>W3 · 9 月开学</span>
+        <span class="mid">
+          <span class="hint-d">← 已检查的周用墨色标出，本周是唯一一处红 —— 横向滑动看完全学期 →</span>
+          <span class="hint-m">← 可横向滑动看完全学期 →</span>
+        </span>
+        <span>期末 W20</span>
+      </div>
+
+      <div class="term-note">
+        <div><b>2</b>周已完成检查</div>
+        <div class="hl"><b>6</b>本周检查人次</div>
+        <div><b>18</b>累计检查人次</div>
+        <div><b>11</b>覆盖二级学院</div>
+        <div><b>0</b>从未被排到的学院</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 深色反差带：每周四个动作 ============ -->
+  <section class="dark" id="flow">
+    <div class="wrap">
+      <div class="lab">WEEKLY FLOW / 每周固定动作</div>
+      <h2>四个动作，<span class="em">一张表出来</span>。<br>格式一个像素没动。</h2>
+
+      <div class="line">
+        <div class="lstep">
+          <div class="n">01</div>
+          <h3>上传登记表</h3>
+          <p>规划部发的总表，或已拆好的单校区表都认。自动识别表头、活动数与举办学院。</p>
+          <div class="out">→ 识别出活动清单</div>
+        </div>
+        <div class="lstep">
+          <div class="n">02</div>
+          <h3>按校区拆分</h3>
+          <p>一次出官渡、西城两份。某个校区当周没活动，仍然出一张空白表，不漏交。</p>
+          <div class="out">→ 2 份 .xlsx</div>
+        </div>
+        <div class="lstep">
+          <div class="n">03</div>
+          <h3>安排二级学院</h3>
+          <p>自动标出上周已安排、本周主办的学院。勾选学院池，规则冲突当场拦下。</p>
+          <div class="out">→ 表尾追加检查列</div>
+        </div>
+        <div class="lstep">
+          <div class="n">04</div>
+          <h3>安排助理</h3>
+          <p>按四个周末时段填有空的人，自动匹配每活动 2 名助理，排完可直接发群。</p>
+          <div class="out">→ 可直接发交流群</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 真实产物 ============ -->
+  <section class="sec" id="evid">
+    <div class="wrap">
+      <div class="sec-head rise">
+        <span class="idx">03</span>
+        <h2>这些不是示意图，是真在群里跑的对话</h2>
+        <span class="note">截图来源：2026 年 9 月，与部长及规划部的实际沟通记录</span>
+      </div>
+
+      <div class="evid">
+        <article class="card c-main rise">
+          <div class="frame"><img src="__IMG_02__" alt="与部长沟通：规划部每周整理活动，登记表拆成西城与官渡两份" loading="eager" decoding="async"></div>
+          <div class="cap">
+            <span class="tag">STEP 01 — 规划部交接</span>
+            <h3>「一个与规划部交接的群，他们会整理一周的活动」</h3>
+            <p>每周拿到一张总表。规则原话是「我们要把这个文件分成两个，一个是西城，一个是官渡」。</p>
+            <div class="quote">「首先，我们会有一个与规划部交接的群，他们会整理一周的活动。」<br><b>—— 部长，9 月 20 日</b></div>
+          </div>
+        </article>
+
+        <article class="card c-side rise" data-d="1">
+          <div class="frame"><img src="__IMG_03__" alt="拆分后的第四周活动登记表（西城）与（官渡）两份文件" loading="eager" decoding="async"></div>
+          <div class="cap">
+            <span class="tag">STEP 02 — 拆分</span>
+            <h3>一份总表，两份单校区表</h3>
+            <p>文件名后缀跟着校区走，全角括号，跟官方叫法一致。</p>
+            <div class="quote">「然后我们要把这个文件分成两个，一个是西城，一个是官渡。」</div>
+          </div>
+        </article>
+
+        <article class="card c-third rise">
+          <div class="frame"><img src="__IMG_04__" alt="与部长沟通：按校区安排检查学院，不要一个学院连续两周被安排" loading="eager" decoding="async"></div>
+          <div class="cap">
+            <span class="tag">STEP 03 — 安排检查学院</span>
+            <h3>「尽量不要一个学院连续两周都被安排」</h3>
+            <p>这条规则以前靠脑子和记忆守，现在由台账自动规避，选中冲突的学院会被当场拦下。</p>
+            <div class="quote">「看校区来安排，<b>尽量不要一个学院连续两周都被安排</b>。」</div>
+          </div>
+        </article>
+
+        <article class="card c-wide rise" data-d="1">
+          <div class="frame"><img src="__IMG_06__" alt="与部长沟通：发到交流群要用共享表格，不要直接发文件" loading="eager" decoding="async"></div>
+          <div class="cap">
+            <span class="tag">STEP 04 — 发交流群</span>
+            <h3>「不要用文件，发这种格式」</h3>
+            <p>发到校院质检部交流群的必须是共享表格，不能是附件。二级学院要照表在群里留痕。</p>
+            <div class="quote">「我们发到校院质检部交流群里的话，<b>不要用文件，发这种格式</b>。」<br>「对，他们二级学院要现场拍照留痕填那个表格的。」</div>
+          </div>
+        </article>
+
+        <article class="card c-side tall rise">
+          <div class="frame"><img src="__IMG_05__" alt="官渡与西城两份已安排二级学院的活动登记表共享表格" loading="eager" decoding="async"></div>
+          <div class="cap">
+            <span class="tag">OUTPUT — 最终交付物</span>
+            <h3>第 3 周（官渡）/（西城）已安排二级学院</h3>
+            <p>最后交上去的是两份带检查学院的共享表格。名字里带学年前缀、校区、状态后缀，一学期没变过。</p>
+            <ul class="deliv">
+              <li><span>官渡</span><em>…第3周素质拓展活动登记表(官渡)（已安排二级学院）.xlsx</em></li>
+              <li><span>西城</span><em>…第3周素质拓展活动登记表(西城)（已安排二级学院）.xlsx</em></li>
+            </ul>
+            <div class="quote">命名规则是跟部长对过的，全角括号、校区后缀，二级学院一眼能认出是哪一份。</div>
+          </div>
+        </article>
+
+        <article class="card c-main rise" data-d="1">
+          <div class="frame"><img src="__IMG_07__" alt="与部长沟通：助理流程与安排表可能的调整" loading="eager" decoding="async"></div>
+          <div class="cap">
+            <span class="tag">STEP 05 — 助理</span>
+            <h3>「主要是安排到二级学院那边就可以」</h3>
+            <p>检查学院定完之后才轮到助理。这一步最怕临时改，所以系统每次写入前都留一份 .bak。</p>
+            <div class="quote">「主要是安排到二级学院那边就可以。」「后续带小助理的话，让他们先发到我们的群，我们看一下。」</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 规则 / 产物 / 谁在用 ============ -->
+  <section class="sec" id="rules">
+    <div class="wrap">
+      <div class="sec-head rise">
+        <span class="idx">04</span>
+        <h2>规则替你守着，不用记</h2>
+        <span class="note">全部来自部长口头交代的那几条，一条一条变成了代码</span>
+      </div>
+
+      <div class="trio">
+        <div class="rise">
+          <h3>它守什么</h3>
+          <ul class="list rules">
+            <li><span class="ck">✓</span><span>每个活动自动配 <b>2 个检查学院</b></span></li>
+            <li><span class="ck">✓</span><span>举办学院<b>不检查自己</b>，界面标红、不可选</span></li>
+            <li><span class="ck">✓</span><span>同一学院<b>不连续两周</b>，上周用过的标黄，选中即拦</span></li>
+            <li><span class="ck">✓</span><span>确实要强行排，有<b>「仍要按当前选择写入」</b></span></li>
+            <li><span class="ck">✓</span><span>每次写入前自动留 <b>.bak.xlsx</b>，写坏了能回去</span></li>
+            <li><span class="ck">✓</span><span>下载前跑 <b>7 项体检</b>，全绿才给</span></li>
+          </ul>
+        </div>
+
+        <div class="rise" data-d="1">
+          <h3>它交给你什么</h3>
+          <ul class="list gives">
+            <li><b>按校区拆好的登记表</b><span class="fn">…第5周素质拓展活动登记表(官渡).xlsx</span></li>
+            <li><b>已安排二级学院的表</b><span class="fn">…(官渡)（已安排二级学院）.xlsx</span></li>
+            <li><b>已安排助理的表</b><span class="fn">…(官渡)（已安排助理）.xlsx</span></li>
+            <li><b>排版完全保留</b><span class="fn">宋体 9 号 · 边框 · 合并单元格 · 行高</span></li>
+            <li><b>一份可追溯的台账</b><span class="fn">ledger.json · 每周谁检查了什么，全都在</span></li>
+          </ul>
+        </div>
+
+        <div class="rise who-col" data-d="2">
+          <h3>谁在用</h3>
+          <div class="who">
+            <div class="item"><b>副部长</b><span>每周安排、与规划部交接、发交流群</span></div>
+            <div class="item"><b>干事</b><span>照着「使用说明」页就能上手，不用人带</span></div>
+            <div class="item"><b>二级学院质检干部</b><span>收到明确的活动和检查学院，按表执行</span></div>
+            <div class="item"><b>接手的新人</b><span>台账和看板留着全部历史，不用从零问</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="banner rise">
+        <span class="dot" aria-hidden="true"></span>
+        <p><b>数据不出这台电脑。</b>引擎和台账都在本地，与命令行工具共用同一份记录；要搬到服务器，只需换一个 API 地址。</p>
+        <span class="path">127.0.0.1:8765</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 尾屏 ============ -->
+  <section class="tail">
+    <div class="wrap">
+      <h2 class="rise">把十八格里重复的，<br><span class="em">交给它</span>。</h2>
+      <div class="acts rise" data-d="1">
+        <button class="btn btn-p" type="button" data-go>打开工作平台<span class="arw">→</span></button>
+        <a class="btn btn-s" href="#term">回到学期线</a>
+      </div>
+      <div class="meta rise" data-d="2">
+        广东石油化工学院 · 校素质拓展中心 · 质检部<br>
+        本地运行 · 127.0.0.1:8765 · 与命令行同一份台账 · 2026 学年
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  var doc = document.documentElement;
+  doc.classList.remove('no-js');
+  doc.classList.add('js');
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- 顶栏：滚过一屏才出现分隔线，避免开头就有条线 ---- */
+  var top = document.getElementById('top');
+  var onScroll = function(){
+    if (top) top.classList.toggle('stuck', window.scrollY > 8);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+
+  /* ---- 阅读进度：一条 1px 红线，只有它 ---- */
+  var prog = document.getElementById('prog');
+  if (prog){
+    var tick = false;
+    var update = function(){
+      var h = doc.scrollHeight - window.innerHeight;
+      var p = h > 0 ? Math.min(1, window.scrollY / h) : 0;
+      prog.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+      tick = false;
+    };
+    window.addEventListener('scroll', function(){
+      if (!tick){ tick = true; requestAnimationFrame(update); }
+    }, {passive:true});
+    update();
+  }
+
+  /* ---- 滚动揭示 ---- */
+  var rises = Array.prototype.slice.call(document.querySelectorAll('.rise'));
+  var revealAll = function(){
+    rises.forEach(function(el){ el.classList.add('in'); });
+  };
+  if (!('IntersectionObserver' in window) || reduced){
+    revealAll();
+  } else {
+    /* rootMargin 底部留 -12% 是为了「滚到底部时才揭示」，但页尾元素本来就在
+       视口下沿之外，永远不会跟收缩后的 root 相交 —— 页面最后一块会漏掉。
+       收口办法：滚到距底部 40px 以内时，把剩下的一次性全部揭示。 */
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {rootMargin:'0px 0px -12% 0px', threshold:0.12});
+    rises.forEach(function(el){ io.observe(el); });
+
+    var bottomCheck = function(){
+      var left = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+      if (left < 40) revealAll();
+    };
+    window.addEventListener('scroll', bottomCheck, {passive:true});
+    window.addEventListener('resize', bottomCheck, {passive:true});
+    bottomCheck();
+  }
+
+  /* ---- 学期线：滚到才让柱子长出来（十八格一次性生长） ---- */
+  var weeks = document.getElementById('weeks');
+  if (weeks){
+    if (reduced || !('IntersectionObserver' in window)){
+      weeks.classList.add('lit');
+    } else {
+      var wio = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting){ e.target.classList.add('lit'); wio.unobserve(e.target); }
+        });
+      }, {threshold:0.35});
+      wio.observe(weeks);
+    }
+  }
+
+  /* ---- 打开平台：落地页由引擎托管时同源直达；独立打开时给出去处 ---- */
+  document.querySelectorAll('[data-go]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var sameOrigin = location.protocol === 'http:' || location.protocol === 'https:';
+      var isRoot = location.pathname === '/' || location.pathname === '/index.html';
+      if (sameOrigin && !isRoot){
+        location.href = '/';
+      } else if (sameOrigin && isRoot){
+        document.getElementById('term').scrollIntoView({behavior: reduced ? 'auto' : 'smooth'});
+      } else {
+        alert('工作平台在本地运行：双击 04_Web端/启动.bat，然后打开 http://127.0.0.1:8765');
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

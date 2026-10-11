@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D3 · 一学期 = 一条线 · 首屏小样</title>
+<style>
+/* 本地子集字体（内联版，便于进对比页） */
+/* 本地子集字体 —— 落地页离线可用，无需联网。
+   由 tools/subset_fonts.py 从本机 Noto CJK 可变字体生成，勿手改。 */
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:900;
+  font-display:swap;
+  src:url('fonts/serif-900.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/serif-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/sans-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url('fonts/sans-500.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('fonts/sans-400.woff2') format('woff2');
+}
+
+
+
+
+
+
+:root{
+  --paper:#FAF8F3;
+  --ink:#101113;
+  --ink-2:#5A5C60;
+  --ink-3:#63656B;
+  --red:#CE3226;
+  --grid:#E2DED4;
+  --dark:#101113;
+  --serif:"Noto Serif SC","Songti SC",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.62;overflow-x:hidden}
+
+/* ===== 顶栏 ===== */
+.top{
+  position:sticky;top:0;z-index:50;background:rgba(250,248,243,.92);
+  backdrop-filter:blur(10px);
+  display:flex;align-items:center;gap:18px;padding:15px 40px;
+}
+.top .mark{
+  font-family:var(--serif);font-weight:900;font-size:16px;letter-spacing:0.01em;
+}
+.top .mark b{color:var(--red)}
+.top nav{display:flex;gap:24px;margin-left:auto;font-size:13px;color:var(--ink-2)}
+.top .go{font-size:12.5px;font-weight:700;border-bottom:1.5px solid var(--ink);padding-bottom:1px}
+
+/* ===== 首屏：居中，巨大，四周空白 ===== */
+.hero{
+  padding:38px 40px 0;
+  text-align:center;
+  max-width:1240px;margin:0 auto;
+}
+.hero .kicker{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:0.14em;
+  color:var(--ink-3);margin-bottom:26px;
+}
+.hero h1{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(50px,10.4vw,148px);
+  line-height:0.96;letter-spacing:-0.02em;text-indent:-0.03em;
+  margin:0 auto;max-width:14ch;
+}
+.hero h1 em{font-style:normal;color:var(--red);position:relative}
+.hero .sub{
+  margin:26px auto 0;max-width:34ch;
+  font-size:15.5px;color:var(--ink-2);
+}
+.hero .acts{margin-top:24px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{padding:13px 27px;font-size:14px;font-weight:700;border-radius:2px;display:inline-block}
+.b-p{background:var(--ink);color:var(--paper)}
+.b-s{border:1.5px solid var(--ink)}
+
+/* ===== 核心记忆点：一学期 = 一条线 ===== */
+.term{margin:40px auto 0;max-width:1240px;padding:0 40px}
+.term-h{
+  display:flex;align-items:baseline;gap:14px;
+  padding-bottom:14px;border-bottom:2px solid var(--ink);
+}
+.term-h h2{font-family:var(--serif);font-size:20px;font-weight:900}
+.term-h .lg{margin-left:auto;display:flex;gap:18px;font-size:11.5px;color:var(--ink-2);font-family:var(--mono)}
+.term-h .lg i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+
+/* 18 个格子，每个 = 一周。
+   18 列在窄屏必然被压成细条 —— 用 min-width 保底 + 横向滚动，
+   绝不靠压缩格子来「适配」，那样数字就不可读了。 */
+.weeks-scroll{
+  overflow-x:auto;overflow-y:visible;
+  margin-top:20px;padding-bottom:4px;
+  scrollbar-width:thin;
+}
+.weeks{
+  display:grid;grid-template-columns:repeat(18,minmax(52px,1fr));gap:5px;
+  min-width:100%;
+}
+.wk{
+  height:86px;border:1.5px solid var(--grid);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:7px 5px;cursor:default;position:relative;
+  transition:transform .18s, box-shadow .18s, border-color .18s;
+}
+.wk .num{font-family:var(--mono);font-size:12px;color:var(--ink-3);font-weight:700}
+.wk .bar{display:flex;gap:2px;align-items:flex-end;height:100%;padding-top:6px}
+.wk .bar span{
+  flex:1;background:var(--ink);border-radius:1px;
+  transition:height .3s;
+}
+/* 状态：已完成 / 进行中 / 未来 / 无活动 */
+.wk.done .bar span{background:var(--ink)}
+.wk.now{border-color:var(--red);border-width:2.5px;background:#FDF4F3}
+.wk.now .num{color:var(--red)}
+.wk.now .bar span{background:var(--red)}
+.wk.future .num{color:var(--ink-3)}
+.wk.future .bar span{background:var(--grid)}
+.wk.empty{background:repeating-linear-gradient(45deg,transparent,transparent 4px,#F1EEE6 4px,#F1EEE6 8px)}
+.wk:hover{transform:translateY(-5px);box-shadow:0 10px 24px rgba(16,17,19,.13);border-color:var(--ink);z-index:2}
+/* 当前周的浮标 */
+.wk.now::after{
+  content:"本周";position:absolute;top:-23px;left:50%;transform:translateX(-50%);
+  background:var(--red);color:#fff;font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:2px;white-space:nowrap;letter-spacing:0.05em;
+}
+/* 悬停时把该周数字放大显示（贴边时会被裁掉，所以默认藏在格内底部） */
+.wk .tip{
+  position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);
+  background:var(--ink);color:var(--paper);font-size:11.5px;padding:6px 10px;
+  border-radius:3px;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .15s;font-family:var(--mono);z-index:12;
+}
+.wk:hover .tip{opacity:1}
+/* 首尾两格的浮标改为内侧对齐，避免溢出页面边界 */
+.wk:first-child .tip{left:0;transform:none}
+.wk:last-child .tip{left:auto;right:0;transform:none}
+.term-scale{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin-top:11px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);
+  gap:12px;
+}
+.term-scale span:nth-child(2){text-align:center;flex:1}
+.term-note{
+  margin-top:26px;display:flex;gap:34px;flex-wrap:wrap;
+  padding-top:20px;border-top:1px solid var(--grid);
+}
+.term-note div{font-size:13px;color:var(--ink-2)}
+.term-note b{font-family:var(--serif);font-size:26px;display:block;color:var(--ink);line-height:1.1}
+.term-note .hl b{color:var(--red)}
+
+/* ===== 深色反差带：让整页有一处重心 ===== */
+.dark{
+  background:var(--dark);color:#EDEBE5;
+  margin-top:72px;padding:62px 40px 66px;
+}
+.dark-in{max-width:1240px;margin:0 auto}
+.dark .lab{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:0.16em;
+  color:#A0A3A8;margin-bottom:26px;
+}
+.dark h2{
+  font-family:var(--serif);font-size:clamp(28px,4.4vw,50px);
+  font-weight:900;line-height:1.12;letter-spacing:-0.02em;max-width:22ch;
+}
+.dark h2 span{color:#F0564A}
+/* 流程：横向，用数字当主角 */
+.line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:#2A2C30;margin-top:44px;border:1px solid #2A2C30;
+}
+.lstep{background:var(--dark);padding:26px 22px 30px;position:relative}
+.lstep .n{
+  font-family:var(--serif);font-size:44px;font-weight:900;line-height:1;
+  color:#5E6167;letter-spacing:-0.03em;
+}
+.lstep.on .n{color:#F0564A}
+.lstep h4{
+  font-size:15px;font-weight:700;margin:14px 0 8px;color:#fff;
+  font-family:var(--serif);
+}
+.lstep p{font-size:12.5px;color:#A6A9AE;line-height:1.6}
+.lstep .out{
+  margin-top:14px;font-family:var(--mono);font-size:11.5px;color:#A0A3A8;
+  padding-top:11px;border-top:1px solid #2A2C30;
+}
+
+/* ===== 三块：它守什么 / 它给什么 / 谁在用 ===== */
+.trio{
+  max-width:1240px;margin:0 auto;padding:66px 40px 0;
+  display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:44px;
+}
+.trio h3{
+  font-family:var(--serif);font-size:18px;font-weight:900;
+  margin-bottom:16px;padding-bottom:11px;border-bottom:1.5px solid var(--ink);
+}
+.rules{list-style:none}
+.rules li{
+  display:grid;grid-template-columns:20px 1fr;gap:11px;
+  padding:12px 0;border-bottom:1px solid var(--grid);font-size:13.5px;color:var(--ink-2);
+}
+.rules li:last-child{border-bottom:0}
+.rules .ck{
+  font-weight:900;color:var(--red);font-family:var(--mono);font-size:12px;
+}
+.rules li b{color:var(--ink)}
+.gives{list-style:none}
+.gives li{padding:11px 0;border-bottom:1px solid var(--grid);font-size:13.5px;color:var(--ink-2)}
+.gives li:last-child{border-bottom:0}
+.gives .fn{
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);display:block;
+  margin-top:4px;word-break:break-all;
+}
+.gives b{color:var(--ink)}
+.who{
+  font-family:var(--serif);font-size:15px;font-weight:700;line-height:1.5;
+}
+.who span{display:block;font-family:var(--sans);font-weight:400;font-size:12.5px;color:var(--ink-3);margin-top:4px}
+.who .item{padding:12px 0;border-bottom:1px solid var(--grid)}
+.who .item:last-child{border-bottom:0}
+
+/* ===== 尾 ===== */
+.tail{padding:70px 40px 56px;text-align:center;border-top:1px solid var(--grid);margin-top:70px}
+.tail h2{
+  font-family:var(--serif);font-size:clamp(30px,5.6vw,68px);font-weight:900;
+  line-height:1.02;letter-spacing:-0.03em;margin-bottom:26px;
+}
+.tail h2 em{font-style:normal;color:var(--red)}
+.tail .meta{margin-top:34px;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em}
+
+@media(max-width:1024px){
+  .trio{grid-template-columns:1fr 1fr;gap:34px}
+  .line{grid-template-columns:1fr 1fr}
+}
+@media(max-width:900px){
+  .top{padding:13px 18px}
+  .top nav{display:none}
+  .top .go{margin-left:auto}
+  .hero{padding:44px 18px 0}
+  .hero h1{font-size:clamp(42px,13.5vw,78px)}
+  .hero .sub{font-size:14px;margin-top:24px}
+  .term{padding:0 18px;margin-top:30px}
+  .wk{height:74px}
+  /* 「本周」是核心信息，移动端也保留，只是缩小并压到格内 */
+  .wk.now::after{
+    top:auto;bottom:4px;left:4px;transform:none;
+    font-size:9px;padding:1px 5px;letter-spacing:0.02em;
+  }
+  /* 横滑提示：移动端尤其需要，不能砍 */
+  .term-scale span:nth-child(2){text-align:right}
+  .dark{padding:44px 18px 48px;margin-top:54px}
+  .line{grid-template-columns:1fr;margin-top:32px}
+  .trio{padding:46px 18px 0;grid-template-columns:1fr;gap:32px}
+  .tail{padding:48px 18px 40px;margin-top:48px}
+  .tail .acts{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="mark">质检部<b>·</b>周工作自动化</div>
+  <nav><span>周流程</span><span>规则</span><span>看板</span><span>使用说明</span></nav>
+  <div class="go">打开平台 →</div>
+</header>
+
+<section class="hero">
+  <div class="kicker">广东石油化工学院 · 校素质拓展中心 · 质检部</div>
+  <h1>一学期，<br><em>十八格</em>。</h1>
+  <p class="sub">每周一格。收表、拆分、安排检查学院、排助理、发群、现场检查——重复的交给它，判断留给你。</p>
+  <div class="acts">
+    <span class="btn b-p">打开工作平台</span>
+    <span class="btn b-s">看使用说明</span>
+  </div>
+</section>
+
+<!-- 记忆点：整学期画成看得见的量 -->
+<section class="term">
+  <div class="term-h">
+    <h2>第 3 周到第 20 周，现在走到这儿</h2>
+    <div class="lg">
+      <span><i style="background:#101113"></i>已完成</span>
+      <span><i style="background:#CE3226"></i>本周</span>
+      <span><i style="background:#E2DED4"></i>未开始</span>
+      <span><i style="background:repeating-linear-gradient(45deg,#F1EEE6,#F1EEE6 3px,#fff 3px,#fff 6px)"></i>无活动</span>
+    </div>
+  </div>
+
+  <div class="weeks-scroll">
+  <div class="weeks">
+    <div class="wk done"><span class="num">W3</span><div class="bar"><span style="height:38%"></span><span style="height:52%"></span></div><div class="tip">第3周 · 2 活动 · 4 人次</div></div>
+    <div class="wk done"><span class="num">W4</span><div class="bar"><span style="height:72%"></span><span style="height:64%"></span><span style="height:80%"></span></div><div class="tip">第4周 · 4 活动 · 8 人次</div></div>
+    <div class="wk now"><span class="num">W5</span><div class="bar"><span style="height:66%"></span><span style="height:88%"></span><span style="height:54%"></span></div><div class="tip">第5周 · 3 活动 · 6 人次</div></div>
+    <div class="wk future"><span class="num">W6</span><div class="bar"><span style="height:34%"></span><span style="height:30%"></span></div><div class="tip">第6周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W7</span><div class="bar"><span style="height:44%"></span><span style="height:30%"></span></div><div class="tip">第7周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W8</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第8周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W9</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第9周 · 待安排</div></div>
+    <div class="wk empty"><span class="num">W10</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第10周 · 无活动</div></div>
+    <div class="wk future"><span class="num">W11</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第11周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W12</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第12周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W13</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第13周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W14</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第14周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W15</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第15周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W16</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第16周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W17</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第17周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W18</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第18周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W19</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第19周 · 待安排</div></div>
+    <div class="wk future"><span class="num">W20</span><div class="bar"><span style="height:30%"></span></div><div class="tip">第20周 · 待安排</div></div>
+  </div>
+  </div>
+  <div class="term-scale"><span>W3 · 9月开学</span><span>← 可横向滑动，看完全学期 →</span><span>期末 W20</span></div>
+
+  <div class="term-note">
+    <div>已完成的周<b>2</b>周</div>
+    <div class="hl">本周人数<b>6</b>人次</div>
+    <div>累计检查<b>18</b>人次</div>
+    <div>覆盖学院<b>11</b>个</div>
+    <div>从未排到<b>0</b>个</div>
+  </div>
+</section>
+
+<!-- 深色反差：流程 -->
+<section class="dark">
+  <div class="dark-in">
+    <div class="lab">WEEKLY FLOW / 每周固定动作</div>
+    <h2>四个动作，<span>一张表出来</span>。格式一个像素没动。</h2>
+
+    <div class="line">
+      <div class="lstep on">
+        <div class="n">01</div>
+        <h4>上传登记表</h4>
+        <p>规划部发的总表，或已拆好的单校区表都认。</p>
+        <div class="out">→ 识别表头、活动数</div>
+      </div>
+      <div class="lstep on">
+        <div class="n">02</div>
+        <h4>按校区拆分</h4>
+        <p>一次出官渡 + 西城两份；某校区无活动，仍出空白表。</p>
+        <div class="out">→ 2 份 .xlsx</div>
+      </div>
+      <div class="lstep on">
+        <div class="n">03</div>
+        <h4>安排二级学院</h4>
+        <p>自动标出上周已安排、本周主办。勾选学院池，规则实时拦。</p>
+        <div class="out">→ 表尾追加检查列</div>
+      </div>
+      <div class="lstep on">
+        <div class="n">04</div>
+        <h4>安排助理</h4>
+        <p>填四个周末时段有空的人，自动匹配每活动 2 人。</p>
+        <div class="out">→ 可直接发群</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trio">
+  <div>
+    <h3>规则替你守着，不用记</h3>
+    <ul class="rules">
+      <li><span class="ck">✓</span><span>每个活动自动配 <b>2 个检查学院</b></span></li>
+      <li><span class="ck">✓</span><span>举办学院<b>不检查自己</b>，界面标红不可选</span></li>
+      <li><span class="ck">✓</span><span>同一学院<b>不连续两周</b>，上周用过的标黄，选中即拦截</span></li>
+      <li><span class="ck">✓</span><span>确认要强行安排，有<b>「仍要按当前选择写入」</b></span></li>
+      <li><span class="ck">✓</span><span>每次写入前自动留 <b>.bak.xlsx</b>，写坏了能恢复</span></li>
+      <li><span class="ck">✓</span><span>下载前跑 <b>7 项体检</b>，全绿再给</span></li>
+    </ul>
+  </div>
+  <div>
+    <h3>它交给你什么</h3>
+    <ul class="gives">
+      <li><b>按校区拆好的登记表</b><span class="fn">第5周...(官渡).xlsx</span></li>
+      <li><b>已安排二级学院的表</b><span class="fn">...（已安排二级学院）.xlsx</span></li>
+      <li><b>已安排助理的表</b><span class="fn">...（已安排助理）.xlsx</span></li>
+      <li><b>排版完全保留</b><span class="fn">宋体9号 · 边框 · 合并单元格</span></li>
+    </ul>
+  </div>
+  <div>
+    <h3>谁在用</h3>
+    <div class="who">
+      <div class="item">副部长<span>每周安排、与规划部交接、发交流群</span></div>
+      <div class="item">干事<span>照着「使用说明」页就能上手，不用人带</span></div>
+      <div class="item">二级学院质检干部<span>收到明确的活动和检查学院，按表执行</span></div>
+      <div class="item">新人接手<span>台账和看板留着全部历史，不用从零问</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="tail">
+  <h2>把 18 格里重复的，<br><em>交给它</em>。</h2>
+  <div class="acts" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <span class="btn b-p">打开工作平台</span>
+    <span class="btn b-s">看使用说明</span>
+  </div>
+  <div class="meta">本地运行 · 127.0.0.1:8765 · 数据不出这台电脑 · 与命令行同一份台账</div>
+</section>
+
+</body>
+</html>

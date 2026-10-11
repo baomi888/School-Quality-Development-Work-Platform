@@ -1,0 +1,16 @@
+node_modules/
+__pycache__/
+*.pyc
+engine/work/
+engine/output/
+engine/preview/
+engine/web_dist/
+engine/data/
+web/dist/
+web/tsconfig.tsbuildinfo
+*.bak.xlsx
+# OfficeCLI 为可选渲染器（缺失自动回退内置渲染），33MB 二进制不打进仓库
+engine/bin/officecli.exe
+engine/bin/officecli.exe.update
+# 落地页设计期的截图/审计脚本（硬编码本机路径，非运行时代码）
+landing/tools/

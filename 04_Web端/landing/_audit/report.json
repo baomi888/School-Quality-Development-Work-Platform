@@ -1,0 +1,658 @@
+{
+  "viewports": {
+    "320": {
+      "docW": 320,
+      "vw": 320,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "44px/900/41.36px",
+        "h2": "28px/900/31.92px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 39,
+      "sectionHeights": [
+        731,
+        623,
+        1224,
+        3084,
+        1715,
+        439
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "390": {
+      "docW": 390,
+      "vw": 390,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "53.04px/900/49.8576px",
+        "h2": "28px/900/31.92px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 49,
+      "sectionHeights": [
+        683,
+        580,
+        1192,
+        3205,
+        1661,
+        439
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "480": {
+      "docW": 480,
+      "vw": 480,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "65.28px/900/61.3632px",
+        "h2": "28px/900/31.92px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 56,
+      "sectionHeights": [
+        582,
+        587,
+        1192,
+        3407,
+        1646,
+        417
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "768": {
+      "docW": 768,
+      "vw": 768,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "78.336px/900/73.6358px",
+        "h2": "35.328px/900/40.2739px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 60,
+      "sectionHeights": [
+        576,
+        538,
+        741,
+        4448,
+        1251,
+        384
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "834": {
+      "docW": 834,
+      "vw": 834,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "85.068px/900/79.9639px",
+        "h2": "38.364px/900/43.735px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 60,
+      "sectionHeights": [
+        598,
+        549,
+        751,
+        4693,
+        1213,
+        395
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "1024": {
+      "docW": 1024,
+      "vw": 1024,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "104.448px/900/98.1811px",
+        "h2": "47.104px/900/53.6986px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 60,
+      "sectionHeights": [
+        609,
+        439,
+        599,
+        5438,
+        1136,
+        453
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "1280": {
+      "docW": 1280,
+      "vw": 1280,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "130.56px/900/122.726px",
+        "h2": "52px/900/59.28px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 60,
+      "sectionHeights": [
+        681,
+        449,
+        644,
+        2496,
+        758,
+        531
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "1440": {
+      "docW": 1440,
+      "vw": 1440,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "146px/900/137.24px",
+        "h2": "52px/900/59.28px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 60,
+      "sectionHeights": [
+        715,
+        461,
+        653,
+        2581,
+        770,
+        540
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    },
+    "1920": {
+      "docW": 1920,
+      "vw": 1920,
+      "hScroll": false,
+      "over": [],
+      "overCount": 0,
+      "fontsUsed": [
+        "SFMono-Regular",
+        "Noto Serif SC",
+        "Noto Sans SC"
+      ],
+      "scale": {
+        "h1": "146px/900/137.24px",
+        "h2": "52px/900/59.28px",
+        "h3": "15.5px/900/25.575px",
+        "body": "15px/400/24.75px",
+        "small": "11.5px/500/18.975px"
+      },
+      "heroFillChars": 60,
+      "sectionHeights": [
+        715,
+        473,
+        653,
+        2593,
+        782,
+        540
+      ],
+      "lit": true,
+      "riseIn": 20,
+      "riseTotal": 20,
+      "imgs": 0,
+      "fontsLoaded": "loaded",
+      "serifOK": true,
+      "sansOK": true,
+      "consoleIssues": [],
+      "netIssues": []
+    }
+  },
+  "issues": [],
+  "contrast": [
+    {
+      "text": "·",
+      "fs": 16,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "学期线",
+      "fs": 13,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "打开工作平台",
+      "fs": 12.5,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(247, 245, 240)",
+      "bg": "rgb(20,21,26)"
+    },
+    {
+      "text": "广东石油化工学院 · 校素质拓展中心 · 质",
+      "fs": 11.5,
+      "ratio": 4.74,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(107, 109, 116)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "十八格",
+      "fs": 146,
+      "ratio": 5.67,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(183, 44, 36)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "每周一格。收表、拆分、安排检查学院、排助理、",
+      "fs": 17,
+      "ratio": 6.62,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(85, 87, 94)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "→",
+      "fs": 14,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(247, 245, 240)",
+      "bg": "rgb(20,21,26)"
+    },
+    {
+      "text": "先看它怎么跑",
+      "fs": 14,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "部署",
+      "fs": 11,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "第 3 周到第 20 周，现在走到这儿",
+      "fs": 22.5,
+      "ratio": 16.73,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "W3 开学 → W20 期末",
+      "fs": 15,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "W3",
+      "fs": 12,
+      "ratio": 6.62,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(85, 87, 94)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "W5",
+      "fs": 12,
+      "ratio": 5.53,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(183, 44, 36)",
+      "bg": "rgb(251,240,238)"
+    },
+    {
+      "text": "2",
+      "fs": 40,
+      "ratio": 16.73,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "6",
+      "fs": 40,
+      "ratio": 5.67,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(183, 44, 36)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "WEEKLY FLOW / 每周固定动作",
+      "fs": 11.5,
+      "ratio": 4.77,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(126, 129, 137)",
+      "bg": "rgb(18,19,22)"
+    },
+    {
+      "text": "一张表出来",
+      "fs": 52,
+      "ratio": 5.55,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(240, 90, 76)",
+      "bg": "rgb(18,19,22)"
+    },
+    {
+      "text": "01",
+      "fs": 50,
+      "ratio": 4.77,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(126, 129, 137)",
+      "bg": "rgb(18,19,22)"
+    },
+    {
+      "text": "上传登记表",
+      "fs": 15.5,
+      "ratio": 18.58,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(255, 255, 255)",
+      "bg": "rgb(18,19,22)"
+    },
+    {
+      "text": "规划部发的总表，或已拆好的单校区表都认。自动",
+      "fs": 12.5,
+      "ratio": 8.07,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(168, 171, 177)",
+      "bg": "rgb(18,19,22)"
+    },
+    {
+      "text": "这些不是示意图，是真在群里跑的对话",
+      "fs": 25,
+      "ratio": 16.73,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "截图来源：2026 年 9 月，与部长及规划",
+      "fs": 12.5,
+      "ratio": 4.74,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(107, 109, 116)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "STEP 01 — 规划部交接",
+      "fs": 10.5,
+      "ratio": 4.99,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(107, 109, 116)",
+      "bg": "rgb(252,251,248)"
+    },
+    {
+      "text": "「一个与规划部交接的群，他们会整理一周的活动",
+      "fs": 15.5,
+      "ratio": 17.62,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(252,251,248)"
+    },
+    {
+      "text": "每周拿到一张总表。规则原话是「我们要把这个文",
+      "fs": 12.5,
+      "ratio": 6.97,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(85, 87, 94)",
+      "bg": "rgb(252,251,248)"
+    },
+    {
+      "text": "—— 部长，9 月 20 日",
+      "fs": 12.5,
+      "ratio": 17.62,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(252,251,248)"
+    },
+    {
+      "text": "第 3 周（官渡）/（西城）已安排二级学院",
+      "fs": 26,
+      "ratio": 17.62,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(252,251,248)"
+    },
+    {
+      "text": "最后交上去的是两份带检查学院的共享表格。名字",
+      "fs": 13.5,
+      "ratio": 6.97,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(85, 87, 94)",
+      "bg": "rgb(252,251,248)"
+    },
+    {
+      "text": "官渡",
+      "fs": 11,
+      "ratio": 5.97,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(183, 44, 36)",
+      "bg": "rgb(252,251,248)"
+    },
+    {
+      "text": "它守什么",
+      "fs": 17,
+      "ratio": 16.73,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(20, 21, 26)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "✓",
+      "fs": 12,
+      "ratio": 5.67,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(183, 44, 36)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "…第5周素质拓展活动登记表(官渡).xlsx",
+      "fs": 11,
+      "ratio": 4.74,
+      "need": 4.5,
+      "pass": true,
+      "fg": "rgb(107, 109, 116)",
+      "bg": "rgb(247,245,240)"
+    },
+    {
+      "text": "交给它",
+      "fs": 78,
+      "ratio": 5.67,
+      "need": 3,
+      "pass": true,
+      "fg": "rgb(183, 44, 36)",
+      "bg": "rgb(247,245,240)"
+    }
+  ],
+  "reducedMotion": {
+    "barsVisible": true,
+    "flagVisible": true,
+    "riseVisible": true
+  },
+  "microInteraction": {
+    "btnChanged": true,
+    "weekLifts": true,
+    "before": {
+      "btnBg": "rgb(20, 21, 26)",
+      "wkT": "none"
+    },
+    "after": {
+      "btnColor": "rgb(255, 255, 255)",
+      "btnBg": "rgb(20, 21, 26)"
+    },
+    "wkAfter": "matrix(1, 0, 0, 1, 0, -6)"
+  }
+}
+
+===== 问题汇总 =====
+无

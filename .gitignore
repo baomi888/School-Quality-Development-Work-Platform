@@ -1,0 +1,43 @@
+# ===== 隐私红线：真实姓名 / 内部资料 永不进仓库 =====
+# 原始素材 / 上手教程 / 输出示例 / 内部资料 均含真实姓名与内部采集文档，绝不入库
+01_原始素材/
+02_上手教程/
+03_输出示例/
+内部资料/
+**/engine/data/
+# 真实值班花名册（移入 engine/data/<dept>/duty_roster.json，本地数据不入库）
+**/duty_roster.json
+# 含真实姓名的验收脚本（依赖本地 people.json，开源克隆无法运行）
+05_工作安排/web/e2e.cjs
+
+# WorkBuddy 本地工作记忆（含项目记忆，不公开）
+.workbuddy/
+
+# 其他本地工具目录（非项目源码）
+.trae/
+
+# ===== 运行时 / 构建产物 =====
+*.log
+__pycache__/
+*.pyc
+node_modules/
+**/web_dist/
+**/engine/web_dist/
+
+# ===== 一次性临时脚本（保留 _probe_*.py 当 CI 公平性门禁）=====
+_make_bat.py
+_mklean.py
+_needtest.py
+_smoke.py
+_zip.py
+**/_gh_search.py
+**/_gh_search2.py
+
+# ===== WorkBuddy 产物 =====
+.wbapp_*.genie
+
+# ===== 开发截图 / 预览产物（非源码）=====
+.preview/
+04_Web端/_shots/
+04_Web端/_重构预览/
+04_Web端/_风格预览/

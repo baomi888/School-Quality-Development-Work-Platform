@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D1 · 值班室 · 首屏小样</title>
+<style>
+/* 本地子集字体（内联版，便于进对比页） */
+/* 本地子集字体 —— 落地页离线可用，无需联网。
+   由 tools/subset_fonts.py 从本机 Noto CJK 可变字体生成，勿手改。 */
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:900;
+  font-display:swap;
+  src:url('fonts/serif-900.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/serif-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/sans-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url('fonts/sans-500.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('fonts/sans-400.woff2') format('woff2');
+}
+
+
+
+
+
+
+:root{
+  --paper:#F2EFE8;
+  --ink:#16171A;
+  --ink-2:#4A4D52;
+  --ink-3:#63656B;
+  --rule:#16171A;
+  --rule-soft:#CFCBC0;
+  --stamp:#B3271E;
+  --box:#FFFFFF;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,Menlo,monospace;
+  --gut:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.6;
+}
+
+/* ============ 顶栏：公文抬头 ============ */
+.top{
+  display:flex;align-items:baseline;gap:16px;
+  padding:18px var(--gut);
+  border-bottom:2px solid var(--rule);
+}
+.top .org{font-family:var(--serif);font-weight:900;font-size:17px;letter-spacing:0.02em}
+.top .sep{flex:1}
+.top nav{display:flex;gap:26px;font-size:13px;color:var(--ink-2)}
+.top nav span{position:relative}
+.top nav span.cur{color:var(--stamp);font-weight:700}
+.top nav span.cur::after{
+  content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;background:var(--stamp);
+}
+.top .ver{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:0.04em}
+
+/* ============ 首屏：通栏上下堆叠 ============ */
+.hero{padding:0 var(--gut);border-bottom:2px solid var(--rule)}
+.hero-meta{
+  display:flex;gap:0;border-bottom:1px solid var(--rule-soft);
+  padding:10px 0;font-size:12px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.06em;
+}
+.hero-meta div{padding-right:28px;margin-right:28px;border-right:1px solid var(--rule-soft)}
+.hero-meta div:last-child{border-right:0}
+
+.hero h1{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(40px,7.4vw,104px);
+  line-height:0.95;letter-spacing:-0.02em;
+  padding:34px 0 0;
+  text-indent:-0.06em;
+}
+.hero h1 em{font-style:normal;color:var(--stamp)}
+
+/* 数据条：把「一学期的工作」画成看得见的量 */
+.hero-band{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);margin-top:38px;
+}
+.hero-band > div{
+  padding:22px 20px 24px;border-right:1px solid var(--rule-soft);
+}
+.hero-band > div:last-child{border-right:0}
+.hero-band .n{
+  font-family:var(--mono);font-weight:700;font-size:34px;line-height:1;
+  letter-spacing:-0.02em;font-variant-numeric:tabular-nums;
+}
+.hero-band .n small{font-size:14px;font-weight:400;color:var(--ink-2);margin-left:3px}
+.hero-band .k{
+  font-size:12px;color:var(--ink-2);margin-top:9px;letter-spacing:0.03em;
+}
+.hero-band .sub{font-size:11.5px;color:var(--ink-3);margin-top:3px;font-family:var(--mono)}
+
+/* 首屏下半：左边说明，右边直接摆「你会拿到的那份表」——
+   首屏最有价值的位置不该留给空气和一枚装饰章的。 */
+.hero-foot{
+  display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start;
+  padding:22px 0 26px;border-top:1px solid var(--rule-soft);
+}
+.hero-foot .say{align-self:end}
+.hero-foot p{max-width:44ch;color:var(--ink-2);font-size:14px}
+.hero-foot .stamp{
+  display:inline-block;margin-top:14px;
+  border:2.5px solid var(--stamp);color:var(--stamp);
+  font-family:var(--serif);font-weight:700;
+  padding:7px 12px;font-size:12px;line-height:1.25;
+  letter-spacing:0.08em;text-align:center;
+  transform:rotate(-3.5deg);opacity:0.9;border-radius:2px;
+}
+/* 首屏里的产物缩略：真表格的样子 */
+.hero-spec{position:relative}
+.hero-spec .cap{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:0.06em;
+  color:var(--ink-3);margin-bottom:8px;
+}
+
+/* ============ 数字台账带 ============ */
+.ledger{padding:0 var(--gut);border-bottom:2px solid var(--rule)}
+.ledger-h{
+  display:flex;align-items:baseline;gap:14px;padding:26px 0 14px;
+  border-bottom:1px solid var(--rule);
+}
+.ledger-h h2{font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:0.01em}
+.ledger-h .tag{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:0.1em;
+  border:1px solid var(--rule);padding:2px 7px;
+}
+.ledger-h .hint{margin-left:auto;font-size:12px;color:var(--ink-3)}
+
+.rows{border-bottom:1px solid var(--rule-soft)}
+.row{
+  display:grid;grid-template-columns:74px 1fr 210px 92px;
+  gap:18px;align-items:center;
+  padding:15px 0;border-bottom:1px solid var(--rule-soft);
+}
+.row:last-child{border-bottom:0}
+.row .code{font-family:var(--mono);font-size:12px;color:var(--stamp);letter-spacing:0.08em}
+.row .name{font-family:var(--serif);font-size:16px;font-weight:700}
+.row .name span{
+  display:block;font-family:var(--sans);font-weight:400;
+  font-size:12.5px;color:var(--ink-2);margin-top:2px;letter-spacing:0;
+}
+/* 长度条：一学期 18 周，把工作量画成方格 */
+.track{display:flex;gap:3px}
+.track i{
+  display:block;width:9px;height:9px;background:var(--rule-soft);
+}
+.track i.on{background:var(--ink)}
+.track i.hot{background:var(--stamp)}
+.row .stat{font-family:var(--mono);font-size:12px;color:var(--ink-2);text-align:right}
+.row .stat b{font-size:19px;color:var(--ink)}
+
+/* ============ 双栏承重区 ============ */
+.twin{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  padding:0 var(--gut);border-bottom:2px solid var(--rule);
+}
+.twin > div{padding:28px 32px 30px 0;border-right:1px solid var(--rule-soft)}
+.twin > div:last-child{padding:28px 0 30px 32px;border-right:0}
+.twin h3{
+  font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:6px;
+}
+.twin .lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:0.12em;color:var(--stamp);margin-bottom:11px}
+.twin p{font-size:13.5px;color:var(--ink-2)}
+.twin ul{list-style:none;margin-top:12px}
+.twin li{
+  font-size:13px;color:var(--ink-2);padding:6px 0 6px 15px;
+  position:relative;border-bottom:1px dotted var(--rule-soft);
+}
+.twin li:last-child{border-bottom:0}
+.twin li::before{content:"—";position:absolute;left:0;color:var(--ink-3)}
+.twin li b{color:var(--ink)}
+
+/* 实样：真表格缩略 */
+.spec{
+  background:var(--box);border:1px solid var(--rule-soft);
+  padding:8px 10px;font-family:var(--mono);font-size:9.5px;color:var(--ink-2);
+  overflow:hidden;
+}
+.spec .sheet{display:grid;grid-template-columns:26px 1fr 1fr 1fr 46px;gap:0}
+.spec .sheet i{
+  border-right:1px solid #E8E5DD;border-bottom:1px solid #E8E5DD;
+  height:19px;display:flex;align-items:center;padding-left:5px;
+  font-style:normal;white-space:nowrap;overflow:hidden;
+}
+.spec .sheet i.hd{background:#EFEDE6;font-weight:700;color:var(--ink)}
+.spec .sheet i.r{color:var(--stamp);font-weight:700}
+
+/* ============ 流程横排 ============ */
+.flow{
+  padding:30px var(--gut) 34px;border-bottom:2px solid var(--rule);
+  display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+}
+.step{
+  padding:0 20px 0 0;position:relative;
+}
+.step:last-child{padding-right:0}
+.step .no{
+  font-family:var(--mono);font-size:12px;color:var(--stamp);
+  letter-spacing:0.1em;margin-bottom:10px;
+}
+.step .t{font-family:var(--serif);font-size:15px;font-weight:700;margin-bottom:7px}
+.step .d{font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.step .arrow{
+  position:absolute;right:8px;top:22px;color:var(--rule-soft);font-size:15px;
+}
+.step:last-child .arrow{display:none}
+
+/* ============ 页脚 ============ */
+.foot{
+  padding:24px var(--gut) 40px;display:flex;justify-content:space-between;
+  align-items:baseline;font-size:12px;color:var(--ink-3);
+}
+.foot .mono{font-family:var(--mono);letter-spacing:0.05em}
+
+@media(max-width:900px){
+  :root{--gut:20px}
+  /* 窄屏把导航整条收掉，只留机构名与版本号，避免字被逐个换行 */
+  .top{padding:14px var(--gut);gap:10px;flex-wrap:wrap}
+  .top .org{font-size:15px}
+  .top nav{display:none}
+  .top .sep{display:none}
+  .top .ver{margin-left:auto}
+  .hero h1{font-size:clamp(34px,11vw,56px);padding-top:24px}
+  .hero-band{grid-template-columns:1fr 1fr}
+  .hero-band > div:nth-child(2n){border-right:0}
+  .hero-band > div{border-top:1px solid var(--rule-soft)}
+  .hero-foot{grid-template-columns:1fr;gap:18px}
+  .hero-foot .stamp{margin-top:10px}
+  .stamp{margin-left:0}
+  .row{grid-template-columns:64px 1fr;gap:6px 12px}
+  .row .track{grid-column:1/-1}
+  .row .stat{text-align:left}
+  .twin{grid-template-columns:1fr}
+  .twin > div{border-right:0;border-bottom:1px solid var(--rule-soft);padding:24px 0}
+  .twin > div:last-child{border-bottom:0;padding-left:0}
+  .flow{grid-template-columns:1fr;gap:18px}
+  .step{padding-right:0;padding-bottom:16px;border-bottom:1px solid var(--rule-soft)}
+  .step .arrow{display:none}
+  .foot{flex-direction:column;gap:6px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="org">质检部 · 周工作自动化</div>
+  <div class="sep"></div>
+  <nav>
+    <span class="cur">总览</span><span>周流程</span><span>规则</span><span>使用说明</span>
+  </nav>
+  <div class="ver">v1.0</div>
+</header>
+
+<section class="hero">
+  <div class="hero-meta">
+    <div>广东石油化工学院 · 校素质拓展中心</div>
+    <div>官渡 / 西城 双校区</div>
+    <div>2026—2027 学年第一学期</div>
+  </div>
+
+  <h1>每周的表，<br>交给机器。<em>规则，交给你。</em></h1>
+
+  <div class="hero-band">
+    <div>
+      <div class="n">4<small>步</small></div>
+      <div class="k">从收表到出表</div>
+      <div class="sub">upload → split → arrange</div>
+    </div>
+    <div>
+      <div class="n">2<small>份</small></div>
+      <div class="k">官渡 + 西城 一次出齐</div>
+      <div class="sub">empty campus also ok</div>
+    </div>
+    <div>
+      <div class="n">3<small>条</small></div>
+      <div class="k">排班规则自动守住</div>
+      <div class="sub">2 colleges / no self-check</div>
+    </div>
+    <div>
+      <div class="n">100<small>%</small></div>
+      <div class="k">格式原样保留</div>
+      <div class="sub">font · border · merge</div>
+    </div>
+  </div>
+
+  <div class="hero-foot">
+    <div class="say">
+      <p>上传规划部发的总表，点几下，下载一份排版好的登记表。字体、边框、合并单元格一个不动，只在表尾追加该谁检查。</p>
+      <div class="stamp">共 15 列 · 表尾追加 · 已核</div>
+    </div>
+    <div class="hero-spec">
+      <div class="cap">你会拿到的：已安排二级学院的登记表</div>
+      <div class="spec">
+        <div class="sheet">
+          <i class="hd"></i><i class="hd">活动名称</i><i class="hd">举办学院</i><i class="hd">时间</i><i class="hd">检查</i>
+          <i>1</i><i>素拓培训</i><i>化工学院</i><i>周六</i><i class="r">建工</i>
+          <i>2</i><i>志愿服务</i><i>计算机学院</i><i>周日</i><i class="r">外语</i>
+          <i>3</i><i>技能竞赛</i><i>机电学院</i><i>周六</i><i class="r">经管</i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ledger">
+  <div class="ledger-h">
+    <h2>一学期的工作量，看得见</h2>
+    <span class="tag">LEDGER</span>
+    <span class="hint">每格 = 1 周　■ 已排　■ 高峰</span>
+  </div>
+
+  <div class="rows">
+    <div class="row">
+      <div class="code">W05</div>
+      <div class="name">第 5 周 · 西城校区<span>3 个活动 · 6 个检查学院</span></div>
+      <div class="track"><i></i><i></i><i></i><i></i><i class="on"></i><i class="hot"></i><i class="hot"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="stat"><b>6</b> 人次</div>
+    </div>
+    <div class="row">
+      <div class="code">W04</div>
+      <div class="name">第 4 周 · 官渡校区<span>4 个活动 · 8 个检查学院</span></div>
+      <div class="track"><i></i><i></i><i></i><i class="on"></i><i class="hot"></i><i class="hot"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="stat"><b>8</b> 人次</div>
+    </div>
+    <div class="row">
+      <div class="code">W03</div>
+      <div class="name">第 3 周 · 官渡校区<span>2 个活动 · 4 个检查学院</span></div>
+      <div class="track"><i></i><i></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="hot"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="stat"><b>4</b> 人次</div>
+    </div>
+  </div>
+</section>
+
+<section class="twin">
+  <div>
+    <div class="lbl">DELIVERABLE</div>
+    <h3>它到底交付什么</h3>
+    <p>一份能直接发出去的登记表。不是截图、不是提示，是保持了原表字体（宋体 9 号）、边框、居中和标题合并的 Excel。</p>
+    <div class="spec" style="margin-top:14px">
+      <div class="sheet">
+        <i class="hd"></i><i class="hd">活动名称</i><i class="hd">举办学院</i><i class="hd">时间</i><i class="hd">检查</i>
+        <i>1</i><i>素拓培训</i><i>化工学院</i><i>周六</i><i class="r">建工</i>
+        <i>2</i><i>志愿服务</i><i>计算机学院</i><i>周日</i><i class="r">外语</i>
+        <i>3</i><i>技能竞赛</i><i>机电学院</i><i>周六</i><i class="r">经管</i>
+      </div>
+    </div>
+    <p style="margin-top:11px;font-size:12px;color:var(--ink-3);font-family:var(--mono)">
+      2026-2027学年第一学期第5周素质拓展活动登记表(官渡)（已安排二级学院）.xlsx
+    </p>
+  </div>
+  <div>
+    <div class="lbl">GUARDRAILS</div>
+    <h3>规则替你守着</h3>
+    <ul>
+      <li>每个活动自动配 <b>2 个检查学院</b></li>
+      <li>举办学院<b>不检查自己</b>，界面标红不可选</li>
+      <li>同一学院<b>不连续两周</b>，上周用过的标黄</li>
+      <li>确认要强行安排，有<b>「仍要按当前选择写入」</b></li>
+      <li>写坏了能恢复：每次写入前自动留 <b>.bak.xlsx</b></li>
+    </ul>
+  </div>
+</section>
+
+<section class="flow">
+  <div class="step"><div class="no">STEP 01</div><div class="t">上传登记表</div><div class="d">规划部发的总表，或已拆好的单校区表都认</div><span class="arrow">→</span></div>
+  <div class="step"><div class="no">STEP 02</div><div class="t">按校区拆分</div><div class="d">一次出官渡 + 西城两份，无活动也出空白表</div><span class="arrow">→</span></div>
+  <div class="step"><div class="no">STEP 03</div><div class="t">安排二级学院</div><div class="d">自动标出上周已安排、本周主办，勾选即可</div><span class="arrow">→</span></div>
+  <div class="step"><div class="no">STEP 04</div><div class="t">安排助理</div><div class="d">填四个周末时段有空的人，自动匹配每活动 2 人</div><span class="arrow">→</span></div>
+  <div class="step"><div class="no">STEP 05</div><div class="t">下载发出</div><div class="d">先跑 7 项体检，全绿再下载，心里有底</div></div>
+</section>
+
+<footer class="foot">
+  <div>质检部工作自动化 · 桌面端与网页端同一套规则，不会各排各的</div>
+  <div class="mono">LOCAL · 127.0.0.1:8765 · 无需联网</div>
+</footer>
+
+</body>
+</html>

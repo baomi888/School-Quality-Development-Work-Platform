@@ -1,0 +1,191 @@
+/* ============================================================
+   设计令牌 —— 唯一事实来源
+
+   方向：档案台（Archive Desk）· 与落地页同一套设计语言
+     骨架 = 瑞士理性（黑白为主、正红唯一彩色、零圆角零阴影、线分隔）
+     皮肤 = 暖纸冷墨（暖纸底 + 冷墨字，红只出现在「此刻」）
+
+   三条铁律：
+     1. 墨黑是主色 —— 按钮、选中、完成、主操作一律用它；
+     2. 正红 #B72C24 是全站唯一彩色，只标「需要注意 / 此刻 / 破坏性」，
+        它是信号不是装饰，dots 和图标底一律不许用它刷；
+     3. 层级靠 1px 线，不靠圆角和阴影。
+
+   ⚠️ 与落地页（landing/build/tokens.css）保持同源。改配色只改这个文件。
+   ============================================================ */
+
+:root {
+  /* --- 表面 4 档：纸 → 卡片 → 次级容器 → 浮层 --- */
+  --canvas: #F7F5F0;          /* 暖纸画布 */
+  --surface: #FCFBF8;         /* 卡片（比画布略亮，靠线分层不靠阴影） */
+  --surface-2: #F1EEE7;       /* 次级容器 / 表格表头 */
+  --elevated: #FCFBF8;        /* 浮层 */
+
+  /* --- 文本 3 档 + 反色 --- */
+  --text: #14151A;            /* 冷墨 */
+  --text-2: #55575E;
+  --text-3: #6B6D74;
+  --text-4: #9A9C9F;          /* 最弱：占位符 / 空态提示 */
+  --text-on-brand: #F7F5F0;
+
+  /* --- 边框 3 级 --- */
+  --line: #DFDAD0;            /* 暖灰分隔线 */
+  --line-2: #E9E4DA;          /* 更浅的次级分隔线 */
+  --line-strong: #14151A;     /* 结构硬边（分节线、表头收口） */
+  --line-control: #C9C3B6;    /* 有面积的控件 */
+
+  /* --- 中性填充 4 级（同一墨色的半透明，叠任何底色都成立） --- */
+  --fill-1: rgba(20, 21, 26, 0.13);
+  --fill-2: rgba(20, 21, 26, 0.075);
+  --fill-3: rgba(20, 21, 26, 0.04);
+  --fill-4: rgba(20, 21, 26, 0.02);
+
+  /* --- 品牌：墨黑（原校徽绿已按「跟落地页一致」换掉） --- */
+  --brand: #14151A;
+  --brand-ink: #14151A;
+  --brand-deep: #000000;
+  --brand-soft: #E9E4DA;
+  --brand-line: #C9C3B6;
+
+  /* --- 强调：质检正红（全站唯一彩色信号） --- */
+  --accent: #B72C24;
+  --accent-soft: #FBF0EE;
+
+  /* --- 深色带上的亮红（深底吃色，需提亮才能过 4.5:1） --- */
+  --accent-on-dark: #F05A4C;
+
+  /* --- 语义色 --- */
+  --success: #14151A;         /* 完成 = 墨黑，不用绿（绿会稀释红的告警强度） */
+  --success-ink: #14151A;
+  --success-soft: #E9E4DA;
+
+  --warning: #8A6410;         /* 压暗的赭黄：浅底上白字/深字都能过关 */
+  --warning-ink: #6B4D0C;
+  --warning-soft: #F6EFDF;
+
+  --danger: #B72C24;
+  --danger-ink: #8E211B;
+  --danger-soft: #FBF0EE;
+
+  --info: #14151A;
+  --info-ink: #14151A;
+  --info-soft: #E9E4DA;
+
+  /* --- 深色反差带（落地页的 .dark 段，工作台里给课表/看板反相块用） --- */
+  --dark: #121316;
+  --dark-2: #1B1D21;
+  --dark-line: #2C2F34;
+  --on-dark: #EDEBE6;
+  --on-dark-2: #A8ABB1;
+  --on-dark-3: #7E8189;
+
+  /* --- 字号八档 --- */
+  --fs-micro: 11px;
+  --fs-caption: 12px;
+  --fs-label: 13px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lead: 16px;
+  --fs-title: 20px;
+  --fs-display: 30px;
+  --fs-hero: 40px;
+
+  /* 窄屏降档 */
+  --fs-hero-sm: 30px;
+
+  /* --- 字重三档 --- */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+
+  /* --- 行高 --- */
+  --lh-hero: 1.12;
+  --lh-tight: 1.3;
+  --lh-snug: 1.4;
+  --lh-body: 1.6;
+
+  /* --- 字距：大号收紧、小号拉开；衬线标题回正 --- */
+  --ls-hero: -0.018em;
+  --ls-title: 0.005em;
+  --ls-lead: 0;
+  --ls-meta: 0.04em;
+  --ls-caption: 0.03em;
+  --ls-tag: 0.08em;
+  --ls-th: 0.08em;
+  --ls-kicker: 0.16em;
+  --ls-serif: 0.005em;
+
+  /* --- 正文最大宽度 --- */
+  --measure: 62ch;
+
+  /* --- 间距：八级音阶（与落地页 --sp-1..7 同源） --- */
+  --sp-0: 0;
+  --sp-1: 4px;
+  --sp-2: 6px;
+  --sp-3: 8px;
+  --sp-4: 12px;
+  --sp-5: 16px;
+  --sp-6: 20px;
+  --sp-7: 24px;
+  --sp-8: 32px;
+  --sp-9: 40px;
+  --sp-10: 54px;
+  --sp-11: 84px;
+  --sp-section: clamp(88px, 12vh, 140px);
+
+  /* --- 圆角：零（档案台铁律：层级靠线，不靠圆角） --- */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-pill: 0;
+
+  /* --- 控件高度三级 --- */
+  --ctrl-sm: 30px;
+  --ctrl-md: 38px;
+  --ctrl-lg: 44px;
+
+  /* --- 图标尺寸 --- */
+  --icon-xs: 12px;
+  --icon-sm: 14px;
+  --icon-md: 16px;
+  --icon-lg: 20px;
+  --icon-xl: 24px;
+
+  /* --- 阴影：全部关掉（档案台不用投影做层级） --- */
+  --shadow-1: none;
+  --shadow-2: none;
+
+  /* --- 毛玻璃：顶栏保留一点点，但弱化 --- */
+  --glass-blur: 14px;
+  --glass-saturate: 160%;
+
+  /* --- 动效三档缓动（与落地页 --ease-out / --ease-soft 同源） --- */
+  --t-instant: 100ms;
+  --t-fast: 150ms;
+  --t-base: 250ms;
+  --t-slow: 400ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* --- 字体：标题衬线、正文无衬线 --- */
+  --font-serif: "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+  --font-sans: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    system-ui, -apple-system, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, Menlo, monospace;
+
+  /* --- 数字统一等宽 --- */
+  --num: tabular-nums;
+
+  /* --- 布局 --- */
+  --content-max: 1260px;
+  --gut: clamp(18px, 4.2vw, 44px);
+
+  /* --- 焦点环：正红细环，只在键盘操作时出现 --- */
+  --focus-ring: 0 0 0 2px var(--accent);
+  --ring-brand: 0 0 0 2px var(--brand);
+
+  /* --- 顶栏高度 --- */
+  --topbar-h: 64px;
+}

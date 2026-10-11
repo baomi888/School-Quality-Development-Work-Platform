@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>认证部轮值 · 已确认与待确认</title>
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#14151A; --red:#B72C24; --mute:#6B6862;
+  --line:#D8D4CC; --ok:#1D6B4A; --okbg:#E4EFE8; --wait:#8A5A0B; --waitbg:#F6EBD8; --no:#9B2C22; --nobg:#F7E3E0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Songti SC","SimSun",Georgia,serif;line-height:1.85;font-size:15px}
+.wrap{max-width:860px;margin:0 auto;padding:56px 28px 96px}
+h1{font-size:26px;font-weight:400;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:var(--mute);font-size:13px;margin:0 0 44px;font-family:system-ui,sans-serif}
+h2{font-size:18px;font-weight:400;margin:52px 0 16px;padding-left:12px;border-left:3px solid var(--red)}
+p{margin:0 0 14px}
+table{width:100%;border-collapse:collapse;margin:18px 0 8px;font-size:13.5px;font-family:system-ui,"Microsoft YaHei",sans-serif}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+th{color:var(--mute);font-weight:500;font-size:12px;letter-spacing:.06em}
+td.q{width:110px;color:var(--mute)}
+.tag{display:inline-block;padding:1px 8px;border-radius:2px;font-size:11.5px;font-family:system-ui,sans-serif;white-space:nowrap}
+.t-ok{background:var(--okbg);color:var(--ok)}
+.t-wait{background:var(--waitbg);color:var(--wait)}
+.t-no{background:var(--nobg);color:var(--no)}
+.note{border-left:2px solid var(--line);padding:2px 0 2px 16px;color:var(--mute);font-size:13.5px;margin:14px 0}
+.big{background:#fff;border:1px solid var(--line);padding:20px 22px;margin:20px 0}
+.big .h{font-size:14px;margin:0 0 10px;font-family:system-ui,sans-serif;color:var(--red)}
+ul{margin:8px 0 8px;padding-left:20px}
+li{margin:5px 0}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:#EDE9E0;padding:1px 5px}
+.k{font-family:system-ui,sans-serif;font-size:13.5px}
+footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);color:var(--mute);font-size:12px;font-family:system-ui,sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>认证部「收表制表」轮值</h1>
+<p class="sub">已确认 4 条 · 待确认 3 条 · 名单 16 人已从分管表抓全</p>
+
+<h2>一、你这三条信息带来的判断变化</h2>
+
+<table>
+<tr><th>你的原话</th><th>我的解读</th></tr>
+<tr>
+<td class="q">表格是固定的<br>每周不知道排几人</td>
+<td><b>「固定」说的是版式，不是人。</b>这恰好和我方质检部模型同构：行＝本周要收的单位，列＝助理，一格一人。<br>「人数不定」意味着槽位数由本周任务量决定 → 配置里人员池和任务量要能各自伸缩，不写死。</td>
+</tr>
+<tr>
+<td class="q">部长不干活<br>只安排助理</td>
+<td><span class="tag t-ok">与质检部完全一致</span> 我方 <code>Assigner.pool</code> 本来就只收 <code>role==assist</code>，这条<b>零改动</b>，也不需要新建角色。</td>
+</tr>
+<tr>
+<td class="q">有历史记录<br>要做台账</td>
+<td><span class="tag t-ok">好消息</span>历史记录在 = 公平轮转能立刻见效，不用等一个学期攒数据。这是本项目最大的加速项。</td>
+</tr>
+<tr>
+<td class="q">不用回避自己学院<br>认证部是因为<br>要加素拓分才回避</td>
+<td><b>这条纠正了我上一轮的错误判断。</b>我原以为回避是普遍规则，你说清后：<b>回避是「利益冲突型」约束，来源是评分权</b>，只在有加分的部门成立。它不是通用维度，是<b>按机构开关的规则</b>。</td>
+</tr>
+</table>
+
+<div class="note">
+也就是说：<b>回避不是「技能」，是「角色冲突」。</b>认证部助理要给自己的学院打分 → 必须回避；综合部卫生检查员只是打分给学院、不涉及自己 → 不必回避。<br>
+建模上它不该放进技能字段（<code>skills</code>），而应是独立的一条<b>硬过滤</b>：<code>blocked_pairs = [(人员, 单位)]</code>。理由：技能不满足是「能力不够」，回避是「不该查」，前者可以降级、后者绝对不行。
+</div>
+
+<h2>二、必须先纠正的一件事：表里有两类活</h2>
+
+<p>我把你给的 <code>26届校素拓认证部小助理分管部长和工作安排.xlsx</code> 全表读完了。它不是一张排班表，而是<b>两件性质完全不同的活挤在一起</b>：</p>
+
+<div class="big">
+<div class="h">活一 · 分管单位（A1:C18 + A20:A32）— 这是包干制</div>
+<ul class="k">
+<li>4 位部长 × 4 位小助理 = <b>16 人</b>，A列合并区A2:A6 / A7:A10 / A11:A14 / A15:A18</li>
+<li>每人固定管 1~2 个单位，<b>一学期基本不变</b>。例：助理⑨ → 理学院、校易班</li>
+<li>底部 A20:A32 是 13 个校级学生组织全名单，是拿来做「哪些单位有人管、哪些没人管」的对照</li>
+<li class="k" style="list-style:none;margin-top:8px;color:#9B2C22">⇒ <b>平台不该每周重排这张表。</b>它是<b>输入数据</b>，不是排班结果。每周重排反而会破坏它本来的稳定性。</li>
+</ul>
+</div>
+
+<div class="big">
+<div class="h">活二 · 收表制表 — 这才是排班，也才是唯一该接的</div>
+<ul class="k">
+<li>版式固定、人数每周不定 · 部长派助理 · 有历史记录</li>
+<li>行 = 本周要收表的单位，列 = 可派助理，一格一人</li>
+<li><b>commit 后写台账</b>（我方已有 <code>ledger.json</code> 同构结构，下周直接可查「谁查过哪个单位、查了几次」）</li>
+</ul>
+</div>
+
+<p class="k"><b>这个区分决定了成败。</b>如果把活一当排班对象去做，会产出一张「人人每周都在换」的分管表——比现在更糟，且部长一看就知道不对。如果只做活二，则是在帮他们解决真正每周要重复的那件事。</p>
+
+<h2>三、名单（16 人，已从表中抓全）</h2>
+
+<table>
+<tr><th>部长</th><th>小助理</th><th>分管单位</th></tr>
+<tr><td rowspan="4">分管部长①（西城）（西城）</td><td>助理①</td><td>艺术学院、校学生会</td></tr>
+<tr><td>助理②</td><td>电信学院、体育学院</td></tr>
+<tr><td>助理③</td><td>文法学院、艺术团</td></tr>
+<tr><td>助理④</td><td>马克思学院、大学生社团管理服务中心</td></tr>
+<tr><td>助理⑤</td><td>外国语学院、校青媒</td></tr>
+<tr><td rowspan="4">分管部长②（西城）（西城）</td><td>助理⑥</td><td>生食学院、校团委</td></tr>
+<tr><td>助理⑦</td><td>材料学院</td></tr>
+<tr><td>助理⑧</td><td>建工学院</td></tr>
+<tr><td>助理⑨</td><td>理学院、校易班</td></tr>
+<tr><td rowspan="4">分管部长③（官渡）（官渡）</td><td>助理⑩</td><td>能动学院、大学生素质拓展中心</td></tr>
+<tr><td>助理⑪</td><td>机电学院、校党建</td></tr>
+<tr><td>助理⑫</td><td>经管学院</td></tr>
+<tr><td>助理⑬</td><td>自动化学院、国旗护卫队</td></tr>
+<tr><td rowspan="4">分管部长④（官渡）（官渡）</td><td>助理⑭</td><td>化工学院、校青协</td></tr>
+<tr><td>助理⑮</td><td>计算机学院、化学学院</td></tr>
+<tr><td>助理⑯</td><td>石油学院、全媒体</td></tr>
+<tr><td>助理⑰</td><td>环境学院、学生心理服务中心</td></tr>
+</table>
+
+<p class="k" style="font-size:12.5px;color:#6B6862">西城 8 人（分管部长①（西城）、分管部长②（西城）线）· 官渡 8 人（分管部长③（官渡）、分管部长④（官渡）线）—— 与质检部「双校区各派一人」的结构可以一一对应，连默认列都能对齐。</p>
+
+<div class="note">
+⚠️ 名单里<b>没有一个人写「自己是哪个学院的」</b>。这张表只说「管哪个单位」。<br>
+而回避规则要判断的恰恰是「你的学院 == 被查单位」—— <b>这个字段目前完全缺失，回避无从判断。</b>
+</div>
+
+<h2>四、待确认（3 条，按优先级）</h2>
+
+<table>
+<tr><th>优先级</th><th>要问什么</th><th>为什么卡在这</th></tr>
+<tr>
+<td><span class="tag t-no">P0 必问</span></td>
+<td><b>16 位助理各自是哪个学院的？</b></td>
+<td>没有这个字段，<code>blocked_pairs</code> 配不出来，回避规则就是装饰品。这是唯一一个「不做就等于功能不存在」的资料。</td>
+</tr>
+<tr>
+<td><span class="tag t-wait">P1</span></td>
+<td><b>「收表制表」具体是收谁的表？</b>是收下面那13 个校级组织的，还是也收 19 个学院的分管表？</td>
+<td>决定行维度是 13 还是 13+19，槽位数差一倍多。也决定要不要同时接两种任务类型。</td>
+</tr>
+<tr>
+<td><span class="tag t-wait">P1</span></td>
+<td><b>一份历史记录长什么样？</b>能给我最近 2~3 周的收表分工截图或表吗</td>
+<td>我需要从中反推真实决策规则（是真轮转还是仍按分管固定）。<b>这是「猜规则」和「抄规则」的分界线</b>——猜错了做出来没人用。</td>
+</tr>
+</table>
+
+<h2>五、结论：这个项目现在的状态</h2>
+
+<div class="big">
+<ul class="k">
+<li><span class="tag t-ok">零代码</span> 活二是派活型，与质检部同构；「部长不干活只派助理」正好等于我方既有的 <code>role==assist</code> 过滤</li>
+<li><span class="tag t-ok">可复现</span> 继续用 <code>sha256</code> 确定性裁决，50 周公平性口径直接复用</li>
+<li><span class="tag t-ok">有台账</span> <code>ledger.json</code> 同构，commit 翻转机制可直接搬</li>
+<li><span class="tag t-wait">差一块</span> <b>回避需要「助理所属学院」字段</b>，名单里没有 → 这是唯一真缺口</li>
+<li><span class="tag t-no">别动</span> 活一分管表当输入数据，不进排班；每周重排它会帮倒忙</li>
+</ul>
+</div>
+
+<p class="k">换句话说：<b>认证部接入现在只差一份名单字段。</b>拿到之后，这个项目就是零代码改动换配置，可以直接当 P2「≤30 分钟且不改代码」门禁的第一次实测。</p>
+
+<footer>2026-10-10 · 数据来源：26届校素拓认证部小助理分管部长和工作安排.xlsx（Sheet1 A1:O32，17 合并区）</footer>
+
+</div>
+</body>
+</html>

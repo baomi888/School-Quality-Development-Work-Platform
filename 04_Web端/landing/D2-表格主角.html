@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D2 · 表格即主角 · 首屏小样</title>
+<style>
+/* 本地子集字体（内联版，便于进对比页） */
+/* 本地子集字体 —— 落地页离线可用，无需联网。
+   由 tools/subset_fonts.py 从本机 Noto CJK 可变字体生成，勿手改。 */
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:900;
+  font-display:swap;
+  src:url('fonts/serif-900.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Serif SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/serif-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url('fonts/sans-700.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url('fonts/sans-500.woff2') format('woff2');
+}
+
+@font-face{
+  font-family:'Noto Sans SC';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('fonts/sans-400.woff2') format('woff2');
+}
+
+
+
+
+
+
+:root{
+  --bg:#F3F1EA;
+  --ink:#15161A;
+  --ink-2:#565960;
+  --ink-3:#63656B;
+  --red:#C2352B;
+  --lime:#C9F14E;
+  --grid:#15161A;
+  --white:#fff;
+  --serif:"Noto Serif SC","Songti SC",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden}
+
+/* ===== 顶栏：细，几乎不存在 ===== */
+.top{
+  display:flex;align-items:center;gap:20px;
+  padding:14px 28px;
+}
+.top .brand{font-family:var(--serif);font-weight:900;font-size:16px;letter-spacing:0.01em}
+.top .dot{width:9px;height:9px;background:var(--red);border-radius:50%;flex:none}
+.top nav{display:flex;gap:22px;font-size:13px;color:var(--ink-2);margin-left:auto}
+.top .cta{
+  border:1.5px solid var(--ink);border-radius:999px;padding:6px 15px;
+  font-size:13px;font-weight:700;
+}
+.top .version{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+
+/* ===== 标题：满版文字，被表格压住 ===== */
+.titleband{padding:10px 28px 0;position:relative;z-index:2}
+.titleband .eyebrow{
+  font-size:12px;letter-spacing:0.22em;color:var(--ink-3);
+  font-family:var(--mono);margin-bottom:14px;
+}
+.titleband h1{
+  font-family:var(--serif);
+  font-weight:900;
+  font-size:clamp(42px,8.6vw,122px);
+  line-height:0.98;
+  letter-spacing:-0.02em;
+  text-indent:-0.03em;
+}
+.titleband h1 .red{color:var(--red)}
+/* 「以后」缩小的处理会制造阅读歧义（读者要二次拼装才懂），已去掉 ——
+   两行等重、等宽，一遍读完。修饰词交给下面那段 lede。 */
+.titleband .lede{
+  display:flex;gap:40px;align-items:flex-end;
+  margin:22px 0 0;flex-wrap:wrap;
+}
+.titleband .lede p{max-width:52ch;font-size:14.5px;color:var(--ink-2)}
+.titleband .lede .pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{
+  font-size:12px;font-weight:500;padding:5px 12px;border-radius:999px;
+  border:1px solid var(--ink);background:transparent;white-space:nowrap;
+}
+.pill.solid{background:var(--ink);color:var(--bg)}
+.pill.lime{background:var(--lime);border-color:var(--lime);color:var(--ink);font-weight:700}
+
+/* ===== 主角：表格，出血到屏幕两侧 ===== */
+.stage{
+  margin-top:34px;position:relative;
+  border-top:2.5px solid var(--grid);
+  border-bottom:2.5px solid var(--grid);
+  background:var(--white);
+}
+/* 表格顶部：像 Excel 的列标 */
+.stage-head{
+  display:flex;align-items:center;gap:14px;
+  padding:9px 28px;background:var(--ink);color:var(--bg);
+  font-family:var(--mono);font-size:11.5px;letter-spacing:0.08em;
+}
+.stage-head .fname{color:#fff;font-weight:700}
+.stage-head .sep{flex:1}
+.stage-head .dotg{color:var(--lime)}
+
+/* 表格窄屏保底宽度 + 容器内横向滚动：表格是这一版的主角，
+   宁可让它滑，也不把 15 列压成读不出来的样子 */
+.grid-wrap{overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch}
+table.sheet{
+  border-collapse:collapse;width:100%;min-width:880px;
+  font-size:12.5px;
+}
+table.sheet th,table.sheet td{
+  border:1px solid #DCD9D0;
+  padding:9px 11px;text-align:left;vertical-align:middle;
+}
+table.sheet thead th{
+  background:#F0EEE7;font-weight:700;font-size:11.5px;color:var(--ink);
+  letter-spacing:0.02em;white-space:nowrap;
+}
+/* 追加列是这一版的主角，给它固定宽度、不给它换行的余地 */
+table.sheet thead th:last-child,
+table.sheet td.appended{min-width:180px}
+table.sheet th.axis{
+  background:#E7E4DB;width:34px;text-align:center;
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+}
+table.sheet td.no{font-family:var(--mono);text-align:center;color:var(--ink-3);font-size:11.5px}
+table.sheet td.act{font-weight:500}
+table.sheet .col-tag{
+  display:inline-block;font-family:var(--mono);font-size:11.5px;
+  background:#F0EEE7;border:1px solid #DCD9D0;border-radius:3px;
+  padding:1px 5px;color:var(--ink-2);margin-right:7px;
+}
+/* 追加列：醒目标出这是机器补上的 */
+td.appended{
+  background:#FCECEA;border-left:2px solid var(--red);position:relative;
+}
+td.appended .val{font-weight:700;color:var(--red)}
+td.appended .val + .val{margin-left:10px}
+td.appended.pending{background:#F6F5F1;border-left:2px dashed #C7C4BA}
+td.appended.pending .val{color:var(--ink-3);font-weight:400}
+/* 主办学院：不可选，划掉自己 */
+.host{color:var(--red);font-weight:700}
+.used{color:var(--ink-3);text-decoration:line-through}
+
+.stage-foot{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:11px 28px;background:#F7F6F2;border-top:1px solid #DCD9D0;
+  font-size:12px;color:var(--ink-2);
+}
+.stage-foot .chk{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px}
+.stage-foot .chk i{
+  width:13px;height:13px;border:1.5px solid var(--ink);display:inline-block;
+  font-style:normal;font-size:9px;line-height:11px;text-align:center;font-weight:700;
+}
+.stage-foot .chk i.ok{background:var(--ink);color:var(--bg)}
+.stage-foot .dl{
+  margin-left:auto;background:var(--red);color:#fff;font-weight:700;
+  padding:7px 16px;border-radius:999px;font-size:12.5px;
+}
+
+/* ===== 横幅：规则带。改墨色与顶部文件名栏呼应 ——
+   原先的荧光绿与红列是同明度互补对撞，抢了表格的注意力，而表格才是主角。 */
+.banner{
+  background:var(--ink);color:#F3F1EA;
+  padding:16px 28px;display:flex;align-items:center;gap:24px;
+  border-bottom:2.5px solid var(--grid);
+  font-size:13.5px;font-weight:500;overflow:hidden;
+}
+.banner .bul{flex:none;font-size:17px;font-weight:900;font-family:var(--serif);color:#F3F1EA}
+.banner .bsep{color:rgba(243,241,234,.3)}
+
+/* ===== 三块能力：不对称网格，不是等分卡片 ===== */
+.caps{
+  display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:0;
+  border-bottom:2.5px solid var(--grid);
+}
+.cap{padding:28px 26px 32px;border-right:1px solid #DCD9D0}
+.cap:last-child{border-right:0}
+.cap .idx{
+  font-family:var(--mono);font-size:12px;color:var(--ink-3);
+  letter-spacing:0.12em;margin-bottom:16px;
+}
+.cap h3{font-family:var(--serif);font-size:19px;font-weight:900;margin-bottom:9px;line-height:1.3}
+.cap p{font-size:13px;color:var(--ink-2)}
+.cap .big{
+  font-family:var(--serif);font-size:64px;font-weight:900;line-height:1;
+  color:var(--red);letter-spacing:-0.04em;margin-bottom:6px;
+}
+.cap ul{list-style:none;margin-top:14px}
+.cap li{
+  font-size:12.5px;color:var(--ink-2);padding:7px 0;
+  border-bottom:1px dashed #DCD9D0;
+}
+.cap li:last-child{border-bottom:0}
+.cap li b{color:var(--ink)}
+/* 荧光绿只剩这一处小面积使用，用在「同一份台账」这个技术保证上。
+   横幅改用墨色后，这点绿成了全页唯一的亮色 —— 面积小、含义明确，不抢表格。 */
+.ibox{
+  display:inline-block;background:var(--lime);color:var(--ink);
+  font-family:var(--mono);font-size:11.5px;padding:3px 8px;font-weight:700;
+}
+
+/* ===== 结尾 ===== */
+.end{padding:40px 28px 56px;display:flex;gap:36px;align-items:flex-end;flex-wrap:wrap}
+.end h2{
+  font-family:var(--serif);font-size:clamp(30px,5vw,60px);font-weight:900;
+  line-height:1;letter-spacing:-0.03em;max-width:16ch;
+}
+.end .act{margin-left:auto;display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  display:inline-block;padding:13px 26px;border-radius:999px;
+  font-size:14px;font-weight:700;
+}
+.btn-p{background:var(--ink);color:var(--bg)}
+.btn-s{border:1.5px solid var(--ink)}
+.end .note{
+  width:100%;font-size:12px;color:var(--ink-3);
+  border-top:1px solid #DCD9D0;padding-top:16px;margin-top:8px;
+  font-family:var(--mono);letter-spacing:0.03em;
+}
+
+@media(max-width:900px){
+  .top{padding:12px 16px;gap:12px}
+  .top nav{display:none}
+  .top .cta{margin-left:auto}
+  .titleband{padding:6px 16px 0}
+  .titleband h1{font-size:clamp(38px,13vw,64px)}
+  .titleband .lede{gap:18px;margin-top:16px}
+  .stage{margin-top:24px}
+  .stage-head,.stage-foot,.banner,.end{padding-left:16px;padding-right:16px}
+  .banner{flex-direction:column;align-items:flex-start;gap:8px}
+  .banner .bsep{display:none}
+  .caps{grid-template-columns:1fr}
+  .cap{border-right:0;border-bottom:1px solid #DCD9D0;padding:22px 16px}
+  .cap:last-child{border-bottom:0}
+  .end{padding:28px 16px 40px}
+  .end .act{margin-left:0}
+  .stage-foot .dl{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <span class="dot"></span>
+  <div class="brand">质检部工作自动化</div>
+  <nav><span>周流程</span><span>规则</span><span>使用说明</span></nav>
+  <div class="cta">打开平台</div>
+  <div class="version">v1.0</div>
+</header>
+
+<section class="titleband">
+  <div class="eyebrow">广东石油化工学院 · 校素质拓展中心 · 质检部</div>
+  <h1>这张表，<br><span class="red">不用手填</span>。</h1>
+  <div class="lede">
+    <p>上传规划部发的总表，点四下，下载一份能直接发出去的登记表。字体、边框、合并单元格一个不动——只在表尾，把「该谁去检查」补上。</p>
+    <div class="pills">
+      <span class="pill solid">4 步出表</span>
+      <span class="pill">双校区</span>
+      <span class="pill lime">规则自动守</span>
+      <span class="pill">格式原样</span>
+    </div>
+  </div>
+</section>
+
+<!-- 主角：真实表格，出血 -->
+<section class="stage">
+  <div class="stage-head">
+    <span>▤</span>
+    <span class="fname">2026-2027学年第一学期第5周素质拓展活动登记表(官渡)（已安排二级学院）.xlsx</span>
+    <span class="sep"></span>
+    <span class="dotg">●</span><span>15 列 · 宋体 9 号 · 原格式保留</span>
+  </div>
+
+  <div class="grid-wrap">
+    <table class="sheet">
+      <thead>
+        <tr>
+          <th class="axis"></th>
+          <th>活动名称</th>
+          <th>主办单位</th>
+          <th>活动时间</th>
+          <th>活动地点</th>
+          <th>主办学院</th>
+          <th style="background:#FCECEA;color:#C2352B">安排二级学院检查 ←追加</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="no">1</td>
+          <td class="act"><span class="col-tag">C</span>素拓技能培训</td>
+          <td>校素拓</td>
+          <td>周六 14:30</td>
+          <td>二教 301</td>
+          <td class="host">化工学院</td>
+          <td class="appended"><span class="val">建工学院</span><span class="val">外语学院</span></td>
+        </tr>
+        <tr>
+          <td class="no">2</td>
+          <td class="act"><span class="col-tag">C</span>志愿服务活动</td>
+          <td>团委</td>
+          <td>周日 09:00</td>
+          <td>官渡社区</td>
+          <td>计算机学院</td>
+          <td class="appended"><span class="val">经管学院</span><span class="val used">外语学院</span></td>
+        </tr>
+        <tr>
+          <td class="no">3</td>
+          <td class="act"><span class="col-tag">C</span>技能竞赛初赛</td>
+          <td>机电学院</td>
+          <td>周六 19:00</td>
+          <td>实训楼 A</td>
+          <td class="host">机电学院</td>
+          <td class="appended"><span class="val">理学院</span><span class="val">建工学院</span></td>
+        </tr>
+        <tr>
+          <td class="no">4</td>
+          <td class="act"><span class="col-tag">C</span>文化艺术展演</td>
+          <td>艺术学院</td>
+          <td>周日 15:00</td>
+          <td>大礼堂</td>
+          <td>艺术学院</td>
+          <td class="appended pending"><span class="val">待安排</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stage-foot">
+    <span class="chk"><i class="ok">✓</i> 文件可打开</span>
+    <span class="chk"><i class="ok">✓</i> 表头识别</span>
+    <span class="chk"><i class="ok">✓</i> 关键列齐全</span>
+    <span class="chk"><i class="ok">✓</i> 标题合并</span>
+    <span class="chk"><i class="ok">✓</i> OpenXML 校验</span>
+    <span class="chk"><i>!</i> 第 4 行待安排</span>
+    <span class="dl">下载 .xlsx</span>
+  </div>
+</section>
+
+<div class="banner">
+  <span class="bul">规则替你守着</span>
+  <span>每个活动 2 个检查学院</span><span class="bsep">/</span>
+  <span>举办学院不检查自己</span><span class="bsep">/</span>
+  <span>同一学院不连续两周</span><span class="bsep">/</span>
+  <span>写坏了有 .bak 可恢复</span>
+</div>
+
+<section class="caps">
+  <div class="cap">
+    <div class="idx">01 / 交付</div>
+    <div class="big">4 步</div>
+    <h3>从收表到出表</h3>
+    <p>上传 → 拆分 → 安排二级学院 → 安排助理。每一步的产物都能直接下载，文件名按规范自动生成。</p>
+  </div>
+  <div class="cap">
+    <div class="idx">02 / 双校区</div>
+    <div class="big">2 份</div>
+    <h3>官渡 + 西城 一次出齐</h3>
+    <p>某校区这周没活动也不跳过，照样出一份空白表，流程不留缺口。</p>
+    <ul>
+      <li><b>拆分</b> 总表一次出两份</li>
+      <li><b>助理</b> 每活动自动配 2 人</li>
+    </ul>
+  </div>
+  <div class="cap">
+    <div class="idx">03 / 可查</div>
+    <div class="big">18 周</div>
+    <h3>台账记着每一周</h3>
+    <p>谁排过几次、哪个学院从没轮到，看板一眼看到。网页排的班，命令行也看得到。</p>
+    <div style="margin-top:12px"><span class="ibox">同一份台账 · 不会各排各的</span></div>
+  </div>
+</section>
+
+<section class="end">
+  <h2>下周的表，让它自己长出来。</h2>
+  <div class="act">
+    <span class="btn btn-p">打开工作平台</span>
+    <span class="btn btn-s">看使用说明</span>
+  </div>
+  <div class="note">本地运行 · 127.0.0.1:8765 · 数据不出这台电脑</div>
+</section>
+
+</body>
+</html>

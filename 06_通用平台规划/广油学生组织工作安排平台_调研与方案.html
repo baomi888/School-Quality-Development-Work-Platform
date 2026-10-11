@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>广油学生组织工作安排平台 · 调研与方案</title>
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#14151A; --red:#B72C24;
+  --ink-60:rgba(20,21,26,.60); --ink-38:rgba(20,21,26,.38);
+  --line:rgba(20,21,26,.16); --white:#FFFFFF;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.85;padding:40px 24px 96px}
+.wrap{max-width:820px;margin:0 auto}
+
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--red);margin-bottom:14px}
+h1{font-family:var(--serif);font-size:34px;font-weight:600;line-height:1.35;letter-spacing:.01em}
+.sub{margin-top:14px;color:var(--ink-60);font-size:14px}
+.meta{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38);display:flex;gap:20px;flex-wrap:wrap}
+
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:56px 0 6px;
+  padding-bottom:12px;border-bottom:1px solid var(--ink)}
+h2 .no{font-family:var(--sans);font-size:12px;color:var(--red);
+  letter-spacing:.18em;display:block;margin-bottom:8px;font-weight:500}
+h3{font-size:15px;font-weight:600;margin:32px 0 12px}
+p{margin:14px 0}
+ul,ol{margin:14px 0 14px 22px}
+li{margin:7px 0}
+strong{font-weight:600}
+code{font-family:ui-monospace,Consolas,monospace;font-size:13px;
+  background:rgba(20,21,26,.05);padding:1px 5px}
+
+.lead{background:var(--white);border:1px solid var(--ink);padding:26px 28px;margin:34px 0}
+.lead .tag{font-size:12px;letter-spacing:.2em;color:var(--red);margin-bottom:12px}
+.lead p{margin:10px 0}
+.lead p:first-of-type{font-family:var(--serif);font-size:18px;line-height:1.7}
+
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:rgba(20,21,26,.04);font-weight:600;font-size:13px}
+td.num{font-family:ui-monospace,Consolas,monospace;white-space:nowrap}
+
+.note{border-left:3px solid var(--red);padding:4px 0 4px 16px;margin:20px 0;
+  color:var(--ink-60);font-size:14px}
+.card{background:var(--white);border:1px solid var(--line);padding:20px 22px;margin:18px 0}
+.card h4{font-size:14px;font-weight:600;margin-bottom:8px}
+.card .who{font-size:12px;color:var(--ink-38);margin-bottom:12px}
+
+.steps{counter-reset:s;margin:24px 0}
+.step{position:relative;padding:0 0 26px 46px;border-left:1px solid var(--line);margin-left:12px}
+.step:last-child{border-left-color:transparent;padding-bottom:0}
+.step::before{counter-increment:s;content:counter(s,decimal-leading-zero);
+  position:absolute;left:-13px;top:0;width:26px;height:26px;background:var(--paper);
+  border:1px solid var(--ink);font-family:ui-monospace,Consolas,monospace;
+  font-size:11px;line-height:24px;text-align:center}
+.step h4{font-size:15px;font-weight:600;margin-bottom:6px}
+.step .when{font-size:12px;color:var(--red);margin-bottom:8px;letter-spacing:.06em}
+
+.q{counter-reset:q;margin:20px 0}
+.q li{margin:14px 0;padding-left:6px}
+.q li b{display:block;font-weight:600;margin-bottom:2px}
+.q li span{color:var(--ink-60);font-size:13.5px}
+
+.src{font-size:12.5px;color:var(--ink-60)}
+.src li{margin:5px 0}
+.src a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);word-break:break-all}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid var(--line);
+  color:var(--ink-60);margin-left:6px;white-space:nowrap}
+.badge.a{border-color:var(--red);color:var(--red)}
+
+.foot{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38)}
+
+@media (max-width:640px){
+  body{padding:24px 16px 64px;font-size:14.5px}
+  h1{font-size:26px} .wrap{overflow-x:hidden}
+  table{font-size:12.5px} th,td{padding:7px 8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="eyebrow">06 · 通用平台规划</p>
+<h1>能不能做一个适配全校学生组织的工作安排平台</h1>
+<p class="sub">基于广东石油化工学院官网、校团委站、创新创业学院站与各二级学院站的公开资料调研，
+以及对你现有质检部工作安排台的资产盘点。</p>
+<div class="meta">
+  <span>调研日期 2026-10-09（含第二轮补充调研）</span>
+  <span>发起人 冯靖豪（校素拓质检部副部长）</span>
+  <span>信息源 官网 15 处 / 论文 2 篇 / GitHub 竞品 7 个</span>
+  <span>实测 算法选型探针 · 50 周模拟</span>
+</div>
+
+<div class="lead">
+  <div class="tag">先说结论</div>
+  <p>能实现，而且你手上已经握着最难的那部分。</p>
+  <p>顺序必须反过来：<strong>先别写"通用平台"，先确认别人到底怎么排</strong>。</p>
+  <p>好消息是样本问题已经基本解决：本轮又找到 <strong>5 份他校公开的工作安排表原件</strong>，
+  加上你手上的质检部表，共 6 份，覆盖派活型、排期型、值班型三种原型（详见第 03 节）。
+  <strong>版式不必再猜。</strong></p>
+  <p>剩下查不到的只有一样：决策规则。为什么派他不派她、同一件活能不能连做、
+  有人请假怎么补——这些写在部长脑子里，全网没有。所以访谈仍然要做，
+  但目的从"要表"变成"<strong>问规则</strong>"。</p>
+</div>
+
+<h2><span class="no">01</span>调研到的组织全景</h2>
+
+<p>广油的学生组织是<strong>两级同构</strong>的：校级一套，19 个二级学院各复制一套。
+这个结构对你极其有利——只要搞定一个学院的 6 个机构，就拿到了 19 份需求。</p>
+
+<table>
+<thead><tr><th style="width:88px">层级</th><th>机构</th><th class="num" style="width:70px">数量</th></tr></thead>
+<tbody>
+<tr><td rowspan="2"><strong>校级</strong></td>
+  <td>校团委（含团属学生干部机构、青年传媒中心）、校学生会、大学生社团联合会、
+  校青年志愿者协会、大学生艺术团、大学生素质拓展中心、《广东石油化工学院大学生报》报社</td>
+  <td class="num">约 8</td></tr>
+<tr><td colspan="2" style="color:var(--ink-60);font-size:13px">其中校素拓设 6 个部门：认证部、质检部、规划部、宣传部、竞赛部、综合部</td></tr>
+<tr><td><strong>院级</strong></td>
+  <td>每个二级学院固定 6 大机构：分团委、学生会、青年志愿者协会、
+  素质拓展中心、学生党建中心、易班工作站</td>
+  <td class="num">19 × 6<br>= 114</td></tr>
+<tr><td><strong>合计</strong></td>
+  <td>机构约 122 个，按每机构 5–8 个部门估算，部门约 600 个</td>
+  <td class="num">≈122</td></tr>
+</tbody>
+</table>
+
+<p class="note">19 这个数字来自学校 2025 年度二级学院专职副书记述职会议报道（"十九个二级学院"）；
+6 大机构的口径在能动学院（2023 年机构介绍页）和计算机学院（2025-2026 学年六大机构全体大会）两处独立印证，
+可信度较高。但<strong>各学院部门设置会有差异</strong>，需要实地核实。</p>
+
+<h3>各部门到底在干什么</h3>
+<p>这是判断"工作安排长什么样"的直接依据。同一件事在不同机构里叫法不同，但动作高度重合：</p>
+
+<table>
+<thead><tr><th style="width:110px">机构</th><th>部门</th><th>典型工作动作</th></tr></thead>
+<tbody>
+<tr><td>校素拓</td><td>认证部 · 质检部 · 规划部 · 宣传部 · 竞赛部 · 综合部</td>
+  <td>审核材料、每周安排干部去现场检查、汇总各学院登记表、写推文、办比赛、排值班</td></tr>
+<tr><td>分团委</td><td>组织部 · 团院部 · 宣传部 · 科技实践部（另有团校、辩论队等）</td>
+  <td>团日活动、团员档案管理、干部培训、写通讯稿、组织三下乡</td></tr>
+<tr><td>学生会</td><td>宣传部 · 网络部 · 生活部 · 自律部 · 女生部 · 权益部</td>
+  <td>出海报展板、推文排版、文明宿舍评比、课堂考勤、礼仪队培训与分配</td></tr>
+<tr><td>青协</td><td>主席团 · 秘书处 · 网宣部 · 行动部 · 外联部 · 组织部</td>
+  <td>i 志愿时长审核、招募志愿者、组织敬老院等活动、拉赞助、献血活动排人</td></tr>
+<tr><td>学生党建中心</td><td>主席团 · 践行部 · 宣传部 · 秘书部 · 理学部</td>
+  <td>入党积极分子材料审核、党费管理、党务会议、理论学习组织</td></tr>
+<tr><td>易班工作站</td><td>站长 · 综合部 · 心理部 · 就业部 · 宣传部 · 助学部</td>
+  <td>易班活动上线、心理普查、招聘会协助、奖助学金材料收集</td></tr>
+<tr><td>社联（校级）</td><td>秘书处 · 宣传部 · 公关部 · 财务部 · 考核部 · 组织部 · 文娱部 · 网络部</td>
+  <td>统领 50+ 社团、晚会台前幕后、主持人礼仪排班、社团考核</td></tr>
+</tbody>
+</table>
+
+<h3>一个必须避开的定位陷阱</h3>
+<p>调研里挖到一件很重要的事：学校已经在用<strong>到梦空间</strong>（团中央"第二课堂成绩单"平台）
+和 <strong>i 志愿</strong>。它们做的是"面向学生的活动发布、报名、签到、发学分"。</p>
+<p>你的平台<strong>不要碰这块</strong>。它做的是另一件事——
+<strong>机构内部，这个活派给哪个干部去干</strong>。到梦空间管的是"学生参加活动"，
+你管的是"干部执行工作"。两者不冲突，甚至可以互补，但绝不能做成它的竞品。</p>
+
+<h2><span class="no">02</span>工作安排的四种原型</h2>
+
+<p>把上面这些职责翻译成"排班动作"，会收敛成四类。它们看似不同，底层是同一个东西：</p>
+
+<table>
+<thead><tr><th style="width:92px">原型</th><th>问的问题</th><th>典型机构</th><th>槽位怎么定</th></tr></thead>
+<tbody>
+<tr><td><strong>派活型</strong></td><td>这件活谁去干</td><td>素拓质检部、认证部、考核部</td>
+  <td>任务 × 校区（或任务 × 小组）</td></tr>
+<tr><td><strong>排班型</strong></td><td>哪天哪个时段谁在岗</td><td>综合部（值班）、自律部（考勤）、社联晚会</td>
+  <td>日期 × 节次 × 地点</td></tr>
+<tr><td><strong>排期型</strong></td><td>谁在什么 deadline 前交什么</td><td>宣传部、网宣部、新媒体中心</td>
+  <td>稿件 × 发布日期</td></tr>
+<tr><td><strong>招募型</strong></td><td>活动需要多少人，谁报名</td><td>青协行动部、组织部</td>
+  <td>活动场次 × 名额</td></tr>
+</tbody>
+</table>
+
+<p>四类共用同一套内核，差别只在五个配置项：</p>
+<ul>
+<li><strong>人员池</strong>——谁能被派（角色、校区、是否停用、跨部门机动）</li>
+<li><strong>任务清单</strong>——要分配的东西（检查任务 / 值班时段 / 稿件 / 名额）</li>
+<li><strong>槽位维度</strong>——表的横轴是什么（校区 / 日期 / 期数 / 场次）。<strong>这是四类原型唯一的本质差别</strong></li>
+<li><strong>约束规则</strong>——轮值公平、负载上限、不能连周、时间冲突、技能匹配</li>
+<li><strong>输出模板</strong>——导出成什么样（这点极其关键，见下一节）</li>
+</ul>
+
+<h2><span class="no">03</span>第二轮调研：公开样本其实存在</h2>
+
+<p>第一轮我下的结论是"全网公开样表数量为零"——<strong>这个结论是错的，是我搜索词不对</strong>。
+换成"XX 学院团学第 X 周工作安排"这类组合之后，一下子出来五份，而且覆盖了三种不同原型。</p>
+
+<table>
+<thead><tr><th>来源</th><th style="width:80px">原型</th><th>表结构（字段）</th><th style="width:110px">规模</th></tr></thead>
+<tbody>
+<tr><td>常州工学院团委周工作安排<span class="badge a">最有用</span></td><td>派活型</td>
+  <td>序号 · 工作内容 · <strong>承办人/部门</strong> · 负责人</td><td>28~38 条/周</td></tr>
+<tr><td>铜陵学院校团委第 5 周工作安排</td><td>派活型</td>
+  <td>序号 · 工作事项 · <strong>责任人</strong></td><td>17 条，多人联署</td></tr>
+<tr><td>黄山学院旅游学院团学第 13 周安排</td><td>排期型</td>
+  <td>月日 · 星期 · 时间 · 内容 · 地点 · 负责部门</td><td>按日历格排</td></tr>
+<tr><td>安徽师大外国语学院团学第 17 周计划表</td><td>排期型</td>
+  <td>活动组织 · 活动名称 · 活动时间 · 地点 · 负责部门</td><td>跨 4 类组织并行</td></tr>
+<tr><td>湖北医药学院学风督导工作方案<span class="badge a">关键</span></td><td>排期型 + 轮值</td>
+  <td>督导周次 ↔ 学院对应表</td><td>12 次 × 每学院 3 次</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<strong>常州工学院那份最重要。</strong>它是「承办人/部门 + 负责人」<strong>两列</strong>——
+大机构是两级责任：一个负责干，一个负责盯。而你的质检部表只有一层。
+通用平台必须支持"一格多人、角色不同"，否则接不住 20+ 部门的机构。
+</div>
+
+<div class="note">
+<strong>湖北医药学院那份最提气。</strong>文件里白纸黑字写着
+"为保证公平，各学院一学期将被督导 3 次"。
+这是<strong>官方文件亲口说出的公平轮值需求</strong>——
+说明我们要解决的不是自嗨的伪需求，是各校真实存在、且已被写进制度的痛点。
+</div>
+
+<h2><span class="no">04</span>竞品格局：空白区确实存在</h2>
+
+<p>把已有工具按"服务对象 × 业务类型"铺开，能看清哪块是空的：</p>
+
+<table>
+<thead><tr><th>已有工具</th><th>它做的是什么</th><th>为什么不是我们要的</th></tr></thead>
+<tbody>
+<tr><td><strong>到梦空间</strong> / <strong>i 志愿</strong></td>
+  <td>面向全体学生：活动发布、报名、签到、学分工时</td>
+  <td>已被占满，且政策属性强。<strong>本平台绝不碰这块</strong></td></tr>
+<tr><td>各类社团/俱乐部管理系统<br><span class="src">Clubmate、club-manager、以及国内大量 SpringBoot+Vue 毕设</span></td>
+  <td>会员档案、活动、财务、公告、签到</td>
+  <td>管的是"社团有什么"，不是"<strong>这个活派给谁</strong>"。数了六个同类项目，无一含派活内核</td></tr>
+<tr><td><strong>SU-Scheduler</strong><span class="badge a">唯一同类</span><br>
+  <span class="src">GitHub · GPL-3.0 · React+TS</span></td>
+  <td>学生会值周排班：包干区检查、课间操、晚自习，
+  有部门限制与<strong>年级回避</strong>约束</td>
+  <td>是真正的同类，但：纯前端无后端、<strong>无跨周台账</strong>（做不到长期公平）、
+  无官方模板导出、GPL-3.0 有传染性</td></tr>
+<tr><td>人肉 Excel / Word</td><td>绝大多数机构的现状</td><td>每周重排、无历史记忆、公平性靠感觉</td></tr>
+</tbody>
+</table>
+
+<p>所以空白区是明确的：<strong>面向机构内部、做工作分派、且带跨周记忆</strong>。
+我们能立住的四条差异：</p>
+
+<ol>
+<li><strong>跨周台账</strong>——记住历史上谁干过什么，这是"长期公平"的唯一依据。SU-Scheduler 没有。</li>
+<li><strong>确定性可复现</strong>——给定周次和重摇次数，任何人都能排出同一张表，且能解释"为什么是他"。</li>
+<li><strong>模板化导出</strong>——上传机构自己的空表，平台只填格子不动格式。</li>
+<li><strong>换届交接</strong>——见下方坑三，这是所有人都忽略、但每个机构每年都要死一次的地方。</li>
+</ol>
+
+<h2><span class="no">05</span>算法选型：内核该不该换成约束求解</h2>
+
+<p>这是通用化绕不开的一个决定。现在的引擎是<strong>代价函数 + 贪心</strong>：
+给每格算个代价分，挑最低的，平局用哈希裁决。候选方案是<strong>约束模型 + 求解器</strong>
+（Google OR-Tools CP-SAT，免费、纯 Python、离线可用）：把规则写成约束，让求解器找全局最优。</p>
+
+<p>我没有靠感觉选，写了个探针实测（<code>_probe_solver.py</code>，50 周模拟）：</p>
+
+<table>
+<thead><tr><th>指标</th><th>贪心（现行）</th><th>CP-SAT（候选）</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>单周求解耗时</td><td class="num">0.4 ms</td><td class="num">12~17 ms</td><td>都远快于人类感知</td></tr>
+<tr><td>可复现性</td><td>✓ 确定性哈希</td><td>✓ 固定 seed + 单线程</td><td>两者都能复现</td></tr>
+<tr><td>50 周人均累计极差</td><td class="num">1 件</td><td class="num">1 件</td><td>打平（1 件是理论下界）</td></tr>
+<tr><td>50 周标准差</td><td class="num">0.24</td><td class="num">0.24</td><td>打平</td></tr>
+<tr><td><strong>50 周「上周同活重复」次数</strong></td><td class="num">11 次</td><td class="num"><strong>0 次</strong></td><td><strong>CP-SAT 完胜</strong></td></tr>
+<tr><td>大机构（40 人 / 60 格）人均极差</td><td class="num">0</td><td class="num">0</td><td>打平</td></tr>
+<tr><td>加一条新规则</td><td>改代价函数、维护额外状态</td><td><strong>4 行约束</strong></td><td>差一个数量级</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<strong>关键差别在"多规则同时满足"。</strong>贪心是一条一条规则挨个让步——
+"上周做过这件活要回避"这条规则，在 50 周里被牺牲了 11 次，
+因为轮值和负载的代价更高，冲突时它先让路。CP-SAT 是全局求解，
+同样的规则<strong>一次都没破</strong>。规则越多，这个差距越大——
+而"适配 122 个机构"恰恰意味着规则会越来越多。
+</div>
+
+<div class="note">
+<strong>实测踩到的坑（值得记下来）。</strong>第一版目标函数我只压了"累计最多的人"，
+结果大机构场景下 50 周后人均极差 2、标准差 0.71，<strong>反而比贪心差</strong>。
+改成压"极差（max − min）"之后才打平。
+<strong>求解器再强，目标函数写错照样不公平</strong>——这也是为什么不能盲目换引擎。
+</div>
+
+<p><strong>建议：双引擎，不二选一。</strong></p>
+<ul>
+<li><strong>默认走贪心</strong>——零依赖、毫秒级、代码好懂、已经过 12 周压测和 43 项 e2e。
+绝大多数机构（一个部门十几人、规则三五条）用它完全够。</li>
+<li><strong>规则复杂时切 CP-SAT</strong>——作为可选依赖（<code>pip install ortools</code>），
+检测到就启用，没装就降级到贪心。这样既保住了"双击就能跑、不用装环境"的免安装优势，
+又给大机构留了升级通道。</li>
+</ul>
+
+<h2><span class="no">06</span>你已经有什么</h2>
+
+<p>盘点 <code>05_工作安排/</code>：引擎约 1000 行 Python，前端约 850 行 TSX。分四块：</p>
+
+<div class="card">
+  <h4>assigner.py · 分配引擎</h4>
+  <div class="who">240 行，可复用度最高</div>
+  <p>代价函数 + 轮值/负载合并计价 + 手动锁定 + 搭档制 + 跨校区机动。
+  这套东西<strong>换个槽位维度就是另一个原型</strong>，是通用内核的核心。</p>
+</div>
+<div class="card">
+  <h4>models.py · 数据模型</h4>
+  <div class="who">231 行，需要抽象改造</div>
+  <p>现在把"校区"写死成 <code>西城/官渡</code>，把角色写死成 <code>部长/副部长/助理</code>。
+  通用化的第一刀就砍在这：把校区变成"可配置的槽位维度"，把角色变成"可配置的职级"。</p>
+</div>
+<div class="card">
+  <h4>ledger · 台账</h4>
+  <div class="who">持久化 + 12 项专项测试</div>
+  <p>周次 → 人 → 做过什么。这是"轮值公平"和"评优依据"的数据底座，通用平台直接能用。</p>
+</div>
+<div class="card">
+  <h4>exporter.py · 导出器</h4>
+  <div class="who">123 行，<strong>通用化最难的一块</strong></div>
+  <p>现在是照着《质检部日常工作安排表》逐格复刻的。<strong>换一个机构，表就完全不一样了。</strong>
+  通用平台必须把版式做成"模板文件"而不是硬编码——这是整个项目最大的工程量，
+  也是最容易被低估的一块。</p>
+</div>
+
+<h2><span class="no">07</span>三个真实的坑</h2>
+
+<h3>坑一：公开的只是"长什么样"，不是"为什么这么排"</h3>
+<p><em>（第一轮我写成"查不到任何样表"，已在第 03 节更正——样表查得到，而且有五份。）</em>
+真正查不到的仍然是<strong>决策规则</strong>：为什么这次派他而不是她？重复做同一件活要不要回避？
+有人请假怎么补？这些规则写在部长脑子里，不写进文件。<strong>样表能抄版式，规则必须问人。</strong>
+所以访谈仍然必要，但目的变了——不是去要表，是去问"你排的时候在想什么"。</p>
+
+<h3>坑二：版式是刚需，且每个机构都不一样</h3>
+<p>你的质检部表被部长拿官方样表质问过一次——"为什么生成的表不是跟后面表那样"。
+这个教训会重演 122 次。<strong>通用平台如果不能让每个机构导出自己的原表版式，
+它就是废的。</strong>建议把"模板"做成可上传的 Excel：用户把自己的空表传上去，
+平台只填格子，不动格式。</p>
+
+<h3>坑三：学生组织一年换一届，没有维护者</h3>
+<p>你大四之后谁来维护？这类校内工具最常见的死法不是技术不行，
+是<strong>创始学长毕业、没人接手</strong>。所以架构上必须做到"数据全是能看懂的 JSON / Excel，
+脱离平台也能用"，并且从第一天起就培养第二个会改的人。</p>
+
+<p>这个坑比想象中更普遍，而且<strong>有据可查</strong>：国内研究高校院级志愿服务组织的论文直接点名
+"大一干事 → 大二部门负责人 → 大三分管主席"的年度换届模式导致
+"<strong>具备经验的管理人员留存率极低，组织记忆与运营方法无法有效积累与传承</strong>"；
+另一篇谈学生干部队伍建设的文章也把"文化传承缺失"单列成一项问题。
+美国大学（SHSU、Ohio U、MSU Billings）则干脆把这件事做成了标准流程
+<strong>Officer Transition Guide</strong>——离任清单、交接会议、岗位说明书、账号与素材移交。</p>
+
+<div class="note">
+<strong>这里藏着一个没人做的差异化功能。</strong>所有同类工具都在做"排班"，
+没有一个做"换届交接"。但每个学生组织每年都要死一次。
+如果平台能一键导出<strong>交接包</strong>——今年谁干过什么、干了几次、
+哪些活是常规项、岗位说明书、历史台账——
+它的价值就从"省一小时排班"变成"这一年没白干"。
+这比再优化 5% 的公平性更能打动一个部长。建议列为正式模块。
+</div>
+
+<h2><span class="no">08</span>下一步：三步走</h2>
+
+<div class="steps">
+  <div class="step">
+    <div class="when">第 1 步 · 两周内 · 不写代码</div>
+    <h4>访谈 3 个部门，但只问规则不问表</h4>
+    <p>版式这块不用再花力气——第 03 节那 5 份公开原件已经够抄了。
+    现在要问的是<strong>抄不到的东西</strong>：</p>
+    <p>① 他们最近一次的实际安排表（只用来核对版式对不对，不是用来猜规则）；
+    ② <strong>排的时候脑子里在想什么</strong>——先排难的还是先排急的？同一个人能不能连着做同一件活？
+    有人请假怎么补？这些规则不写在任何文件里；
+    ③ 排错了会怎样（谁会来找麻烦、多久发现）。</p>
+    <p>推荐组合：<strong>院素拓质检部</strong>（派活型，最容易，用来验证迁移成本）、
+    <strong>院学生会宣传部或校青媒</strong>（排期型，差异最大，用来验证通用性）、
+    <strong>院素拓综合部或党建秘书部</strong>（排班型，值班表）。</p>
+  </div>
+  <div class="step">
+    <div class="when">第 2 步 · 一个月内 · 改造现有内核</div>
+    <h4>把校区变成"槽位维度"</h4>
+    <p>不动 UI，先把 <code>models.py</code> / <code>assigner.py</code> 里写死的
+    <code>西城/官渡</code> 抽成配置：一个机构可以声明自己的槽位维度是
+    <code>校区</code> 或 <code>日期</code> 或 <code>期数</code>，
+    导出模板走"上传空表 → 填格"的路子。<strong>先把质检部跑通一遍没退化</strong>，
+    再接第二个机构。</p>
+    <p>这一步做完，你手里就有了一个"能装第二个机构"的平台，而不是"质检部工具 v2"。</p>
+  </div>
+  <div class="step">
+    <div class="when">第 3 步 · 一学期内 · 找落地场景</div>
+    <h4>从素拓体系内部往外扩</h4>
+    <p>别一上来就打全校。最顺的路径是：<strong>校素拓 6 个部门 → 19 个院素拓 → 其他机构</strong>。
+    因为素拓体系你有话语权，且 19 个院素拓的需求高度同构，
+    一个模板能复用 19 次——这是全项目性价比最高的一段。</p>
+  </div>
+</div>
+
+<h2><span class="no">09</span>访谈问卷</h2>
+<p>拿去聊的时候照着问，12 个问题，30 分钟能问完。<strong>重点已经变了</strong>——
+版式能从网上抄，所以第 4 问从"要原件"降级为"核对版式"，
+真正的重心是第 7、8 问：<strong>他排的时候遵守什么规矩</strong>。</p>
+<ol class="q">
+  <li><b>你们部门一共多少人？怎么分层？</b><span>正部长 / 副部长 / 助理各几个？有没有"只有某些人能干某些活"的情况？</span></li>
+  <li><b>一周 / 一个月要安排多少次？</b><span>是固定周期还是看活动临时排？</span></li>
+  <li><b>安排的是什么？</b><span>是"一件活派一个人"，还是"一个时段排一个人"，还是"一个稿件定一个人"？</span></li>
+  <li><b>能给我看最近一次的实际安排表吗？</b><span>只是用来核对版式（我已收集 5 份公开原件），你不用解释它。</span></li>
+  <li><b>这张表是谁做的、用什么做的？</b><span>Excel 手填？腾讯文档？还是直接在群里打字？</span></li>
+  <li><b>排一次要多久？</b><span>10 分钟还是 2 小时？时间花在哪一步？</span></li>
+  <li><b>排的时候要遵守什么规矩？</b><span>比如"不能连着两周排同一个学院""要轮着来""某人这周没空"。</span></li>
+  <li><b>怎么保证公平？有没有人抱怨过排得不均？</b><span>有没有台账记录谁干了多少？</span></li>
+  <li><b>排错了会怎样？</b><span>谁会来找？多久发现？这是判断"这事值不值得做"的关键。</span></li>
+  <li><b>排完要发给谁、以什么形式？</b><span>发群里要文字版还是表格？要不要打印？格式有硬性要求吗？</span></li>
+  <li><b>有没有跨校区 / 跨部门的情况？</b><span>比如光华的人干官渡的活、别的部门来支援。</span></li>
+  <li><b>如果有个工具能帮你排，你最希望它替你干掉哪一步？</b><span>让他自己说，别引导。</span></li>
+</ol>
+
+<h2><span class="no">10</span>信息源与可信度</h2>
+
+<h3>第一轮 · 广油组织架构</h3>
+<ul class="src">
+  <li>广东石油化工学院 · 机构设置（教学单位 21 个）<span class="badge a">官网</span><br><a href="https://www.gdupt.edu.cn/jgsz/jxdw.htm">gdupt.edu.cn/jgsz/jxdw.htm</a></li>
+  <li>创新创业学院 · 校素拓中心简介（6 部门完整分工）<span class="badge a">官网</span><br><a href="https://cxcy.gdupt.edu.cn/sztz1/zxjj.htm">cxcy.gdupt.edu.cn/sztz1/zxjj.htm</a></li>
+  <li>能动学院 · 学生机构（分团委 / 学生会 / 青协 / 党建 / 素拓 / 易班 六页）<span class="badge a">官网</span><br><a href="https://www.gdupt.edu.cn/ndxy/xsgz/xsjg.htm">gdupt.edu.cn/ndxy/xsgz/xsjg.htm</a></li>
+  <li>计算机学院 · 2025-2026 学年六大机构第一次全体大会<span class="badge">新闻 2025-10-31</span><br><a href="https://gdupt.edu.cn/jsjxy/info/1102/3665.htm">gdupt.edu.cn/jsjxy/info/1102/3665.htm</a></li>
+  <li>学校召开 2025 年度二级学院专职副书记述职评议考核会议（"十九个二级学院"）<span class="badge">新闻 2026-01-16</span><br><a href="https://xueshengchu.gdupt.edu.cn/info/1004/3975.htm">xueshengchu.gdupt.edu.cn/info/1004/3975.htm</a></li>
+  <li>广东石油化工学院学生会改革情况公开（校会组织架构图）<span class="badge">PDF</span><br><a href="https://site.gdupt.edu.cn/tuanwei/guangdongshiyouhuagongxueyuanxueshenghuigaigeqingkuangzipinggongkai.pdf">site.gdupt.edu.cn/tuanwei/…zipinggongkai.pdf</a></li>
+  <li>大学生素质拓展学分实施办法（校级机构在册名单）<span class="badge a">官网</span><br><a href="https://site.gdupt.edu.cn/dqgc/info/1003/1587.htm">site.gdupt.edu.cn/dqgc/info/1003/1587.htm</a></li>
+  <li>校团委招新推文（团委管辖范围与 4 个直属组织）<span class="badge">2017 年，部分数据可能过期</span><br><a href="https://www.sohu.com/a/165473099_363007">sohu.com/a/165473099_363007</a></li>
+</ul>
+<p class="note">标注"官网"的为一手权威来源；2017 年的团委推文中"12 个院系团委"等数字已被更新的
+19 个二级学院口径取代，引用时以新数据为准。</p>
+
+<h3>第二轮 · 工作安排表原件（他校公开，用于验证原型）</h3>
+<ul class="src">
+  <li>常州工学院团委 2025/2026 学年第一学期周工作安排（第 18 周 · 第 19 周）<span class="badge a">官网</span><br>
+    <a href="https://ytw.czu.cn/2025/1230/c7307a169756/page.htm">ytw.czu.cn/2025/1230/c7307a169756/page.htm</a><br>
+    <a href="https://ytw.czu.cn/2026/0105/c7307a169835/page.htm">ytw.czu.cn/2026/0105/c7307a169835/page.htm</a></li>
+  <li>铜陵学院校团委第 5 周工作安排<span class="badge a">官网</span><br>
+    <a href="https://tlxytw.tlu.edu.cn/2026/0921/c2098a133417/page.htm">tlxytw.tlu.edu.cn/2026/0921/c2098a133417/page.htm</a></li>
+  <li>黄山学院旅游学院团学第 13 周工作安排<span class="badge a">官网</span><br>
+    <a href="https://tour.hsu.edu.cn/3d/c7/c3102a212423/page.htm">tour.hsu.edu.cn/3d/c7/c3102a212423/page.htm</a></li>
+  <li>安徽师范大学外国语学院团学第 17 周工作计划表<span class="badge a">官网</span><br>
+    <a href="https://flc.ahnu.edu.cn/info/1200/46071.htm">flc.ahnu.edu.cn/info/1200/46071.htm</a></li>
+  <li>湖北医药学院 2025-2026 学年第二学期学风督导工作方案（"为保证公平，各学院一学期被督导 3 次"）<span class="badge a">官网</span><br>
+    <a href="https://tw.hbmu.edu.cn/2026/0319/c1796a163495/page.htm">tw.hbmu.edu.cn/2026/0319/c1796a163495/page.htm</a></li>
+  <li>天津中德应用技术大学第二课堂运营中心（纪检部"周一到周五 17:00-19:00 固定值班随机抽查"）<span class="badge">官网</span><br>
+    <a href="https://tw.tsguas.edu.cn/info/1005/2577.htm">tw.tsguas.edu.cn/info/1005/2577.htm</a></li>
+  <li>某校大学生素质拓展中心部门介绍（质检部职责："每周安排二级学院素拓质检部干部对本周活动进行质量检查"）<span class="badge">二手站</span><br>
+    <a href="http://www.tuozhanm.com/archives/24959-1.html">tuozhanm.com/archives/24959-1.html</a></li>
+</ul>
+
+<h3>第二轮 · 竞品与技术</h3>
+<ul class="src">
+  <li>SU-Scheduler 学生会智能排班系统（GitHub · GPL-3.0 · React+TS）<span class="badge a">唯一同类</span><br>
+    <a href="https://github.com/laoshuikaixue/SU-Scheduler">github.com/laoshuikaixue/SU-Scheduler</a></li>
+  <li>Clubmate / club-manager / Joinify 等社团管理系统（均不含派活内核）<span class="badge">GitHub</span><br>
+    <a href="https://github.com/an-2210/clubmate">github.com/an-2210/clubmate</a> ·
+    <a href="https://github.com/danielraab/club-manager">github.com/danielraab/club-manager</a></li>
+  <li>Google OR-Tools CP-SAT 求解器文档<span class="badge a">一手</span><br>
+    <a href="https://developers.google.com/optimization/cp">developers.google.com/optimization/cp</a></li>
+  <li>高校院级志愿服务组织的运行困境及活力提升研究（"组织记忆与运营方法无法有效积累与传承"）<span class="badge">论文</span><br>
+    <a href="http://xueshu.qikan.com.cn/preview/1/205/5731928">xueshu.qikan.com.cn/preview/1/205/5731928</a></li>
+  <li>SHSU / Ohio U / MSU Billings 的 Officer Transition Guide（换届交接标准流程）<span class="badge">境外高校</span><br>
+    <a href="https://www.ohio.edu/engagement/resources/officer-transition-guide">ohio.edu/engagement/resources/officer-transition-guide</a></li>
+  <li>数字化背景下学生干部队伍管理的效率瓶颈与技术赋能路径探索<span class="badge">论文</span><br>scholar.google.com（缓存页）</li>
+</ul>
+
+<p class="note"><strong>两轮调研的可信度差异要说清楚：</strong>
+组织架构和版式是官网一手资料，可信；"决策规则"全网查不到，只能靠访谈；
+竞品"没有派活内核"是我逐个读 README 得出的判断，样本 6 个，可能有遗漏。</p>
+
+<div class="foot">
+广东石油化工学院 · 学生组织工作安排通用平台 · 调研与方案 · 2026-10-09（第二轮修订）<br>
+下一步动作：按第 09 节问卷访谈 3 个部门，只问规则；代码改造从第 08 节第 2 步开始，
+内核选型见第 05 节（建议双引擎，默认贪心 + 可选 CP-SAT）。
+</div>
+
+</div>
+</body>
+</html>

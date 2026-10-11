@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>这几天落实什么 · 会上问什么（行动卡）</title>
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#14151A; --red:#B72C24;
+  --ink-60:rgba(20,21,26,.60); --ink-38:rgba(20,21,26,.38);
+  --line:rgba(20,21,26,.16); --white:#FFFFFF;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.85;padding:40px 24px 96px}
+.wrap{max-width:820px;margin:0 auto}
+
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--red);margin-bottom:14px}
+h1{font-family:var(--serif);font-size:32px;font-weight:600;line-height:1.35}
+.sub{margin-top:14px;color:var(--ink-60);font-size:14px}
+.meta{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38);display:flex;gap:20px;flex-wrap:wrap}
+
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:52px 0 6px;
+  padding-bottom:12px;border-bottom:1px solid var(--ink)}
+h2 .no{font-family:var(--sans);font-size:12px;color:var(--red);
+  letter-spacing:.18em;display:block;margin-bottom:8px;font-weight:500}
+h3{font-size:15px;font-weight:600;margin:30px 0 10px}
+p{margin:13px 0}
+ul,ol{margin:13px 0 13px 22px}
+li{margin:7px 0}
+strong{font-weight:600}
+code{font-family:ui-monospace,Consolas,monospace;font-size:13px;
+  background:rgba(20,21,26,.05);padding:1px 5px}
+
+.lead{background:var(--white);border:1px solid var(--ink);padding:24px 26px;margin:30px 0}
+.lead .tag{font-size:12px;letter-spacing:.2em;color:var(--red);margin-bottom:10px}
+.lead p{margin:9px 0}
+.lead p:first-of-type{font-family:var(--serif);font-size:17px;line-height:1.7}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:rgba(20,21,26,.04);font-weight:600;font-size:13px}
+
+.note{border-left:3px solid var(--red);padding:4px 0 4px 16px;margin:18px 0;
+  color:var(--ink-60);font-size:14px}
+.card{background:var(--white);border:1px solid var(--line);padding:18px 20px;margin:16px 0}
+.card h4{font-size:14px;font-weight:600;margin-bottom:6px}
+.card .when{font-size:12px;color:var(--red);margin-bottom:8px;letter-spacing:.06em}
+
+.say{background:var(--white);border:1px solid var(--line);border-left:3px solid var(--ink);
+  padding:14px 18px;margin:14px 0;font-size:14.5px}
+.say .who{font-size:12px;color:var(--ink-38);margin-bottom:6px}
+.say b{font-weight:600}
+
+.src{font-size:12.5px;color:var(--ink-60)}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid var(--line);
+  color:var(--ink-60);margin-left:6px;white-space:nowrap}
+.badge.a{border-color:var(--red);color:var(--red)}
+
+.foot{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38)}
+
+@media (max-width:640px){
+  body{padding:24px 16px 64px;font-size:14.5px}
+  h1{font-size:25px} .wrap{overflow-x:hidden}
+  table{font-size:12.5px} th,td{padding:7px 8px}
+}
+@media print{ body{background:#fff} .card,.say,.lead{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="eyebrow">06 · 行动卡</p>
+<h1>这几天落实什么 · 会上问什么</h1>
+<p class="sub">时间窗：10/11（六）→ 10/14（周二三部门会）→ 10/15 之后。
+每一条建议后面都标了<b>出处</b>，不是拍脑袋——出处在最后一节，可以自己核。</p>
+<div class="meta">
+  <span>生成 2026-10-10</span>
+  <span>冯靖豪 · 校素拓质检部</span>
+  <span>配套：采集清单 · 现场话术卡</span>
+</div>
+
+<div class="lead">
+<p class="tag">先说结论</p>
+<p>这几天<b>不动内核、不做通用化</b>。只做三件事：<b>①把能演示的东西准备好</b>、
+<b>②把问题背熟</b>、<b>③会上把实物拿到手</b>。</p>
+<p>理由：内核配置化的<b>输入是别人的规则</b>，规则还没到手，你现在做的抽象就是在给假想需求建模。
+medshift 是先有自己科室的真实 YAML 配置，才谈通用化——出处见最后一节。</p>
+</div>
+
+<h2><span class="no">01</span>10/11 ~ 10/13：会前三天，准备好三样东西</h2>
+
+<div class="card">
+<h4>① 手机上存三张图，会上先给人看</h4>
+<p class="when">半天 · 收益最高</p>
+<ul>
+<li><b>安排表页面</b>（9 件活 × 西城/官渡两列，人名填好）</li>
+<li><b>导出的 xlsx</b>（就是这个格式，跟你们现在用的表一样）</li>
+<li><b>公平性数字</b>：连排 50 周，17 个助理累计 52~53 件，<b>极差 1 件</b></li>
+</ul>
+<p class="src">为什么先展示再提问：话术卡第 2 节。人对着实物才答得出问题，对着概念只会说"回头给你"。</p>
+</div>
+
+<div class="card">
+<h4>② 30 秒集体说明稿，背下来（会上只说这一次）</h4>
+<p class="when">10 分钟 · 只说一次，说完不再提</p>
+<div class="say">
+<span class="who">开场（对在场所有人，30 秒）</span>
+「我做了个小工具，把我们质检部每周派活那件事自动化了，排出来是这张表。
+现在想看看能不能给别的部门也用，所以想<b>抄抄你们是怎么派活的</b>——
+不用你们配合做什么，回头我找各位要一张空表就行。」
+</div>
+<p class="src">⚠️ 关键：<b>说"小工具"，绝不说"平台/系统"</b>；
+<b>绝不逐个点名要</b>（当众被点名 → 对方用"回头给你"搪塞）。要东西留到散会后一对一。</p>
+</div>
+
+<div class="card">
+<h4>③ git init + v1.0 tag（可选，能做就做）</h4>
+<p class="when">半天 · 与外部无关，只为自己留底</p>
+<p>把 <code>05_工作安排</code> 提交并打 v1.0。它不影响开会，但你现在有了一个能对外说的版本号，
+之后跟老师汇报、跟别人介绍都拿得出手。</p>
+</div>
+
+<h2><span class="no">02</span>10/14 会上：三句通用问题，见谁都问</h2>
+
+<p>分部门的问题在下一节。<b>这三句不管对方是哪个部门都先问</b>——它们决定这个部门到底需不需要工具。</p>
+
+<div class="say">
+<span class="who">通用第 1 问 · 最关键</span>
+「你们这个活，是<b>固定几个人一直干</b>，还是<b>每周轮流换人</b>？」<br>
+<span class="src">→ 固定几个人一直干 = <b>包干制</b>，这种部门<b>根本不需要排班工具</b>，硬推只会添乱。
+听懂这一句，能省掉后面所有无用功。</span>
+</div>
+
+<div class="say">
+<span class="who">通用第 2 问</span>
+「有没有<b>某人不能干某件活</b>的规矩？比如自己学院的不查自己学院这种。」<br>
+<span class="src">→ 这是"回避规则"。medshift 里对应岗位的 <code>required_skills</code>——
+我们现在的模型<b>完全没有这个维度</b>，不问出来，P1 就会做漏。</span>
+</div>
+
+<div class="say">
+<span class="who">通用第 3 问</span>
+「排完之后<b>改不改</b>？改了怎么通知到人？」<br>
+<span class="src">→ 决定要不要做"改一处、其他尽量不动"的能力（shift-scheduler 的做法）。
+如果他们从不改，这块就别做。</span>
+</div>
+
+<h2><span class="no">03</span>分部门问题（按信息价值排序，谁在就先问谁）</h2>
+
+<p><b style="color:var(--red)">10/10 更新：综合部与认证部的资料已到手，问题要收窄。</b>
+认证部已确认是<b>包干制</b>（分管表实锤），综合部的活已经看清。
+下面标「已确认」的行不用再问开放性问题，只补那一个缺口。</p>
+
+<table>
+<tr><th style="width:14%">部门</th><th style="width:44%">要问的</th><th>要拿到的实物 / 这条决定什么</th></tr>
+
+<tr>
+<td><b>综合部</b><br><span class="src">头号目标 · 已有 2 张表 + 流程 docx</span></td>
+<td>①「<b>检查人是每周轮换，还是固定那几个人一直查自己那几个房间？</b>」<br>
+②「工作室表格<b>多久更新一次、谁更新、怎么通知大家用新版</b>？」<br>
+③「路演大厅活动协助，是<b>按每场活动的时间临时安排人</b>吧？一周大概几场？」</td>
+<td>①决定它是<b>第二机构</b>还是<b>第二个出局者</b>——整条路线的分水岭；<br>
+②"表格会更新"已被对方点名是痛点 ⇒ 模板版本管理的需求证据；<br>
+③确认"场次"这个维度要不要进 P1 配置。</td>
+</tr>
+
+<tr>
+<td><b>认证部</b><br><span class="src">已确认包干制 · 只剩一问</span></td>
+<td>「<b>小助理抽查时，要不要回避自己所在的学院？</b>」<br>
+<span class="src">（分管表已确认是固定分管，不问包干制了）</span></td>
+<td><b>唯一剩下的缺口</b>。有回避 → P1 做技能维度；没有 → 技能维度降级，
+精力让给<b>换届交接</b>（那张「26届」分管表每年都要重排，是交接包的第一个真实应用）。</td>
+</tr>
+
+<tr>
+<td><b>宣传部</b></td>
+<td>「我看到学院那边写'设有年级负责人，与各班素委直接联系'，
+你们是不是<b>一个人固定跟几个班</b>？」</td>
+<td>大概率是<b>包干制</b>。如果是，直接划掉，不做。
+这条是来验证"包干制识别"这个判断点是不是真的。</td>
+</tr>
+
+<tr>
+<td><b>竞赛部</b></td>
+<td>「一个赛事从头到尾是<b>一个人跟到底</b>，还是分阶段换人？」</td>
+<td>项目型。如果一个赛事只派一次人，那它<b>不产生周期性排班需求</b>，优先级放最后。</td>
+</tr>
+
+<tr>
+<td><b>规划部</b><br><span class="src">已排除</span></td>
+<td>「你们核心工作是<b>在线上审核活动</b>吧？那这块我就不做了。」<br>
+<span class="src">（部长原话已确认，这句是<b>通知</b>不是提问）</span></td>
+<td>正式排除。<b>一句话说完就走</b>，别浪费时间。</td>
+</tr>
+</table>
+
+<div class="note">
+<b>追问模板（对方答得太笼统时用）</b>：<br>
+「能不能举个<b>上一周</b>的例子？那周谁干了啥，是怎么定下来的？」——
+人对抽象问题只会给抽象答案，对具体一周能说出真东西。
+</div>
+
+<h2><span class="no">04</span>散会后：一对一，把实物拿到手</h2>
+
+<ol>
+<li><b>别在会上要</b>。散会后单独说一句：「哥/姐，方便把你们排活那个<b>空表</b>发我一份不？我照着格式试试。」</li>
+<li>对方说「没表，就在群里说」→ <b>要群消息截图</b>。那也是真实版式，比没有强。</li>
+<li>对方说「我们活很简单，不用排」→ <b>确认是不是包干制</b>，是的话记下来，别硬推。</li>
+<li><b>当天必须拿到至少一样实物</b>（空表 / 填好的表 / 截图）。没有实物就当这次没采到。</li>
+</ol>
+
+<h2><span class="no">05</span>10/15 之后：归档，然后才动代码</h2>
+
+<table>
+<tr><th style="width:30%">采到什么</th><th>下一步动作</th></tr>
+<tr><td>拿到 2 个以上部门的<b>真实规则 + 空表</b></td>
+    <td>启动 P1：只做两个维度——<b>技能/回避</b>、<b>「这格可以空」</b>。其他一律不做。</td></tr>
+<tr><td>发现某部门是<b>包干制</b></td>
+    <td>记进采集清单第 05 节，<b>明确排除</b>。这是有效结论，不是失败。</td></tr>
+<tr><td>只采到 1 个部门 / 没采到实物</td>
+    <td><b>不启动 P1</b>。改为补采（找别的一对一聊），同时做 P0 收尾（公平性报告出口）。</td></tr>
+</table>
+
+<div class="note">
+<b>时间账（必须记住）</b>：明年 6 月换届，扣掉期末和寒假，真正能干活的只有
+「现在~12 月」+「明年 3~5 月」。P1+P2 估 7 周，按业余节奏实际 3~4 个月
+⇒ <b>12 月前必须启动 P1</b>，拖到下个学期就赶不上换届了，而换届交接是唯一没人做过的东西。
+</div>
+
+<h2><span class="no">06</span>每一条的出处（可自己核）</h2>
+
+<table>
+<tr><th style="width:38%">这条建议</th><th style="width:32%">依据</th><th>怎么核</th></tr>
+
+<tr><td>先采集，不动内核</td>
+    <td>medshift 先有自己科室真实 YAML 配置，才做通用化</td>
+    <td>github.com/yyjr2026/medshift 的 <code>examples/radiology/</code></td></tr>
+
+<tr><td>必须问"包干还是轮值"</td>
+    <td>经管素拓页写「设有年级负责人，与各班素委直接联系」</td>
+    <td>广油各二级学院素拓页面</td></tr>
+
+<tr><td>认证部问回避规则</td>
+    <td>认证部职责 = 监督二级学院抽查；medshift 用 <code>required_skills</code> 表达这类约束</td>
+    <td>校素拓官网部门分工；medshift <code>positions.yaml</code></td></tr>
+
+<tr><td>「这格可以空」这个维度</td>
+    <td>medshift 的 <code>requirement: optional</code>（可选岗位校验不计配额）</td>
+    <td>medshift <code>examples/radiology/positions.yaml</code></td></tr>
+
+<tr><td>不做教务系统那块</td>
+    <td>秘书长原话：规划/认证核心工作在教务系统上</td>
+    <td>与秘书长（英师24-5）聊天记录</td></tr>
+
+<tr><td>换届传承是真需求</td>
+    <td>秘书长主动问「能传给下一届么」</td>
+    <td>同上</td></tr>
+
+<tr><td>公平性数字要摆出来</td>
+    <td>medshift 有 <code>stats</code> 命令专门出统计；我们有 50 周实测</td>
+    <td>medshift README；本项目 <code>_probe_random.py</code></td></tr>
+
+<tr><td>版式不用猜，只问规则</td>
+    <td>已找到 5 份公开样表（常州工、铜陵、黄山、安徽师大、湖北医药）</td>
+    <td>各校官网「XX学院团学第X周工作安排」</td></tr>
+
+<tr><td>公平轮值是官方要求</td>
+    <td>湖北医药学院学风督导方案原文：「各学院一学期被督导 3 次」</td>
+    <td>该校官网公开文件</td></tr>
+
+<tr><td>会后一对一、不点名要</td>
+    <td>「回头给你」是头号杀手</td>
+    <td>《开会现场要资料_话术卡》第 2 节</td></tr>
+</table>
+
+<h2><span class="no">07</span>这几天<b>不要做</b>的三件事</h2>
+
+<ol>
+<li><b>不要开始 P1 内核配置化。</b>没有第二个机构的真实规则之前，你只能靠猜着抽象，
+    这是最容易做出空中楼阁的一步。</li>
+<li><b>不要做"无解诊断"。</b>你现在只有 3 条规则，几乎不可能无解，做了也没东西可诊断。
+    等 P2 接了第二机构、规则涨到七八条再说。</li>
+<li><b>不要做"自然语言改规则"。</b>锦上添花且依赖大模型，留到明年，正好接你导师的 Agent 方向。</li>
+</ol>
+
+<p class="foot">
+广东石油化工学院 校素质拓展中心质检部 · 冯靖豪<br>
+生成于 2026-10-10 · 配套文档：《校素拓六部门_资料采集清单》《开会现场要资料_话术卡》《同方向开源项目_第二轮清单》
+</p>
+
+</div>
+</body>
+</html>

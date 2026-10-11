@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>校素拓六部门 · 资料采集清单</title>
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#14151A; --red:#B72C24;
+  --ink-60:rgba(20,21,26,.60); --ink-38:rgba(20,21,26,.38);
+  --line:rgba(20,21,26,.16); --white:#FFFFFF;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.85;padding:40px 24px 96px}
+.wrap{max-width:880px;margin:0 auto}
+
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--red);margin-bottom:14px}
+h1{font-family:var(--serif);font-size:31px;font-weight:600;line-height:1.38;letter-spacing:.01em}
+.sub{margin-top:14px;color:var(--ink-60);font-size:14px}
+.meta{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38);display:flex;gap:20px;flex-wrap:wrap}
+
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:52px 0 6px;
+  padding-bottom:12px;border-bottom:1px solid var(--ink)}
+h2 .no{font-family:var(--sans);font-size:12px;color:var(--red);
+  letter-spacing:.18em;display:block;margin-bottom:8px;font-weight:500}
+h3{font-size:15px;font-weight:600;margin:30px 0 12px}
+p{margin:14px 0}
+ul,ol{margin:14px 0 14px 22px}
+li{margin:7px 0}
+strong{font-weight:600}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;
+  background:rgba(20,21,26,.05);padding:1px 5px}
+
+.lead{background:var(--white);border:1px solid var(--ink);padding:24px 26px;margin:32px 0}
+.lead .tag{font-size:12px;letter-spacing:.2em;color:var(--red);margin-bottom:12px}
+.lead p{margin:10px 0}
+.lead p:first-of-type{font-family:var(--serif);font-size:17.5px;line-height:1.7}
+
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:rgba(20,21,26,.04);font-weight:600;font-size:13px}
+
+.note{border-left:3px solid var(--red);padding:4px 0 4px 16px;margin:20px 0;
+  color:var(--ink-60);font-size:14px}
+.note b{color:var(--ink)}
+.warn{border-left:3px solid var(--red);background:rgba(183,44,36,.05);
+  padding:14px 18px;margin:20px 0;font-size:14px}
+.warn b{color:var(--red)}
+
+.say{background:var(--white);border:1px solid var(--line);padding:20px 22px;margin:18px 0;
+  font-size:14px;line-height:1.9}
+.say .who{font-size:12px;color:var(--ink-38);margin-bottom:12px;letter-spacing:.06em}
+.say .body{white-space:pre-wrap;font-family:var(--sans)}
+.say .tip{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--ink-60)}
+
+.dept{background:var(--white);border:1px solid var(--line);padding:20px 22px;margin:18px 0}
+.dept .hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.dept .nm{font-family:var(--serif);font-size:17px;font-weight:600}
+.dept .proto{font-size:11.5px;padding:2px 8px;border:1px solid var(--red);color:var(--red)}
+.dept .pri{margin-left:auto;font-size:12px;color:var(--ink-38)}
+.dept .duty{font-size:13px;color:var(--ink-60);margin-bottom:12px}
+.dept ul{margin:8px 0 8px 20px}
+.dept li{margin:6px 0;font-size:14px}
+
+.q{counter-reset:q;margin:20px 0}
+.q li{margin:16px 0;padding-left:6px}
+.q li b{display:block;font-weight:600;margin-bottom:3px}
+.q li span{color:var(--ink-60);font-size:13.5px}
+
+.chk{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px}
+.chk td,.chk th{border:1px solid var(--line);padding:8px 10px}
+.chk td.box{width:52px;text-align:center;font-size:16px;color:var(--ink-38)}
+
+.foot{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38)}
+
+@media print{
+  body{background:#fff;padding:0;font-size:12px}
+  .wrap{max-width:100%}
+  .dept,.say,.lead{break-inside:avoid;page-break-inside:avoid}
+  h2{break-after:avoid}
+}
+@media (max-width:640px){
+  body{padding:24px 16px 64px;font-size:14.5px}
+  h1{font-size:25px} .wrap{overflow-x:hidden}
+  table{font-size:12.5px} th,td{padding:7px 8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="eyebrow">06 · 通用平台规划 · 配套工具</p>
+<h1>校素拓六部门 · 资料采集清单</h1>
+<p class="sub">拿去跟认证部、规划部、宣传部、竞赛部、综合部的部长聊。
+每个部门要什么、怎么开口、问哪几个问题、拿到什么算够，都在这里。</p>
+<div class="meta">
+  <span>编制日期 2026-10-10</span>
+  <span>采集人 冯靖豪（校素拓质检部副部长）</span>
+  <span>依据 校素拓官网部门分工 + 3 个学院素拓机构页交叉印证</span>
+  <span>目标 5 个部门 · 约 2 周</span>
+</div>
+
+<div class="lead">
+  <div class="tag">先看这个</div>
+  <p>六个部门不是同一种"工作安排"，是<strong>四种</strong>。</p>
+  <p>我把校素拓官网的部门分工逐条拆开看了一遍，又拿能动、外国语、经管三个学院素拓的机构页交叉核对。
+  结论是：认证部、质检部、规划部是<strong>派活型</strong>（这件活谁去干），
+  宣传部是<strong>排期型</strong>（谁在什么截止日前交什么），
+  竞赛部是<strong>项目型</strong>（一场赛事拆成几个角色），
+  综合部是<strong>排班型</strong>（哪天哪个时段谁在岗）。</p>
+  <p>所以你要的不是"五份工作安排表"，而是<strong>四种不同的规则</strong>。
+  每份资料要问的问题都不一样——照着一个模板问五个部门，问出来的全是废话。</p>
+</div>
+
+<h2><span class="no">01</span>三个必须拿到的东西</h2>
+
+<p>不管哪个部门，三样东西缺一不可。第三样最容易被忘，但对平台是<strong>最关键</strong>的。</p>
+
+<table>
+  <tr><th style="width:16%">要什么</th><th style="width:30%">具体是什么</th><th>为什么必须要</th></tr>
+  <tr>
+    <td><strong>① 人</strong></td>
+    <td>部门干部名单：姓名、职务、年级、校区。<br>
+      <span style="color:var(--ink-60)">（含部长副部长，注明谁只监督不干活）</span></td>
+    <td>派活的池子。不知道有几个人、谁能干什么，一切无从谈起</td>
+  </tr>
+  <tr>
+    <td><strong>② 活</strong></td>
+    <td>这个部门一周（或一个月）固定要做的所有事，逐条列。
+      包括"整理邮箱""开例会"这种琐碎的</td>
+    <td>任务清单就是行维度。漏一条，排出来的表就缺一块</td>
+  </tr>
+  <tr>
+    <td><strong>③ 表</strong></td>
+    <td><strong>两份</strong>：<br>
+      a) 最近 4 周<strong>填好的</strong>安排表（看规则）<br>
+      b) 一份<strong>空白的</strong>表模板（做导出）</td>
+    <td>a 用来推断"为什么派他"；<br>
+      <strong>b 是模板化导出的原料</strong>——平台要把他们的表原样填出来，
+      没有空表就只能自己猜版式，猜出来的必然被挑毛病</td>
+  </tr>
+</table>
+
+<div class="warn"><b>③b 是本轮最大的变化。</b>上一版方案让你"要最近 4 周的表"，
+那是为了推断规则。但现在技术路线已经变成<strong>让机构上传自己的空表、平台只往格子里填字</strong>
+（已实测可行：样式、合并单元格、公式、图表全保住）。
+所以现在<strong>空表比填好的表更重要</strong>——填好的表能推断规则，空表才能产出成品。
+如果对方只能给一样，<strong>要空表</strong>。</div>
+
+<h2><span class="no">02</span>五个部门分别要什么</h2>
+
+<p>按"信息价值"排序，不是按难度。<strong>差异越大的部门越早聊</strong>——
+因为它们最能验证平台是不是真的通用。</p>
+
+<div class="dept">
+  <div class="hd">
+    <span class="nm">综合部</span><span class="proto">排班型</span>
+    <span class="pri">优先级 1 · 差异最大</span>
+  </div>
+  <p class="duty">官方职责第 4 条：<strong>"负责统筹和沟通协调校素拓各部门的值班及考勤工作"</strong>。
+  另有孵化基地设备维护、入孵团队考核、会务、文件收发，以及"完成指导教师及主席团交办的各项临时任务"。</p>
+  <ul>
+    <li><strong>要</strong>：值班表原件（一学期一份还是每周一份？）、值班时段怎么切（上午/下午/晚上？几点到几点？）、
+    值班地点（孵化基地？办公室？）</li>
+    <li><strong>重点问</strong>：<strong>排的是综合部自己的人，还是全校素拓六个部门的人？</strong>
+    官方写的是"统筹各部门"，如果是跨部门排班，那人员池横跨 6 个部门——这是所有部门里最复杂的</li>
+    <li><strong>重点问</strong>：临时任务怎么插？是"谁有空谁去"还是有固定轮值？临时加的班事后补不补回来</li>
+    <li><strong>重点问</strong>：考勤结果怎么用（影响评优？影响学分？）——决定了排错的代价有多高</li>
+  </ul>
+</div>
+
+<div class="dept">
+  <div class="hd">
+    <span class="nm">宣传部</span><span class="proto">排期型</span>
+    <span class="pri">优先级 2 · 差异大</span>
+  </div>
+  <p class="duty">设计制作发布宣传品、活动前期微博宣传与后期精彩回放、
+  收集整理通讯稿及照片。外国语学院页还写明："<strong>月末校对通讯稿并发送至校素拓邮箱</strong>"。</p>
+  <ul>
+    <li><strong>要</strong>：近一个月的推文排期（哪天发、谁写、谁审）、通讯稿校对安排、
+    有没有"每篇推文必须几人过手"的规矩</li>
+    <li><strong>重点问（这条最关键）</strong>：
+      经管学院素拓页提到<strong>"宣传部设有年级负责人，是与各班素委的直接联系者"</strong>——
+      这说明宣传部可能是<strong>包干制</strong>（每人固定对接几个班/几个学院），
+      而不是轮值制。<strong>如果是包干制，平台硬套轮值反而添乱</strong>，
+      必须先问清楚</li>
+    <li><strong>重点问</strong>：推文有没有硬性 deadline（活动后几天内必须发？）
+    过了 deadline 会怎样</li>
+  </ul>
+</div>
+
+<div class="dept">
+  <div class="hd">
+    <span class="nm">竞赛部</span><span class="proto">项目型</span>
+    <span class="pri">优先级 3</span>
+  </div>
+  <p class="duty">大创项目的立项、结题、成果统计；创业活动周；承办校赛；
+  收集统计各类学科竞赛获奖情况。</p>
+  <ul>
+    <li><strong>要</strong>：一场赛事的完整分工（谁对接报名、谁对接评委、谁管现场、谁做材料）、
+    关键节点日历（报名截止 / 初赛 / 决赛 / 结题）</li>
+    <li><strong>重点问</strong>：一场赛事是不是同一个人从头跟到尾？还是按阶段换人？
+    （这决定了是"一格一人"还是"一格多角色"）</li>
+    <li><strong>重点问</strong>：大创项目是"一个项目配一个负责人"吗？如果是，
+    那一格就不是派活，是<strong>认领/分配</strong>——规则完全不同</li>
+  </ul>
+</div>
+
+<div class="dept">
+  <div class="hd">
+    <span class="nm">认证部</span><span class="proto">派活型</span>
+    <span class="pri">优先级 4 · 与质检部最近</span>
+  </div>
+  <p class="duty">收集审批活动证明材料并分发至二级学院；指导二级学院开展学分认证；
+  管理审批挂网项目；协助学分申请审批并公示；<strong>监督二级学院开展证明材料的抽查工作</strong>。</p>
+  <ul>
+    <li><strong>要</strong>：周任务清单、抽查工作是怎么分的（谁查哪个学院）</li>
+    <li><strong>重点问</strong>：抽查是不是要<strong>回避自己学院</strong>？
+    如果"自己学院的学生不能查自己学院的材料"，这就是一条硬约束——
+    而且是<strong>平台目前还没有的规则类型</strong>，非常值得挖</li>
+    <li><strong>重点问</strong>：审批类工作是不是只有特定人能做（比如只有正部长能审）？
+    如果是，那就是"资格约束"而非轮值</li>
+  </ul>
+</div>
+
+<div class="dept">
+  <div class="hd">
+    <span class="nm">规划部</span><span class="proto">派活型 + 排期型混合</span>
+    <span class="pri">优先级 5</span>
+  </div>
+  <p class="duty">汇集审核常规项目、二级审核、每周收集汇总各学院活动登记表、
+  <strong>定期整理清理邮箱</strong>、组织策划品牌活动、对各学院及时率做评优。</p>
+  <ul>
+    <li><strong>要</strong>：周活清单 + 品牌活动的策划分工</li>
+    <li><strong>重点问</strong>：整理邮箱这件活，是固定某人还是轮？
+    （这是质检部也有的活，可以对照）</li>
+    <li><strong>重点问</strong>：评优要统计"各学院上交及时率"——
+    这是<strong>数据汇总，不是排班</strong>，平台不该做。确认一下别做错方向</li>
+  </ul>
+</div>
+
+<h2><span class="no">03</span>怎么开口</h2>
+
+<p>话术的关键是<strong>别提"我在做一个平台"</strong>——一说大词，对方要么敷衍要么警惕。
+说"我在做个小工具，想抄一下你们的排法"，对方才会认真给你翻聊天记录。</p>
+
+<div class="say">
+  <div class="who">微信约人 · 第一句</div>
+  <div class="body">X 部长，忙不忙？有个小事想请教一下。
+
+我们质检部每周排活一直挺乱的，我最近在琢磨能不能用表格自动排一下。
+想看看你们部门是怎么安排活的，参考参考。
+
+不用特意准备什么，就最近几周谁干了什么，你手机上翻给我看看就行，
+大概十几分钟。这周哪天方便？</div>
+  <div class="tip">为什么这么说：强调"我自己也在弄""参考参考""十几分钟"，
+  把对方的心理成本降到最低。<strong>不要说"调研""平台""系统"</strong>。</div>
+</div>
+
+<div class="say">
+  <div class="who">见面时 · 先抛出你已经做好的东西</div>
+  <div class="body">先给你看一下我们质检部现在的表——（打开电脑或手机）
+
+这个是自动排出来的，每周一人一件左右，不会有人连着两周干同一件。
+我就是想看看你们部门能不能也弄成这样。
+
+你们平时是怎么分的？</div>
+  <div class="tip">先展示成品再提问，对方才会认真跟你讲细节。
+  空着手去问"你们怎么排的"，对方只会答"就群里说一下啊"。</div>
+</div>
+
+<div class="say">
+  <div class="who">收尾 · 要空表（最关键的一句）</div>
+  <div class="body">对了，你们这个表有没有<strong>空白的、还没填的版本</strong>？
+发我一份。
+
+我想做成"你们自己的表，我这边只负责往格子里填名字"，
+这样导出来的表跟你们平时用的一模一样，不用重新适应格式。</div>
+  <div class="tip">这句要专门说，不能顺带提。<strong>空表是这个平台能不能接住一个部门的分水岭。</strong>
+  如果对方说"我们没表，就在群里说"，那就请他把群里那条消息截图给你——
+  这本身就是一种版式，而且是真实的。</div>
+</div>
+
+<h2><span class="no">04</span>必问的八个问题</h2>
+
+<p>前两个部门建议全问，后面的可以只问加粗的 4 个。问的时候<strong>录音或记关键词</strong>，
+别指望当场记住。</p>
+
+<ol class="q">
+  <li><b>上周你们部门谁干了什么？</b>
+    <span>不问他"怎么排班"——很多部门根本没有排班这个概念，就是部长在群里喊一声。
+    问具体事实，让他回忆真实发生的事。</span></li>
+  <li><b>为什么派他，不派她？</b>
+    <span><strong>全套清单里最重要的一问。</strong>答案会是"他熟""她上周没干""他刚好那天没课"——
+    每一条都是一条规则，而且全网查不到。</span></li>
+  <li><b>同一个人能连续两周干同一件活吗？</b>
+    <span>决定要不要做"上周回避"。如果他们说"无所谓"，这条规则就不该加；
+    加了反而让排出来的表不像他们的。</span></li>
+  <li><b>有人请假怎么办？是自己找人换，还是你重新指派？</b>
+    <span>决定平台要不要做"替补"功能。如果都是自己私下换，
+    平台只要能事后改一格就行，不用做复杂的请假流程。</span></li>
+  <li><b>有没有人是"只能干某些活"或"不能干某些活"的？</b>
+    <span>资格约束。比如认证部可能只有正部长能审批。</span></li>
+  <li><b>有没有"不能自己查自己学院"这类回避规矩？</b>
+    <span>如果素拓体系里有，这是硬约束，而且要比跨校区代价强得多。</span></li>
+  <li><b>排完之后会发给谁看？被挑过毛病吗？</b>
+    <span>决定导出表要严格到什么程度。如果部长会拿官方样表逐格比对，
+    那空表模板就是刚需；如果只是发群里看一眼，格式松一点没关系。</span></li>
+  <li><b>一年里有没有特别忙或特别闲的几周？</b>
+    <span>比如开学第 1 周、期末、大创立结题那几天。
+    平台如果不知道忙闲周期，会在这几周排得很离谱。</span></li>
+</ol>
+
+<h2><span class="no">05</span>拿到什么算够</h2>
+
+<p>每个部门聊完，用这五条自查。<strong>缺任何一条，这个部门就还不能进平台</strong>。</p>
+
+<table class="chk">
+  <tr><th style="width:52px">✔</th><th>验收项</th><th style="width:32%">不达标的表现</th></tr>
+  <tr><td class="box">□</td><td>能说出这个部门一周固定要做<strong>全部</strong>的事（≥5 条）</td>
+    <td>只说出两三件"大事"，琐碎的没列</td></tr>
+  <tr><td class="box">□</td><td>拿到干部名单，且分清了<strong>谁只监督、谁真干活</strong></td>
+    <td>只给了名单，没说部长副部参不参与</td></tr>
+  <tr><td class="box">□</td><td>拿到<strong>空白表模板</strong>（或群消息截图）</td>
+    <td>只有填好的表，没有空表</td></tr>
+  <tr><td class="box">□</td><td>能回答"为什么派他不派她"，且答案里至少有一条<strong>可编码的规则</strong></td>
+    <td>答案是"随手分的""看心情"——那这个部门不适合上平台</td></tr>
+  <tr><td class="box">□</td><td>确认了是<strong>轮值制</strong>还是<strong>包干制</strong></td>
+    <td>没问清楚，默认当成轮值</td></tr>
+</table>
+
+<p class="note"><b>最后一条最容易被漏，也最容易致命。</b>如果某个部门是包干制
+（每人固定负责几个班、几个学院），那它<strong>根本不需要排班工具</strong>——
+把平台推过去只会添乱。早点问清楚，能省下后面几周的返工。</p>
+
+<h2><span class="no">06</span>两个提醒</h2>
+
+<h3>隐私</h3>
+<p>要来的名单是<strong>真实姓名</strong>，只留在本机 <code>engine/data/</code> 里，
+<strong>绝不进仓库</strong>（已加 .gitignore）。跟对方也这么说一句：
+"名单就我自己电脑上用，不会传出去。"——这句话能让对方放心很多。</p>
+
+<h3>别一次全问完</h3>
+<p>五个部门分两周聊，一周两三个。聊完一个就在平台上试排一次，
+<strong>排不出来就说明资料没拿够，回头再问</strong>——
+比攒齐五个再动手快得多。攒齐再动手的代价是：五个部门的资料可能缺的是同一类东西，
+你要回头问五遍。</p>
+
+<p class="foot">
+广东石油化工学院 · 学生组织工作安排通用平台 · 资料采集清单 · 2026-10-10<br>
+配套：调研与方案报告 · 落地方案（同目录）<br>
+下一步：先约综合部和宣传部——这两个原型差异最大，最能验证平台是不是真的通用。
+</p>
+
+</div>
+</body>
+</html>

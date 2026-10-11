@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>广油学生组织工作安排平台 · 落地方案</title>
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#14151A; --red:#B72C24;
+  --ink-60:rgba(20,21,26,.60); --ink-38:rgba(20,21,26,.38);
+  --line:rgba(20,21,26,.16); --white:#FFFFFF;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.85;padding:40px 24px 96px}
+.wrap{max-width:860px;margin:0 auto}
+
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--red);margin-bottom:14px}
+h1{font-family:var(--serif);font-size:34px;font-weight:600;line-height:1.35;letter-spacing:.01em}
+.sub{margin-top:14px;color:var(--ink-60);font-size:14px}
+.meta{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38);display:flex;gap:20px;flex-wrap:wrap}
+
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:56px 0 6px;
+  padding-bottom:12px;border-bottom:1px solid var(--ink)}
+h2 .no{font-family:var(--sans);font-size:12px;color:var(--red);
+  letter-spacing:.18em;display:block;margin-bottom:8px;font-weight:500}
+h3{font-size:15px;font-weight:600;margin:32px 0 12px}
+h4{font-size:14px;font-weight:600;margin:20px 0 8px}
+p{margin:14px 0}
+ul,ol{margin:14px 0 14px 22px}
+li{margin:7px 0}
+strong{font-weight:600}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;
+  background:rgba(20,21,26,.05);padding:1px 5px}
+pre{background:var(--white);border:1px solid var(--line);padding:16px 18px;margin:16px 0;
+  font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.65;
+  overflow-x:auto;white-space:pre}
+
+.lead{background:var(--white);border:1px solid var(--ink);padding:26px 28px;margin:34px 0}
+.lead .tag{font-size:12px;letter-spacing:.2em;color:var(--red);margin-bottom:12px}
+.lead p{margin:10px 0}
+.lead p:first-of-type{font-family:var(--serif);font-size:18px;line-height:1.7}
+
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:rgba(20,21,26,.04);font-weight:600;font-size:13px}
+td.num{font-family:ui-monospace,Consolas,monospace;white-space:nowrap}
+td.y{color:#1a7a3c;font-weight:600}
+td.n{color:var(--red);font-weight:600}
+
+.note{border-left:3px solid var(--red);padding:4px 0 4px 16px;margin:20px 0;
+  color:var(--ink-60);font-size:14px}
+.note b{color:var(--ink)}
+
+.phase{background:var(--white);border:1px solid var(--line);padding:22px 24px;margin:22px 0}
+.phase .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.phase .pn{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--red);
+  letter-spacing:.12em}
+.phase .pt{font-family:var(--serif);font-size:18px;font-weight:600}
+.phase .pw{margin-left:auto;font-size:12px;color:var(--ink-38)}
+.kv{display:grid;grid-template-columns:76px 1fr;gap:6px 14px;font-size:14px;margin:12px 0}
+.kv dt{font-size:12px;color:var(--ink-38);padding-top:3px;letter-spacing:.06em}
+.kv dd{margin:0}
+.kv dd ul{margin:4px 0 4px 18px}
+.kv dd li{margin:4px 0}
+
+.gate{background:rgba(183,44,36,.05);border-left:3px solid var(--red);
+  padding:12px 16px;margin:14px 0;font-size:13.5px}
+.gate b{color:var(--red);font-size:12px;letter-spacing:.1em;display:block;margin-bottom:4px}
+
+.foot{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38)}
+
+@media (max-width:640px){
+  body{padding:24px 16px 64px;font-size:14.5px}
+  h1{font-size:26px} .wrap{overflow-x:hidden}
+  table{font-size:12.5px} th,td{padding:7px 8px}
+  .kv{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="eyebrow">06 · 通用平台规划</p>
+<h1>从质检部工具到全校通用平台<br>落地方案</h1>
+<p class="sub">回答一个问题：接下来十二个月，先做哪件事、后做哪件事，
+每一步做完凭什么算做完了。所有技术判断都附带实测数据，不靠估计。</p>
+<div class="meta">
+  <span>方案日期 2026-10-09</span>
+  <span>发起人 冯靖豪（校素拓质检部副部长）</span>
+  <span>依据 3 份实测探针 · 2 轮调研</span>
+  <span>周期 四期 · 约 12 个月 · 对齐换届季</span>
+</div>
+
+<div class="lead">
+  <div class="tag">先说结论</div>
+  <p>不要重写，要抽配置。</p>
+  <p>你现在手上有 2120 行跑得通的代码、43 项 API 断言、三份回归探针。
+  它的内核（人员池 + 确定性裁决 + 台账 + 导出）是对的，
+  <strong>错的只是"西城/官渡""质检部第 X 周"这些写死的字面量</strong>。
+  通用化等于把这些字面量搬到一个 <code>org.json</code> 里，代码一行不删。</p>
+  <p>方案分四期，<strong>第 0 期本周就能做完</strong>（1~2 天，产出可对外发布的东西，
+  推广和宣传视频需要它）。最后一期卡在明年 6 月换届之前——
+  这是全校学生组织唯一的硬时间窗，错过要等一年。</p>
+  <p>最大的技术风险——"每个机构版式不同，怎么导出"——<strong>今晚已经实测解除</strong>，
+  详见第 04 节。</p>
+</div>
+
+<h2><span class="no">01</span>现在站在哪</h2>
+
+<p>先把家底点清楚。通用化不是从零开始，是决定哪些留下、哪些推倒。</p>
+
+<table>
+  <tr><th style="width:22%">资产</th><th style="width:11%">规模</th><th style="width:16%">判定</th><th>理由</th></tr>
+  <tr>
+    <td>确定性裁决内核<br><code>assigner.py</code></td><td class="num">374 行</td><td class="y">保留</td>
+    <td>已不用 <code>random</code>。50 周模拟人均累计极差 <strong>1 件</strong>（理论下界），
+    各活忙碌度极差 <strong>0.20</strong>。这是整个平台最值钱的部分。</td>
+  </tr>
+  <tr>
+    <td>JSON 持久化<br><code>models.py</code></td><td class="num">236 行</td><td class="y">保留</td>
+    <td>数据全是能看懂的 JSON，脱离平台也能用——这是对抗"换届无人接手"的唯一解药。</td>
+  </tr>
+  <tr>
+    <td>API 层<br><code>main.py</code></td><td class="num">348 行</td><td class="n">改造</td>
+    <td>单机构单租户，所有路径假设"只有质检部一个机构"。要加机构维度。</td>
+  </tr>
+  <tr>
+    <td>前端工作台<br><code>App.tsx</code></td><td class="num">886 行</td><td class="n">改造</td>
+    <td><code>type Campus='西城'|'官渡'</code> 是字面量类型，写死了。要改成按配置渲染。</td>
+  </tr>
+  <tr>
+    <td>导出器<br><code>exporter.py</code></td><td class="num">123 行</td><td class="n">替换</td>
+    <td><code>CAMPUS_COL={"西城":2,"官渡":4}</code>、<code>ASSIST_BLOCK_ROW=14</code>
+    全是硬编码列号。这是通用化最难的一块，也是今晚刚验证完的一块。</td>
+  </tr>
+  <tr>
+    <td>默认种子<br><code>DEFAULT_PEOPLE</code></td><td class="num">21 人</td><td class="y">已完成</td>
+    <td>已全量脱敏为"示例·西城甲"。<code>engine/data/</code> 已进 .gitignore。
+    <strong>开源红线已解除。</strong></td>
+  </tr>
+</table>
+
+<p class="note"><b>一个反直觉的判断：</b>改得最多的是导出器（123 行），但它恰恰是
+<strong>风险最低</strong>的——因为新版不需要"改对"，只需要"不改坏"。
+真正的风险在前端（886 行按配置渲染），那才是工作量大头。方案把前端放在第 2 期，
+就是为了让第 1 期先用最小的改造验证内核抽象是对的。</p>
+
+<h2><span class="no">02</span>目标架构：一个内核 + 三层配置</h2>
+
+<p>通用化的全部秘密，是把四维差异收进一个模型：<strong>行维度 × 列维度 → 一格</strong>。</p>
+
+<p>先看四种原型在这个模型下长什么样：</p>
+
+<table>
+  <tr><th style="width:14%">原型</th><th style="width:22%">行维度</th><th style="width:24%">列维度</th><th style="width:12%">每格</th><th>样本</th></tr>
+  <tr><td>派活型</td><td>任务清单（9 件活）</td><td>校区（西城 / 官渡）</td><td class="num">1~N 人</td><td>你的质检部表</td></tr>
+  <tr><td>排班型</td><td>节次（1-2 / 3-4…）</td><td>日期（周一 ~ 周五）</td><td class="num">1 人</td><td>秘书处值班表</td></tr>
+  <tr><td>排期型</td><td>稿件清单</td><td>角色（撰稿 / 审核）</td><td class="num">1 人</td><td>宣传部、青媒</td></tr>
+  <tr><td>招募型</td><td>场次清单</td><td>名额（1 号位 / 2 号位…）</td><td class="num">1 人</td><td>青协活动招募</td></tr>
+</table>
+
+<p><strong>派活型的"活"是行、校区是列；排班型的"节次"是行、日期是列。</strong>
+两者是同一个形状，区别只在维度从哪来。连常州工学院样本里那个
+"承办人 / 负责人"两级责任，也只是把列维度换成"角色轴"而已。</p>
+
+<p>于是机构之间全部的差异，可以收进一份配置：</p>
+
+<pre>{
+  "org": "校素拓质检部",
+  "slot_dims": [                       // 列维度：0~N 个
+    { "key": "校区", "values": ["西城", "官渡"], "pool_by": "can_do" }
+  ],
+  "row_source": "tasks",               // 行维度：来自任务清单
+  "capacity": { "min": 1, "max": 2 },  // 每格容量（搭档制）
+  "rules": {
+    "max_per_week": 2,
+    "avoid_repeat_last_week": true,
+    "cross_dim_cost": 25               // 跨校区/跨维度机动代价
+  },
+  "template": "质检部官方表.xlsx",     // 上传的空表，平台只填格
+  "map": {                             // 占位符 → 数据源
+    "任务.%d": "row.name",
+    "西城.%d": "cell.西城",
+    "官渡.%d": "cell.官渡"
+  }
+}</pre>
+
+<p>换成排班型，只需要改 <code>slot_dims</code> 和 <code>row_source</code>，代码一行不动：</p>
+
+<pre>{
+  "org": "某学院秘书处",
+  "slot_dims": [
+    { "key": "日期", "values": ["周一","周二","周三","周四","周五"] },
+    { "key": "节次", "values": ["第1-2节","第3-4节","第5-6节","第7-8节"], "axis": "row" }
+  ],
+  "row_source": "dim:节次",
+  "capacity": { "min": 1, "max": 1 },
+  "rules": { "max_per_day": 1, "avoid_back_to_back": true }
+}</pre>
+
+<p class="note"><b>为什么不再写一版：</b>如果给每个机构写一套代码，122 个机构就是 122 份维护负担，
+你大四之后没人接得住。配置化的意义不是优雅，是<strong>让第二个会改的人改得动</strong>。</p>
+
+<h2><span class="no">03</span>四期路线</h2>
+
+<p>每一期都有三样东西：<strong>做完的标志</strong>（能演示给别人看）、
+<strong>验收门禁</strong>（跑脚本，不靠感觉）、<strong>回滚点</strong>（做砸了退到哪）。
+十二个月对齐到明年 6 月换届季。</p>
+
+<div class="phase">
+  <div class="hd">
+    <span class="pn">PHASE 0</span>
+    <span class="pt">冻结 v1，做出能给别人看的东西</span>
+    <span class="pw">本周 · 1~2 天</span>
+  </div>
+  <p>这一期<strong>不写新功能</strong>。目的是把现有成果固化成一个能对外发布的状态——
+  你要推广、要拍宣传视频，首先得有一个别人能下载、能双击跑起来的东西。</p>
+  <dl class="kv">
+    <dt>做</dt><dd>
+      <ul>
+        <li><code>git init</code> 建仓库，打 tag <code>v1.0</code></li>
+        <li>逐项自查 <code>git status</code>，确认 <code>engine/data/</code> 下<strong>一个文件都不在</strong></li>
+        <li>用免安装打包脚本出一份 zip（上次已跑通，约 45.6 MB），换一台没装 Python 的电脑验证双击能起</li>
+        <li>README 补一段"给部长看的 30 秒说明"：这是什么、解决什么、怎么跑</li>
+      </ul>
+    </dd>
+    <dt>产出</dt><dd>可发布的 v1.0 zip + GitHub 仓库（公开）</dd>
+    <dt>门禁</dt><dd>干净机器上双击 <code>启动.bat</code> → 浏览器打开 → 点分配 → 导出 xlsx，全程无报错</dd>
+    <dt>回滚</dt><dd>无风险——全是打包与文档，不碰逻辑代码</dd>
+  </dl>
+  <div class="gate"><b>为什么先做这个</b>推广需要物料，访谈需要"你看我已经做出来一个了"作为敲门砖。
+  拿不出能跑的东西去聊，对方只会当你是来征求意见的；拿得出，对方才会认真给你看原件。</div>
+</div>
+
+<div class="phase">
+  <div class="hd">
+    <span class="pn">PHASE 1</span>
+    <span class="pt">内核配置化 + 问出决策规则</span>
+    <span class="pw">10 月下旬 ~ 11 月中 · 约 3 周</span>
+  </div>
+  <p>两条线并行：一条是找人聊（不依赖代码），一条是改代码（不依赖聊的结果）。
+  这样即使访谈泡汤，代码这边也不空转。</p>
+  <dl class="kv">
+    <dt>代码线</dt><dd>
+      <ul>
+        <li><code>models.py</code>：把 <code>CAMPUSES=["西城","官渡"]</code> 换成从 <code>org.json</code> 读 <code>slot_dims</code></li>
+        <li><code>assigner.py</code>：<code>slot</code> 从"校区字符串"泛化为"维度值元组"；
+        <code>_cost</code> 里的跨校区判断改为跨维度判断</li>
+        <li><code>_probe_random.py</code>：扩展成能跑任意 <code>org.json</code> 的公平性回归</li>
+      </ul>
+    </dd>
+    <dt>访谈线</dt><dd>找 3 个原型不同的部门各聊 30 分钟。<strong>重心不是要表</strong>（版式已有 6 份样本），
+      是问规则：为什么派他不派她、同一件活能不能连做、有人请假怎么补、谁说了算</dd>
+    <dt>产出</dt><dd>一份 <code>org.json</code> schema + 跑通两个不同配置的引擎 + 一页"决策规则清单"</dd>
+    <dt>门禁</dt><dd>
+      <ul>
+        <li>同一套代码，加载质检部配置跑出的结果与<strong>改造前逐格一致</strong>（这是最硬的回归）</li>
+        <li>加载排班型配置也能排出来，且公平性探针全绿</li>
+        <li><code>web/e2e.cjs</code> 43 项不退化</li>
+      </ul>
+    </dd>
+    <dt>回滚</dt><dd>保留 <code>v1.0</code> tag，配置化失败就退回，损失 3 周但不影响已发布版本</dd>
+  </dl>
+  <div class="gate"><b>这一期最大的坑</b>不要为了让排班型跑通，就去动质检部的默认行为。
+  判断标准只有一条：<strong>质检部的结果必须逐格不变</strong>。如果变了，说明抽象错了，不是配置错了。</div>
+</div>
+
+<div class="phase">
+  <div class="hd">
+    <span class="pn">PHASE 2</span>
+    <span class="pt">模板化导出 + 接入第二个机构</span>
+    <span class="pw">11 月中 ~ 12 月中 · 约 4 周</span>
+  </div>
+  <p>这一期是<strong>整个方案的成败点</strong>：能不能接住第二个机构。
+  接住了，122 个机构只是重复劳动；接不住，前面全是自嗨。</p>
+  <dl class="kv">
+    <dt>做</dt><dd>
+      <ul>
+        <li>导出器重写为"上传空表 → 扫占位符 → 只填格 → 另存"（技术路线<strong>今晚已实测</strong>）</li>
+        <li>模板库：每个机构存一份自己的空表，附占位符说明</li>
+        <li>页面加"机构切换"：下拉选机构，加载对应 <code>org.json</code> + 模板</li>
+        <li>第二个机构<strong>真跑一周</strong>——不能只在自己电脑上跑通，要让它实际用起来</li>
+      </ul>
+    </dd>
+    <dt>产出</dt><dd>双机构可用的版本 + 2 套模板 + 一份"新机构接入指南"</dd>
+    <dt>门禁</dt><dd>
+      <ul>
+        <li><code>_probe_template.py</code> 全绿（样式 / 合并 / 列宽 / 冻结 / 条件格式 / 公式 / 图表 逐项断言）</li>
+        <li>第二个机构导出的表，能被该机构的部长<strong>认可是他们的表</strong>（不是"差不多"）</li>
+        <li>新机构接入全程 <strong>≤ 30 分钟</strong>，且不需要改代码</li>
+      </ul>
+    </dd>
+    <dt>回滚</dt><dd>导出器新旧并存，用配置开关切换；老机构继续走旧路径</dd>
+  </dl>
+  <div class="gate"><b>接入时间就是验收标准</b>"≤ 30 分钟且不需要改代码"这条必须量化。
+  如果需要你改代码才能接入，说明配置化是假的，这时候应该停下来重做第 1 期，
+  而不是硬接第二个机构——硬接出来的第三个、第四个会更痛。</div>
+</div>
+
+<div class="phase">
+  <div class="hd">
+    <span class="pn">PHASE 3</span>
+    <span class="pt">素拓体系横向复制</span>
+    <span class="pw">12 月 ~ 次年 3 月 · 含寒假</span>
+  </div>
+  <p>从 2 个机构扩到 20+ 个。<strong>从哪里扩是有讲究的</strong>——不是挑容易的，是挑同构的。</p>
+  <dl class="kv">
+    <dt>顺序</dt><dd>
+      <ul>
+        <li><strong>校素拓 6 部门</strong>（认证 / 质检 / 规划 / 宣传 / 竞赛 / 综合）——
+        你有话语权，抬头不见低头见，规则问得到</li>
+        <li><strong>19 个院素拓质检部</strong>——与你同构，一份模板复用 19 次，
+        这是性价比最高的一段</li>
+        <li>再往外：青协、学生会、分团委</li>
+      </ul>
+    </dd>
+    <dt>做</dt><dd>批量接入 + 收集反馈 + 补齐缺失的规则（一定会有你没想到的）</dd>
+    <dt>产出</dt><dd>20+ 机构在用 + 规则库沉淀 + 第一批真实使用数据</dd>
+    <dt>门禁</dt><dd>每个新机构接入时间<strong>随数量递减</strong>（第 20 个应显著快于第 5 个）。
+    如果不变快，说明模板复用没做对</dd>
+    <dt>回滚</dt><dd>机构级隔离：一个机构的配置坏了不影响其他机构</dd>
+  </dl>
+  <div class="note"><b>寒假是真实风险：</b>12 月到 3 月中间隔着寒假，学生组织基本停摆。
+  计划里要把 1~2 月当成<strong>不可用时间</strong>，不要排依赖别人的任务，
+  只排你能独立完成的（写代码、写文档、整理模板）。</div>
+</div>
+
+<div class="phase">
+  <div class="hd">
+    <span class="pn">PHASE 4</span>
+    <span class="pt">换届交接包 + 全校推广</span>
+    <span class="pw">次年 3 月 ~ 6 月 · 卡换届前</span>
+  </div>
+  <p>这一期决定了这个平台<strong>是活过一年还是随你毕业一起消失</strong>。
+  也是全网同类工具<strong>唯一没人做</strong>的一块。</p>
+  <dl class="kv">
+    <dt>做</dt><dd>
+      <ul>
+        <li>一键导出交接包：今年谁干过什么、各干几次、岗位说明书、历史台账、模板</li>
+        <li>培养第二个会改的人（<strong>这比写代码重要</strong>）——让他独立完成一次新机构接入</li>
+        <li>宣传视频：素材用第 04 节的实测对比表，比任何功能演示都有说服力</li>
+        <li>向校团委 / 院团委正式汇报，争取一个"官方推荐"的身份</li>
+      </ul>
+    </dd>
+    <dt>产出</dt><dd>交接包生成器 + 第二个维护者 + 宣传视频 + 官方背书（争取）</dd>
+    <dt>门禁</dt><dd><strong>让你完全不参与，第二个人能在 30 分钟内接入一个新机构并完成一次周排班。</strong>
+    做不到，这个平台就没有越过换届这道坎</dd>
+    <dt>回滚</dt><dd>—</dd>
+  </dl>
+  <div class="gate"><b>时间窗只有一次</b>换届一般在 6 月。交接包必须在换届<strong>之前</strong>做好，
+  因为换届那一周所有部长都在换人，交接包的价值在"旧部长把东西交给新部长"的那一刻。
+  错过要等一整年。</div>
+</div>
+
+<h2><span class="no">04</span>三个已实测的技术决策</h2>
+
+<p>方案里所有"该不该"的问题，都用探针跑数据回答，不靠经验判断。</p>
+
+<h3>决策一：确定性裁决取代随机</h3>
+<p>你问的"是否存在伪随机"，实测下来比伪随机更糟——是<strong>系统性不公平</strong>。</p>
+<table>
+  <tr><th style="width:42%">指标</th><th style="width:24%">修复前</th><th>修复后</th></tr>
+  <tr><td><code>seed=null</code> 可复现性</td><td class="n">5 次 5 种结果</td><td class="y">完全一致</td></tr>
+  <tr><td>各活忙碌度极差</td><td class="n">1.1（末位活被压双份）</td><td class="y">0.20</td></tr>
+  <tr><td>50 周人均累计极差</td><td class="n">4 件</td><td class="y">1 件（理论下界）</td></tr>
+  <tr><td>三校区人均件数</td><td class="n">54.6 / 51.6（差 12%）</td><td class="y">52.9 / 53.0 / 53.0</td></tr>
+</table>
+<p>修复前最要命的一条：18 格派 17 人，每周必有 1 人干双份，
+而这个人被任务顺序<strong>钉死在最后一件活</strong>上。随机只决定"谁是倒霉蛋"，
+"一定有人倒霉"是确定性的。</p>
+
+<h3>决策二：双引擎，不二选一</h3>
+<table>
+  <tr><th style="width:34%">指标</th><th style="width:22%">贪心（现行）</th><th>CP-SAT 求解器</th></tr>
+  <tr><td>单周耗时</td><td class="y">0.4 ms</td><td>12~17 ms</td></tr>
+  <tr><td>50 周人均极差</td><td class="y">1 件</td><td class="y">1 件</td></tr>
+  <tr><td>50 周"上周同活重复"</td><td class="n">11 次</td><td class="y">0 次</td></tr>
+  <tr><td>加一条新规则的成本</td><td class="n">改代价函数 + 维护状态</td><td class="y">4 行约束</td></tr>
+</table>
+<p>公平性<strong>打平</strong>（1 件是理论下界）。差距在"多规则同时满足"：
+贪心挨个让步，"上周同活回避"50 周被牺牲 11 次，求解器一次没破。
+<strong>规则越多差距越大，而适配 122 个机构恰恰意味着规则越来越多。</strong></p>
+<p>所以：<strong>默认贪心</strong>（零依赖、毫秒级、已过 43 项 e2e，保住"双击就能跑"的免安装优势），
+<strong>规则复杂时切 CP-SAT</strong>（可选依赖 <code>ortools</code>，没装自动降级）。</p>
+<div class="note"><b>一个必须记住的教训：</b>第一版求解器目标函数只压了"最大值"没压"极差"，
+大机构场景下 50 周人均极差变成 2、标准差 0.71，<strong>反而比贪心差</strong>。
+改成压极差才打平。<strong>求解器再强，目标函数写错照样不公平。</strong></div>
+
+<h3>决策三：模板化导出（今晚刚验证）</h3>
+<p>这是通用化最难的一块：每个机构版式不同，不可能为每个机构写一套导出代码。
+方案是<strong>让机构上传自己的空表，平台只往格子里填字</strong>。
+风险在于 openpyxl 的"读进来—改—存回去"会不会把原表样式弄坏。实测结果：</p>
+<table>
+  <tr><th style="width:44%">项目</th><th style="width:14%">结果</th><th>说明</th></tr>
+  <tr><td>占位符替换（单元格）</td><td class="y">保住</td><td><code>{{部门}}{{周次}}</code> 正常替换</td></tr>
+  <tr><td>占位符替换（工作表标签名）</td><td class="y">保住</td><td><strong>今晚实测抓到的 bug</strong>：只扫单元格会漏掉 sheet 名里的 <code>{{周次}}</code></td></tr>
+  <tr><td>合并单元格</td><td class="y">保住</td><td>A1:D1 标题合并完好</td></tr>
+  <tr><td>字体 / 字号 / 加粗 / 居中</td><td class="y">保住</td><td>宋体 16 加粗居中、行高 30 全部保留</td></tr>
+  <tr><td>列宽 / 行高</td><td class="y">保住</td><td>—</td></tr>
+  <tr><td>底色 / 边框</td><td class="y">保住</td><td>表头底色 D9E2F3、数据区细边框完好</td></tr>
+  <tr><td>冻结窗格</td><td class="y">保住</td><td>—</td></tr>
+  <tr><td>条件格式</td><td class="y">保住</td><td>空值标黄规则 B2:F5 完好</td></tr>
+  <tr><td>公式</td><td class="y">保住</td><td><code>=IF(C2="","",C2-TODAY())</code> 未被破坏</td></tr>
+  <tr><td>图表</td><td class="y">保住</td><td>往返后重新读回仍在</td></tr>
+  <tr><td>未填的占位符</td><td class="y">自动清空</td><td>不会在表里留下 <code>{{xxx}}</code> 残迹</td></tr>
+</table>
+<p class="note"><b>这意味着什么：</b>机构上传的表长什么样，导出的表就长什么样，
+平台只负责填字。<strong>你被部长拿官方样表质问一次的场景，不会再重演 122 次。</strong></p>
+
+<h2><span class="no">05</span>验收门禁：每次改动跑这三个</h2>
+
+<p>所有验收都做成<strong>非零退出码的脚本</strong>，可以挂在提交前自动跑。
+不要靠"我点了几下没问题"——你上次那个顺序偏差 bug，就是点几下看不出来的。</p>
+
+<table>
+  <tr><th style="width:30%">脚本</th><th style="width:16%">耗时</th><th>管什么</th></tr>
+  <tr><td><code>_probe_random.py</code></td><td class="num">秒级</td>
+    <td>可复现性、平局裁决均匀性、顺序偏差、50 周公平性。<strong>纯 Python，无依赖</strong></td></tr>
+  <tr><td><code>_probe_template.py</code></td><td class="num">秒级</td>
+    <td>模板导出逐项样式断言（第 04 节那张表就是它的输出）</td></tr>
+  <tr><td><code>web/e2e.cjs</code></td><td class="num">分钟级</td>
+    <td>API 43 项，含导出表与官方样表<strong>逐格比对</strong></td></tr>
+  <tr><td><code>web/ledgercheck.cjs</code></td><td class="num">分钟级</td>
+    <td>台账持久化 12 项——长期公平全靠它</td></tr>
+</table>
+
+<p class="note"><b>加断言的方法论：</b>不要只测"某个种子下结果对不对"。
+上次 e2e 跑了 12 周压测没抓到负载计价 bug，就是因为随机种子恰好没触发。
+要写<strong>不利场景探针</strong>——比如"同一周已有台账时重复分配 5 次"，
+专门往最容易出问题的地方撞。</p>
+
+<h2><span class="no">06</span>风险登记表</h2>
+
+<table>
+  <tr><th style="width:20%">风险</th><th style="width:9%">概率</th><th style="width:9%">影响</th><th>对策与触发条件</th></tr>
+  <tr>
+    <td>访谈拿不到原件</td><td>中</td><td>中</td>
+    <td>已有 6 份他校公开样本可兜底版式。<strong>触发</strong>：两周内一份都拿不到 →
+    暂停访谈线，全用公开样本推进第 1 期，把访谈挪到第 3 期</td>
+  </tr>
+  <tr>
+    <td>第二个机构接不进来</td><td>中</td><td class="n">高</td>
+    <td>这是方案的<strong>证伪点</strong>。<strong>触发</strong>：接入耗时 &gt; 30 分钟或需要改代码 →
+    停在第 2 期，回头重做抽象，不要硬接</td>
+  </tr>
+  <tr>
+    <td>你大四后无人维护</td><td class="n">高</td><td class="n">高</td>
+    <td>第 4 期的硬门禁就是为此设的。<strong>提前</strong>：第 1 期就开始带人，
+    不要等到第 4 期才开始找</td>
+  </tr>
+  <tr>
+    <td>配置化破坏了质检部现有行为</td><td>中</td><td>中</td>
+    <td>门禁写成"改造前后逐格一致"。<strong>触发</strong>：任何一格不一致 → 回滚，抽象错了</td>
+  </tr>
+  <tr>
+    <td>真实姓名泄漏到公开仓库</td><td>低</td><td class="n">极高</td>
+    <td>已脱敏 + <code>.gitignore</code> 排除 <code>engine/data/</code>。
+    <strong>每次提交前必查</strong> <code>git status --short engine/data/</code> 须为空</td>
+  </tr>
+  <tr>
+    <td>寒假停摆导致第 3 期延期</td><td class="n">高</td><td>中</td>
+    <td>寒假只排能独立完成的任务（写代码 / 写文档 / 整理模板），
+    不排依赖他人配合的接入工作</td>
+  </tr>
+</table>
+
+<h2><span class="no">07</span>本周就能做的五件事</h2>
+
+<ol>
+  <li><strong>建仓库、打 v1.0 tag</strong>——提交前先跑一遍 <code>git status --short engine/data/</code>，
+  必须为空。这是唯一的不可逆风险，先堵死</li>
+  <li><strong>出一份免安装 zip，换台电脑验证</strong>——脚本上次已跑通，重跑一遍即可</li>
+  <li><strong>约第一个访谈对象</strong>——推荐院素拓质检部（同构，最容易），
+  只问三件事：你怎么排的、为什么派他、排错了谁找你麻烦</li>
+  <li><strong>把 <code>_probe_template.py</code> 收进验收脚本</strong>——它今晚刚抓到一个真 bug
+  （sheet 名占位符漏替换），说明它有用</li>
+  <li><strong>开始物色第二个维护者</strong>——不要等到明年 6 月。现在就找一个大一的，
+  让他跟着你做第 1 期，他会是你毕业后这个平台还活着的唯一理由</li>
+</ol>
+
+<h2><span class="no">08</span>关于宣传视频</h2>
+
+<p>你提到要做视频推广。最有力的一段素材不是功能演示，
+而是<strong>第 04 节那三张对比表</strong>——尤其是"顺序偏差"那一条：</p>
+
+<p class="note">"改之前，每周一定有一个人干双份，而且这个人永远是最后一件活的负责人。
+我们以为是随机的，跑了 50 周模拟才发现：随机只决定<strong>谁是倒霉蛋</strong>，
+<strong>一定有人倒霉</strong>是代码写死的。"</p>
+
+<p>这段话的说服力在于它<strong>承认了错误</strong>。展示一个工具多好用，别人只会觉得"还行"；
+展示你如何发现自己做错了、怎么量化它、怎么修好的，别人才会相信这个东西是真被用过的。</p>
+
+<p>另外建议视频里明确说一句定位：<strong>不做第二课堂，不做活动报名</strong>。
+学校已经有到梦空间和 i 志愿，任何"我们也能发活动"的表述都会让人以为你要抢地盘。
+一句话讲清——"到梦空间管学生参加活动，我们管机构内部这个活派给哪个干部"。</p>
+
+<p class="foot">
+广东石油化工学院 · 学生组织工作安排通用平台 · 落地方案 · 2026-10-09<br>
+配套：调研与方案报告（同目录）· 实测探针 <code>_probe_random.py</code> /
+<code>_probe_solver.py</code> / <code>_probe_template.py</code><br>
+下一步动作：第 07 节第 1、3 条——先堵死隐私风险，再约第一个访谈。
+</p>
+
+</div>
+</body>
+</html>

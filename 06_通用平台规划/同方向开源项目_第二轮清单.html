@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>同方向开源项目 · 第二轮清单（含已落地到代码的改动）</title>
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#14151A; --red:#B72C24;
+  --ink-60:rgba(20,21,26,.60); --ink-38:rgba(20,21,26,.38);
+  --line:rgba(20,21,26,.16); --white:#FFFFFF;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.85;padding:40px 24px 96px}
+.wrap{max-width:820px;margin:0 auto}
+
+.eyebrow{font-size:12px;letter-spacing:.22em;color:var(--red);margin-bottom:14px}
+h1{font-family:var(--serif);font-size:32px;font-weight:600;line-height:1.35;letter-spacing:.01em}
+.sub{margin-top:14px;color:var(--ink-60);font-size:14px}
+.meta{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38);display:flex;gap:20px;flex-wrap:wrap}
+
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:56px 0 6px;
+  padding-bottom:12px;border-bottom:1px solid var(--ink)}
+h2 .no{font-family:var(--sans);font-size:12px;color:var(--red);
+  letter-spacing:.18em;display:block;margin-bottom:8px;font-weight:500}
+h3{font-size:15px;font-weight:600;margin:32px 0 12px}
+p{margin:14px 0}
+ul,ol{margin:14px 0 14px 22px}
+li{margin:7px 0}
+strong{font-weight:600}
+code{font-family:ui-monospace,Consolas,monospace;font-size:13px;
+  background:rgba(20,21,26,.05);padding:1px 5px}
+pre{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.7;
+  background:rgba(20,21,26,.04);border:1px solid var(--line);
+  padding:14px 16px;margin:16px 0;overflow-x:auto;white-space:pre}
+
+.lead{background:var(--white);border:1px solid var(--ink);padding:26px 28px;margin:34px 0}
+.lead .tag{font-size:12px;letter-spacing:.2em;color:var(--red);margin-bottom:12px}
+.lead p{margin:10px 0}
+.lead p:first-of-type{font-family:var(--serif);font-size:18px;line-height:1.7}
+
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:rgba(20,21,26,.04);font-weight:600;font-size:13px}
+td.num{font-family:ui-monospace,Consolas,monospace;white-space:nowrap}
+
+.note{border-left:3px solid var(--red);padding:4px 0 4px 16px;margin:20px 0;
+  color:var(--ink-60);font-size:14px}
+.card{background:var(--white);border:1px solid var(--line);padding:20px 22px;margin:18px 0}
+.card h4{font-size:14px;font-weight:600;margin-bottom:8px}
+.card .who{font-size:12px;color:var(--ink-38);margin-bottom:12px}
+
+.src{font-size:12.5px;color:var(--ink-60)}
+.src li{margin:5px 0}
+.src a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);word-break:break-all}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid var(--line);
+  color:var(--ink-60);margin-left:6px;white-space:nowrap}
+.badge.a{border-color:var(--red);color:var(--red)}
+.badge.b{border-color:var(--ink);color:var(--ink);background:rgba(20,21,26,.05)}
+
+.foot{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-38)}
+
+@media (max-width:640px){
+  body{padding:24px 16px 64px;font-size:14.5px}
+  h1{font-size:26px} .wrap{overflow-x:hidden}
+  table{font-size:12.5px} th,td{padding:7px 8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="eyebrow">06 · 通用平台规划</p>
+<h1>同方向开源项目 · 第二轮清单</h1>
+<p class="sub">在第一轮 7 个仓库基础上补跑 20 组关键词（中英双语 + 主题检索），
+新验证 9 个真实仓库。本轮最重要的不是"又找到几个"，而是找到了一个<b>架构级参照物</b>，
+以及三个正在被整个领域公认、而我们还没做的价值点。</p>
+<div class="meta">
+  <span>检索日期 2026-10-10</span>
+  <span>方法 GitHub Search API（只读，未 clone 任何代码）</span>
+  <span>已落地 sort 链改写 <code>assigner.py</code></span>
+</div>
+
+<div class="lead">
+<p class="tag">一句话结论</p>
+<p>第一轮我说"star 全 0~4 ⇒ 空白区"——这个判断<b>只对了一半</b>。
+补跑后仍然没有 star 过百的同类项目，但出现了一个 MIT 协议、中文、133 个测试、带 GUI 和 exe 安装包的
+<b>同架构同行</b>（medshift，医院科室排班）。它证明这条路走得通，也证明我们<b>不能再靠"通用排班器"这个身份立足</b>。</p>
+<p>差异化只剩三块它能做、但它的场景不需要的：<b>换届传承</b>、<b>跨机构版式（上传空表只填格）</b>、
+<b>包干制 vs 轮值制的识别</b>。这三块恰好都是我们已经踩过坑的。</p>
+</div>
+
+<h2><span class="no">01</span>本轮新验证的 9 个仓库</h2>
+
+<table>
+<tr><th style="width:30%">仓库</th><th style="width:6%">★</th><th style="width:12%">协议</th><th>值钱的地方 / 能不能用</th></tr>
+
+<tr>
+  <td><b>yyjr2026/medshift</b><br><span class="src">医技科室排班器 · Python</span></td>
+  <td class="num">0</td>
+  <td><b>MIT</b> <span class="badge b">可抄</span></td>
+  <td><b>本轮头号发现</b>。声明式 YAML 五件套（staff / shifts / positions / rules / calendar）
+      + CP-SAT 求解 + 校验器 + Excel 导出 + 本地 GUI + Windows exe 安装包 + 133 个 pytest。
+      <b>架构和我们要做的 P1 几乎是同一张图纸</b>，而且它是中文的。</td>
+</tr>
+
+<tr>
+  <td><b>baxsm/shiftlock</b><br><span class="src">453 tests · CP-SAT</span></td>
+  <td class="num">0</td>
+  <td>无 LICENSE<br><span class="badge">只能用思路</span></td>
+  <td><b>无解时不是报错，是诊断</b>：抽出「最小冲突集」（哪几条规则互相打架），
+      用大白话说明，并给出「把上限改成 24 就能排出来」的按钮。我方目前只会告警「某格空着」。</td>
+</tr>
+
+<tr>
+  <td><b>slimaneoptic/shift-scheduler</b><br><span class="src">昨天刚推 · Streamlit</span></td>
+  <td class="num">0</td>
+  <td>无 LICENSE<br><span class="badge">只能用思路</span></td>
+  <td>①<b>自然语言改规则</b>："Ahmed 周四休假" → 转成严格 JSON schema 再进求解器；
+      ②<b>重排时"尽量少动"</b>：对每一处移动加惩罚，改一条规则不会把整张表翻掉；
+      ③「Explains every gap」——缺人时说明"3 人休假、4 人已达周上限"。</td>
+</tr>
+
+<tr>
+  <td><b>Aegean-E/NobetWizard</b><br><span class="src">土耳其语 · Streamlit</span></td>
+  <td class="num">1</td>
+  <td>无 LICENSE</td>
+  <td>值班表生成器，<code>scheduler.py</code> 15KB 专门放约束。单文件 Streamlit 的写法可学，
+      但无协议、领域是医院/警卫值班。</td>
+</tr>
+
+<tr>
+  <td><b>supreethrao/automated-rota-manager</b></td>
+  <td class="num">0</td>
+  <td><b>MIT</b></td>
+  <td>只做一件事：<b>公平轮换算法决定下一个该谁</b>（不做排班表）。
+      小到可以直接读完，适合当「轮值」这一级的独立参考实现。</td>
+</tr>
+
+<tr>
+  <td><b>hermes98761234/shift-scheduler</b></td>
+  <td class="num">0</td>
+  <td><b>MIT</b></td>
+  <td>DSatur 图着色 + 回溯 + 模拟退火三条路并存，
+      <b>explains infeasibility</b>。可做「贪心之外还能怎么兜底」的备选。</td>
+</tr>
+
+<tr>
+  <td><b>burdick-alex/EmployeeScheduler</b><br><span class="src">TAMU 学生组织</span></td>
+  <td class="num">6</td>
+  <td>无 LICENSE</td>
+  <td>又一个美国学生组织场景（"我在 TAMU 的学生组织里，经常需要派人去校园……"），
+      本轮 star 最高的真同类。但无协议，且是 Employee 场景顺带用的。</td>
+</tr>
+
+<tr>
+  <td><b>Buttercream91/co-coach</b> / <b>Jewhurst/PlayPositions</b></td>
+  <td class="num">0 / 1</td>
+  <td>均无 LICENSE</td>
+  <td>少年球队上场轮换：<b>"fair-rotation autofill"</b>。
+      场景不同但公平性目标完全一致 —— 可以借它们对「公平」的量化口径。</td>
+</tr>
+
+<tr>
+  <td><b>MaMaKow/dienstplan-apotheke</b><br><span class="src">药房排班 · PHP · 13★</span></td>
+  <td class="num">13</td>
+  <td><b>AGPL-3.0</b> <span class="badge a">传染性</span></td>
+  <td>本轮 star 最高的排班项目。<b>但 AGPL 比 GPL 更狠</b>（连 SaaS 都算分发）。
+      与 SU-Scheduler（GPL-3.0）同类，<b>只看不抄</b>。</td>
+</tr>
+</table>
+
+<div class="note">
+<b>协议红线（第二轮再次确认）</b>：我方 MIT。GPL-3.0 / AGPL-3.0 有传染性，
+一旦混进一行代码，整个项目被迫转协议。<code>laoshuikaixue/SU-Scheduler</code>（GPL-3.0，唯一真同类学生会排班）
+和 <code>MaMaKow/dienstplan-apotheke</code>（AGPL-3.0）都<b>只能读思路，绝不能抄代码</b>。
+<code>medshift</code> 是 MIT，可以直接读、可以引，但要<b>署名并保留其 LICENSE</b>。
+</div>
+
+<h2><span class="no">02</span>头号发现：medshift —— 我们 P1 的图纸，别人已经画好了</h2>
+
+<p>它是医院放射科排班器，v0.2 Beta，MIT，<b>133 个 pytest 全绿</b>，
+有 <code>medshift init my-dept</code> 生成配置骨架、有 Flask GUI（同样监听 127.0.0.1）、
+有 Inno Setup 打包的 Windows exe。逐条对照我们的 P1：</p>
+
+<table>
+<tr><th style="width:26%">medshift 已有的</th><th style="width:37%">它怎么做</th><th>我们 P1 该抄什么</th></tr>
+
+<tr><td>声明式配置</td>
+    <td>5 个 YAML：<code>staff / shifts / positions / rules / calendar</code></td>
+    <td>我们的 <code>org.json</code> 直接照这个切分：人员 / 班次 / 岗位 / 规则 / 日历（不可用时间）</td></tr>
+
+<tr><td>岗位有需求与技能</td>
+    <td><code>daily_need: 2</code> + <code>required_skills: [CT_SCAN]</code>，
+        人员侧写 <code>skills:</code> 与 <code>night_eligible:</code></td>
+    <td><b>我们目前完全没有这个维度</b>。认证部「不能查自己学院」就是一条反向技能约束，
+        必须先把"谁能干"建模成字段，不然规则写不出来</td></tr>
+
+<tr><td>岗位分必排 / 可空</td>
+    <td><code>requirement: optional</code> + <code>priority:</code>，
+        可选岗位人力不够就留空，<b>校验时不计入配额检查</b></td>
+    <td>我们现在是"空着就告警"，没有"这格本来就可以空"的声明。
+        P1 必须补，否则每个机构都会被告警刷屏</td></tr>
+
+<tr><td>校验器可进 CI</td>
+    <td><code>medshift check</code> 出问题清单、<b>退出码 1</b>，11 种错误码
+        （<code>UNKNOWN_STAFF</code> / <code>SKILL_MISMATCH</code> / <code>POSITION_UNDERSTAFFED</code>…）</td>
+    <td>我们的 <code>_probe_random.py</code> 已经是这个思路，但只测公平性。
+        P1 要补一个面向<b>用户配置</b>的 <code>check</code>，错误码化</td></tr>
+
+<tr><td>锁定手工改动</td>
+    <td>求解器收 <code>fixed=[Assignment(...)]</code>；GUI 有「保留改动」复选框</td>
+    <td>和我们的 <code>locked</code> 完全一致 —— <b>验证了这个设计是行业共识，不用改</b></td></tr>
+
+<tr><td>脱敏示例</td>
+    <td><code>examples/radiology/</code> 里姓名编号全是虚构占位符，含一整周排班数据</td>
+    <td>和我们的脱敏做法一致，照做即可</td></tr>
+
+<tr><td>统计口径单一实现</td>
+    <td><code>stats.py</code> 是"统计口径的唯一实现"</td>
+    <td>我们现在的统计散在 <code>_load()</code> / <code>_campus_load()</code> / <code>load_stats()</code> 三处，
+        P1 应收敛到一处</td></tr>
+</table>
+
+<div class="note">
+它<b>没有</b>的、正好是我们的机会：① 不做换届交接；② 不做"上传你的空表、我只填格"
+（它导出的是自己固定的 Excel 版式）；③ 不区分包干制与轮值制（医院科室天然都是轮值制）。
+这三条正是我们踩过坑、且广油场景真实需要的东西。
+</div>
+
+<h2><span class="no">03</span>三个正在被公认的价值点（2026 年新仓库里密集出现）</h2>
+
+<p>把两轮 20 组关键词的结果放一起看，star 数几乎全是 0，但描述里反复出现三个词。
+这说明<b>没人做成 ≠ 需求不存在</b>，而是大家都在往同三个方向挤：</p>
+
+<div class="card">
+<h4>① 可解释 —— "为什么是他"</h4>
+<p class="who">shiftlock（453 测试）、shift-scheduler、kanwarvig/shiftcraft-scheduler、ZHXY 悬停显示规则</p>
+<p>四个独立项目都在做。<b>我们已经有了</b>（<code>explain=true</code> 逐格输出理由、前端悬停显示），
+这点不落后，甚至可以拿去当宣传点。</p>
+</div>
+
+<div class="card">
+<h4>② 公平轮换 —— "凭什么总是他"</h4>
+<p class="who">automated-rota-manager（MIT）、co-coach、PlayPositions、medshift 的 <code>night_balance_weight</code></p>
+<p>我们有 50 周实测（人均极差 1 件、标准差 0.24），但<b>没有把这个数字写进 README 当卖点</b>，
+也<b>没有"公平性报告"这个出口</b>。medshift 有 <code>stats</code> 命令专门出这个 —— P1 要补。</p>
+</div>
+
+<div class="card">
+<h4>③ 无解诊断 —— "排不出来时说清为什么"</h4>
+<p class="who">shiftlock 的最小冲突集、shift-scheduler 的 explains every gap、hermes98761234 的 explains infeasibility</p>
+<p><b>这是我们最大的短板。</b>目前无解的表现是「某格空着 + 一条告警」，用户不知道是哪条规则卡死的、
+更不知道改哪个数字能解开。P1/P2 明确要补。</p>
+</div>
+
+<h2><span class="no">04</span>已落地：sort 链改写主代码（今日完成）</h2>
+
+<p>上一轮我从 <code>Thomblin/duty-roster</code> 学到的「规则写成一串 sort，而不是加权求和成一个代价分」，
+今天已经进主代码。<code>05_工作安排/engine/core/assigner.py</code>：</p>
+
+<pre># 旧：加权求和（四个常数，实测只有 1 个真在起作用）
+COST_REPEAT_LAST_WEEK = 80
+COST_ROTATED_ONCE = 30
+COST_ROTATED_MORE = 12
+COST_FLEX = 25
+cost = 80*repeat + (30 + (total-1)*12) + 25*flex
+sort by (cost, hash)
+
+# 新：排序链（逐级比较，常数全部消失）
+SORT_CHAIN = ["avoid_last_week", "least_loaded", "own_campus_first"]
+rank = (
+    1 if 上周做过这件活 else 0,
+    历史累计 + 本周已派,
+    0 if 能干这一列 else 1,
+)
+sort by (rank, hash)</pre>
+
+<table>
+<tr><th style="width:34%">验证项</th><th style="width:22%">结果</th><th>说明</th></tr>
+<tr><td>第 11 周逐格对比</td><td class="num">18/18 相同，差异 0</td><td>不违反「质检部结果逐格不变」门禁</td></tr>
+<tr><td>50 周公平性（四项）</td><td class="num">与旧版全同</td><td>人均极差 1 件 / 标准差 0.24 / 忙碌度极差 0.00 / 上周重复 11 次</td></tr>
+<tr><td><code>_probe_random.py</code></td><td class="num">全绿</td><td>可复现性、重摇、平局率、顺序偏差、长期公平 5 组全过</td></tr>
+<tr><td><code>web/e2e.cjs</code></td><td class="num">43 项全过</td><td>含导出表逐格比对</td></tr>
+<tr><td>前端类型检查</td><td class="num">tsc 0 error</td><td>explain 结构同步改造（<code>cost:number</code> → <code>chain:[]</code>）</td></tr>
+</table>
+
+<p><b>顺带修掉的三个真问题</b>：</p>
+<ol>
+<li><code>COST_FLEX</code> 是<b>死代码</b> —— <code>slot_pool</code> 已经按 <code>can_do</code> 过滤过，
+    自动路径永远触发不到。现在它是链上第 3 级，语义明确（"缺人了才让机动人员补"），不再是假装生效的常数。</li>
+<li><b>轮值项线性膨胀</b>会后期压过固定的 80 —— 50 周后轮值项约 642，上周回避（80）在学期末就废了。
+    sort 链里它永远排第 1 级，<b>不会隐式失效</b>。</li>
+<li>「为什么是他」从"合计 110 分"变成<b>逐级人话</b>：
+    <br><code>上周没做过这件活 · 累计 1 件（历史 1 + 本周 0） · 本校区 —— 在第 2 级「累计件数」胜出（累计 1 件 vs 累计 2 件）</code>
+    <br>如果每一级都并列，会明说「各项完全并列，按本周确定性序列裁决（可复现）」——
+    <b>不装作是规则决定的</b>。</li>
+</ol>
+
+<div class="note">
+新增规则的代价从「回答这个常数该是多少、会不会把别的指标带坏」
+变成「回答这条规则排第几」。<b>排第几是有语义的，权重多少没有。</b>
+这正是 P1 配置化最需要的东西 —— 不然每接一个机构就要重新调一遍权重。
+</div>
+
+<h2><span class="no">05</span>判断修正：不是"没人做"，是"没人做成"</h2>
+
+<p>两轮加起来验证了 16 个仓库，star 分布是 0、0、0、1、1、1、3、4、6、13、15。
+上一轮我据此说"空白区确认"，现在要打个折：</p>
+
+<ul>
+<li><b>仍然成立</b>：没有 star 过百的同类项目；没有任何一个做的是「学生组织内部派活 + 跨机构版式 + 换届传承」这个组合。</li>
+<li><b>需要修正</b>：star 低不代表需求不存在。medshift 一个人 133 个测试做到 v0.2 还发 exe，
+    shiftlock 453 个测试 —— <b>这些是认真做的项目，只是没人知道</b>。
+    推广难度比"空白区"三个字暗示的要大。</li>
+<li><b>对我们的直接含义</b>：价值锚点必须钉死在<b>它们不做、我们要做</b>的三块
+    （换届交接包 / 上传空表只填格 / 包干制识别），而不是"我也能排班"。
+    <b>秘书长那句"作用不大，部长自己分配也不难"，正是对"我也能排班"的正确评价。</b></li>
+</ul>
+
+<h2><span class="no">06</span>下一步</h2>
+
+<div class="card">
+<h4>代码侧（今天已完成，下一步可继续）</h4>
+<p class="who">P0 剩余</p>
+<ul>
+<li><code>git init</code> + <code>v1.0</code> tag + 免安装 zip（medshift 有 <code>docs/windows-packaging.md</code>，可直接照它的打包思路）</li>
+<li>README 补「每个功能怎么用」—— 学 medshift 那份 README 的<b>逐功能逐交互</b>写法</li>
+<li>把 50 周公平性实测表写进 README 当卖点（现在只在内部探针里）</li>
+</ul>
+</div>
+
+<div class="card">
+<h4>采集侧（下周二三部门会）</h4>
+<p class="who">规划部 + 质检部 + 认证部 都在场</p>
+<ul>
+<li>头号问题仍是<b>包干制 vs 轮值制</b>：包干制的部门根本不需要排班工具，硬推只会添乱</li>
+<li>认证部要问<b>回避规则</b>（能不能查自己学院）—— 这是"反向技能约束"，
+    正好对应 medshift 的 <code>required_skills</code>，说明 P1 必须先建技能维度</li>
+<li>会上只做一次 30 秒集体说明、<b>绝不逐个点名要</b>（会被"回头给你"搪塞）；
+    要东西留到散会后一对一；现场必须拿到一样实物</li>
+</ul>
+</div>
+
+<h2><span class="no">07</span>本轮信息源</h2>
+<ul class="src">
+<li>所有仓库均通过 GitHub Search API 现场检索验证（<code>api.github.com/search/repositories</code>），
+    未 clone、未下载任何代码；GPL/AGPL 项目仅阅读公开 README 与文件树</li>
+<li>medshift：yyjr2026/medshift — README（13.5KB）、<code>examples/radiology/{staff,positions,rules}.yaml</code>、完整文件树</li>
+<li>shiftlock：baxsm/shiftlock — README（7.1KB）</li>
+<li>shift-scheduler：slimaneoptic/shift-scheduler — README、文件树（<code>nl_parser.py</code> / <code>model.py</code> / <code>export.py</code> / <code>tests/</code>）</li>
+<li>第一轮 7 个仓库见《广油学生组织工作安排平台 · 调研与方案》第 9 节</li>
+</ul>
+
+<p class="foot">
+广东石油化工学院 校素质拓展中心质检部 · 冯靖豪<br>
+生成于 2026-10-10 · 第二轮开源检索 + sort 链落地
+</p>
+
+</div>
+</body>
+</html>

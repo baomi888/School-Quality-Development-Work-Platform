@@ -82,6 +82,7 @@ class Task:
 LEDGER_FILE = "ledger.json"
 PEOPLE_FILE = "people.json"
 TASKS_FILE = "tasks.json"
+PLAN_FILE = "plan.json"          # 某周「完整分配网格」，供小助理只读反查「本周我负责」
 
 # ⚠️ 已移除硬编码 DEPARTMENT = "质检部"：部门改为可配置的注册表（见 OrgRegistry）。
 
@@ -360,3 +361,13 @@ class Store:
             data = self.ledger()
             data.get("weeks", {}).pop(str(week), None)
             self._write(LEDGER_FILE, data)
+
+    # ---- 本周完整分配网格（含校区/搭档），供小助理只读反查
+    def save_plan(self, week: int | str, assign: dict) -> None:
+        """保存某一周「完整分配网格」{task_id: {列: [pid...]}}，用于小助理视图。"""
+        with self._lock:
+            self._write(PLAN_FILE, {"week": int(week), "assign": assign})
+
+    def load_plan(self) -> dict | None:
+        with self._lock:
+            return self._read(PLAN_FILE, None)

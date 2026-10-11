@@ -17,6 +17,9 @@
   POST /api/clear-week?dept  撤销某周台账
   GET  /api/ledger?dept      查看台账
   POST /api/export?dept      导出 xlsx
+  GET  /api/check-key        验证管理口令（管理层入口登录用）
+  GET  /api/my-tasks?dept&name  小助理只读：本周我负责的任务
+  POST /api/settings         修改管理口令（需旧口令）
 """
 
 from __future__ import annotations
@@ -29,7 +32,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Header
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -76,6 +79,34 @@ def _migrate_legacy_data() -> None:
 _migrate_legacy_data()
 
 WEEK_NO = 11          # 默认周次（排班周次，不随部门变化）
+
+
+# ------------------------------------------------------------ 管理层口令（分区防小助理乱改派活）
+
+# 默认口令（开源占位，领导务必在「设置 → 管理口令」改掉）。
+# 文件 engine/data/manage_key.txt 一旦写入即覆盖默认值；该文件已被 .gitignore 排除，不会进仓库。
+DEFAULT_MANAGE_KEY = "sutuo"
+MANAGE_KEY_FILE = DATA_DIR / "manage_key.txt"
+
+
+def load_manage_key() -> str:
+    if MANAGE_KEY_FILE.exists():
+        return MANAGE_KEY_FILE.read_text(encoding="utf-8").strip()
+    return DEFAULT_MANAGE_KEY
+
+
+def save_manage_key(new_key: str) -> None:
+    MANAGE_KEY_FILE.write_text((new_key or "").strip(), encoding="utf-8")
+
+
+def require_manage(key: str | None = Header(None, alias="X-Manage-Key")) -> bool:
+    """所有「会改变数据」的接口都挂这个依赖：无正确口令 → 403。
+
+    小助理视图只调只读的 /api/my-tasks，永远不碰这些接口，所以改不了派活。"""
+    mk = load_manage_key()
+    if mk and key != mk:
+        raise HTTPException(status_code=403, detail="管理口令错误或无权限")
+    return True
 
 
 # ------------------------------------------------------------ 数据装配
@@ -195,6 +226,10 @@ class OrgCreateReq(BaseModel):
     has_duty: bool = False
 
 
+class KeyReq(BaseModel):
+    new_key: str = ""        # 新管理口令（空 = 清空为默认口令）
+
+
 # ------------------------------------------------------------ API
 
 @app.get("/api/health")
@@ -224,7 +259,7 @@ def list_orgs():
 
 
 @app.post("/api/orgs")
-def create_org(req: OrgCreateReq):
+def create_org(req: OrgCreateReq, _: bool = Depends(require_manage)):
     payload = req.dict()
     if not payload.get("export"):
         payload["export"] = _default_plan(payload.get("slots", []), payload.get("name", "部门"))
@@ -267,7 +302,7 @@ def bootstrap(dept: str = "zjb"):
 
 
 @app.post("/api/people")
-def save_people(req: PeopleReq, dept: str = "zjb"):
+def save_people(req: PeopleReq, dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
     org = registry.get(dept)
     valid = set(org.get("slots", []))
@@ -295,7 +330,7 @@ def save_people(req: PeopleReq, dept: str = "zjb"):
 
 
 @app.post("/api/tasks")
-def save_tasks(req: TasksReq, dept: str = "zjb"):
+def save_tasks(req: TasksReq, dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
     rows = []
     for i, r in enumerate(req.rows):
@@ -315,7 +350,7 @@ def save_tasks(req: TasksReq, dept: str = "zjb"):
 
 
 @app.post("/api/assign")
-def assign(req: AssignReq, dept: str = "zjb"):
+def assign(req: AssignReq, dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
     org = registry.get(dept)
     people = _people_objs(store)
@@ -378,7 +413,7 @@ def assign(req: AssignReq, dept: str = "zjb"):
 
 
 @app.post("/api/commit")
-def commit(req: CommitReq, dept: str = "zjb"):
+def commit(req: CommitReq, dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
     names = _name_map(store)
     tasks = _task_objs(store)
@@ -392,24 +427,26 @@ def commit(req: CommitReq, dept: str = "zjb"):
                 if t.name not in lst:
                     lst.append(t.name)
     store.commit_week(req.week, inv)
+    # 同时保存「完整分配网格」，小助理只读视图据此反查「本周我负责」
+    store.save_plan(req.week, req.assign)
     return {"ok": True, "week": req.week, "committed": {names.get(k, k): v for k, v in inv.items()}}
 
 
 @app.post("/api/clear-week")
-def clear_week(req: CommitReq, dept: str = "zjb"):
+def clear_week(req: CommitReq, dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
     store.clear_week(req.week)
     return {"ok": True, "week": req.week}
 
 
 @app.get("/api/ledger")
-def ledger(dept: str = "zjb"):
+def ledger(dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
     return {"ok": True, "ledger": store.ledger()}
 
 
 @app.post("/api/export")
-def export(req: ExportReq, dept: str = "zjb"):
+def export(req: ExportReq, dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
     org = registry.get(dept)
     people = _people_objs(store)
@@ -445,6 +482,50 @@ def export(req: ExportReq, dept: str = "zjb"):
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": exporter.content_disposition(req.week, prefix=prefix)},
     )
+
+
+# ------------------------------------------------------------ 分区：管理层口令 / 小助理只读
+
+@app.get("/api/check-key")
+def check_key(_: bool = Depends(require_manage)):
+    """管理层入口登录：口令正确返回 200/ok，错误返回 403。"""
+    return {"ok": True}
+
+
+@app.get("/api/my-tasks")
+def my_tasks(dept: str = "zjb", name: str = ""):
+    """小助理只读入口：返回某人本周被安排的全部任务（只含自己，不含他人，无法改派）。"""
+    store = get_store(dept)
+    people = _people_objs(store)
+    target = next((p for p in people if p.name.strip() == name.strip()), None)
+    if not target:
+        raise HTTPException(404, f"在「{dept}」部门里找不到名为「{name}」的人员")
+    plan = store.load_plan()
+    if not plan or not plan.get("assign"):
+        return {"ok": True, "week": WEEK_NO, "committed": False,
+                "name": target.name, "tasks": []}
+    grid = plan["assign"]                 # {task_id: {列: [pid...]}}
+    meta = {t.id: t for t in _task_objs(store)}
+    rows: list[dict] = []
+    for tid, cells in grid.items():
+        for slot, pids in cells.items():
+            if target.id in pids:
+                t = meta.get(tid)
+                rows.append({
+                    "task": t.name if t else tid,
+                    "slot": slot,
+                    "note": t.note if t else "",
+                    "tag": t.tag if t else "routine",
+                })
+    return {"ok": True, "week": plan.get("week", WEEK_NO), "committed": True,
+            "name": target.name, "tasks": rows}
+
+
+@app.post("/api/settings")
+def update_settings(req: KeyReq, _: bool = Depends(require_manage)):
+    """修改管理口令：须在 Header 带旧口令（X-Manage-Key），body 传 new_key。"""
+    save_manage_key(req.new_key)
+    return {"ok": True}
 
 
 # ------------------------------------------------------------ 前端静态页

@@ -107,9 +107,16 @@ export interface AssignResult {
 
 const BASE = ''
 
+// 管理层口令：通过 X-Manage-Key 头传给所有「会改变数据」的接口。
+// 小助理视图只调只读接口（orgs/bootstrap/my-tasks），永远不带这个头，所以改不了派活。
+let API_KEY = ''
+export function setApiKey(k: string) { API_KEY = k || '' }
+
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (API_KEY) headers['X-Manage-Key'] = API_KEY
   const res = await fetch(BASE + path, {
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     ...init,
   })
   if (!res.ok) {
@@ -154,7 +161,7 @@ export const api = {
   async exportXlsx(dept: string, week: number, assign: Assign) {
     const res = await fetch(BASE + `/api/export?dept=${encodeURIComponent(dept)}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(API_KEY ? { 'X-Manage-Key': API_KEY } : {}) },
       body: JSON.stringify({ week, assign }),
     })
     if (!res.ok) throw new Error(`导出失败 HTTP ${res.status}`)
@@ -167,4 +174,13 @@ export const api = {
     a.remove()
     setTimeout(() => URL.revokeObjectURL(a.href), 1000)
   },
+  // 验证管理层口令（入口登录用）；错误抛 403
+  checkKey: () => req<{ ok: boolean }>('/api/check-key'),
+  // 小助理只读：本周我负责的任务
+  myTasks: (dept: string, name: string) =>
+    req<{ ok: boolean; week: number; committed: boolean; name: string; tasks: { task: string; slot: string; note: string; tag: string }[] }>(
+      `/api/my-tasks?dept=${encodeURIComponent(dept)}&name=${encodeURIComponent(name)}`),
+  // 修改管理口令（须在已登录状态下调用）
+  saveManageKey: (newKey: string) =>
+    req<{ ok: boolean }>('/api/settings', { method: 'POST', body: JSON.stringify({ new_key: newKey }) }),
 }

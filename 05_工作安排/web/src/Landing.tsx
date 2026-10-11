@@ -10,24 +10,41 @@ const ARCH_LABEL: Record<string, string> = {
 const ARCH_LABEL_FALLBACK = (a: string) => a || '自定义'
 
 // 落地页（部门选择门面）—— 档案台设计语言：暖纸 / 冷墨 / 单正红、零圆角、硬线、留白、衬线巨字。
-// 点一张部门卡 → onEnter(id) 进入该部门的工作台；「新建部门」→ onNewDept 打开弹窗。
+// 点一张部门卡 → 管理层 onEnter(id) / 小助理 onAssistEnter(id) 进入对应视图；「新建部门」→ onNewDept。
 export function Landing({
-  orgs, onEnter, onNewDept,
+  orgs, onEnter, onNewDept, role, onRole, onAssistEnter,
 }: {
   orgs: Org[]
   onEnter: (id: string) => void
   onNewDept: () => void
+  role: 'manage' | 'assist'
+  onRole: (r: 'manage' | 'assist') => void
+  onAssistEnter: (id: string) => void
 }) {
   const totalAssists = orgs.reduce((s, o) => s + (o.stats?.assists ?? 0), 0)
   const totalWeeks = orgs.reduce((s, o) => s + (o.stats?.weeks_stored ?? 0), 0)
+  const isAssist = role === 'assist'
 
   return (
     <div className="landing">
       {/* ---------------- 顶栏 ---------------- */}
       <header className="l-top">
         <div className="l-mark">校素拓<b>·</b>工作安排平台</div>
-        <button className="btn primary" onClick={onNewDept}>＋ 新建部门</button>
+        {!isAssist && <button className="btn primary" onClick={onNewDept}>＋ 新建部门</button>}
       </header>
+
+      {/* ---------------- 身份切换（分区：管理层 / 小助理） ---------------- */}
+      <div className="role-switch l-reveal" style={{ animationDelay: '0ms' }}>
+        <button className={`role-tab ${!isAssist ? 'on' : ''}`} onClick={() => onRole('manage')}>
+          管理层
+        </button>
+        <button className={`role-tab ${isAssist ? 'on' : ''}`} onClick={() => onRole('assist')}>
+          小助理
+        </button>
+        <span className="role-hint">
+          {isAssist ? '只读本人任务 · 不能改派' : '可派活 / 提交 / 导出（需口令）'}
+        </span>
+      </div>
 
       {/* ---------------- Hero ---------------- */}
       <section className="l-hero">
@@ -43,13 +60,27 @@ export function Landing({
         <div className="l-reveal" style={{ animationDelay: '60ms' }}>
           <div className="kicker"><span className="k-dot" />SUPT · 全校学生组织工作安排平台</div>
         </div>
-        <h1 className="l-title l-reveal" style={{ animationDelay: '130ms' }}>
-          选你所在的部门，<br />进入它的<span className="hl-red">工作安排台</span>
-        </h1>
-        <p className="l-sub l-reveal" style={{ animationDelay: '150ms' }}>
-          为全校约 122 个机构安排干部工作。公平可解释、长期均衡、可跨届传承——
-          同一套内核，每个部门一张独立台账。
-        </p>
+        {isAssist ? (
+          <>
+            <h1 className="l-title l-reveal" style={{ animationDelay: '130ms' }}>
+              选你所在的部门，<br />查<span className="hl-red">本周我负责</span>的任务
+            </h1>
+            <p className="l-sub l-reveal" style={{ animationDelay: '150ms' }}>
+              小助理视图是只读的——只能看到管理层给你安排好的工作，不能自行改派。
+              选部门、选名字即可查看。
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="l-title l-reveal" style={{ animationDelay: '130ms' }}>
+              选你所在的部门，<br />进入它的<span className="hl-red">工作安排台</span>
+            </h1>
+            <p className="l-sub l-reveal" style={{ animationDelay: '150ms' }}>
+              为全校约 122 个机构安排干部工作。公平可解释、长期均衡、可跨届传承——
+              同一套内核，每个部门一张独立台账。
+            </p>
+          </>
+        )}
         <div className="l-stats l-reveal" style={{ animationDelay: '230ms' }}>
           <div className="ls"><b>{orgs.length}</b><span>已接入部门</span></div>
           <div className="ls"><b>{totalAssists}</b><span>在册助理</span></div>
@@ -71,7 +102,7 @@ export function Landing({
               className="dept-card l-reveal"
               key={o.id}
               style={{ animationDelay: `${300 + i * 55}ms` }}
-              onClick={() => onEnter(o.id)}
+              onClick={() => (isAssist ? onAssistEnter(o.id) : onEnter(o.id))}
             >
               <div className="dc-idx">{String(i + 1).padStart(2, '0')}</div>
               <div className="dc-name">{o.name}</div>
@@ -86,11 +117,13 @@ export function Landing({
               <div className="dc-enter">进入 →</div>
             </button>
           ))}
-          <button className="dept-card new" onClick={onNewDept}>
-            <div className="dc-plus">＋</div>
-            <div className="dc-name">新建部门</div>
-            <div className="dc-arch">填名称 · 选版式 · 零代码</div>
-          </button>
+          {!isAssist && (
+            <button className="dept-card new" onClick={onNewDept}>
+              <div className="dc-plus">＋</div>
+              <div className="dc-name">新建部门</div>
+              <div className="dc-arch">填名称 · 选版式 · 零代码</div>
+            </button>
+          )}
         </div>
       </section>
 

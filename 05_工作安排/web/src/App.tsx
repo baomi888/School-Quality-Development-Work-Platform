@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { api, type Assign, type AssignResult, type Org, type Person, type Task, type Warning,
+import { api, setApiKey, type Assign, type AssignResult, type Org, type Person, type Task, type Warning,
          type Explain, type ExplainCell } from './api'
 import { Landing } from './Landing'
+import { AssistantView } from './AssistantView'
 
 declare const __BUILD_STAMP__: string
 
@@ -511,7 +512,24 @@ export default function App() {
   const [showPool, setShowPool] = useState(false)
   const [dutyDaily, setDutyDaily] = useState<Record<string, Record<string, string[]>>>({})
   const [showNewDept, setShowNewDept] = useState(false)
-  const [view, setView] = useState<'landing' | 'branch' | 'workbench' | 'web4'>('landing')
+  const [view, setView] = useState<'landing' | 'branch' | 'workbench' | 'web4' | 'assist'>('landing')
+
+  // ---------------- 分区：管理层 / 小助理 ----------------
+  const [role, setRole] = useState<'manage' | 'assist'>('manage')
+  const [assistDept, setAssistDept] = useState('zjb')
+  const [manageKey, setManageKey] = useState(() => localStorage.getItem('zjb_manage_key') || '')
+  const [showKeyModal, setShowKeyModal] = useState(false)
+  const [pendingDept, setPendingDept] = useState('zjb')
+  const [keyInput, setKeyInput] = useState('')
+  const [keyErr, setKeyErr] = useState('')
+  const [showKeySettings, setShowKeySettings] = useState(false)
+  const [newKey, setNewKey] = useState('')
+  const [newKey2, setNewKey2] = useState('')
+  const [settingsErr, setSettingsErr] = useState('')
+
+  // 管理层口令同步给 api（只读的小助理接口不带它）
+  useEffect(() => { setApiKey(manageKey) }, [manageKey])
+
 
   const say = useCallback((m: string) => {
     setToast(m)
@@ -536,11 +554,13 @@ export default function App() {
     setExplain({})
   }, [say])
 
-  // 进入某个部门：有独立 Web 端的（如质检部）先弹分支选择；其余直接进工作台
-  const enterDept = useCallback(async (id: string) => {
-    if (WEB_APPS[id]) {
-      setDeptId(id)
-      setView('branch')
+  // 进入工作台（管理层）：未持有口令则弹出口令框，验证通过才进
+  const goWorkbench = useCallback(async (id: string) => {
+    if (!manageKey) {
+      setPendingDept(id)
+      setKeyInput('')
+      setKeyErr('')
+      setShowKeyModal(true)
       return
     }
     try {
@@ -549,7 +569,44 @@ export default function App() {
     } catch (e: any) {
       say('进入失败：' + e.message)
     }
-  }, [loadOrg, say])
+  }, [manageKey, loadOrg, say])
+
+  // 进入某个部门：有独立 Web 端的（如质检部）先弹分支选择；其余直接进工作台
+  const enterDept = useCallback(async (id: string) => {
+    if (WEB_APPS[id]) {
+      setDeptId(id)
+      setView('branch')
+      return
+    }
+    await goWorkbench(id)
+  }, [goWorkbench])
+
+  // 口令校验：通过则记住并进入工作台
+  const submitKey = useCallback(async () => {
+    setApiKey(keyInput)
+    try {
+      await api.checkKey()
+      setManageKey(keyInput)
+      localStorage.setItem('zjb_manage_key', keyInput)
+      setShowKeyModal(false)
+      await goWorkbench(pendingDept)
+    } catch (e: any) {
+      setApiKey('')
+      setKeyErr('口令错误，或服务器未启动')
+    }
+  }, [keyInput, pendingDept, goWorkbench])
+
+  // 修改管理口令（已登录状态下）
+  const submitNewKey = useCallback(async () => {
+    if (newKey !== newKey2) { setSettingsErr('两次输入不一致'); return }
+    try {
+      await api.saveManageKey(newKey)
+      setManageKey(newKey)
+      localStorage.setItem('zjb_manage_key', newKey)
+      setShowKeySettings(false)
+      say('管理口令已更新')
+    } catch (e: any) { setSettingsErr('修改失败：' + e.message) }
+  }, [newKey, newKey2, say])
 
   // 初始进入落地页：只拉部门清单（不自动进某个部门）
   useEffect(() => {
@@ -720,19 +777,63 @@ export default function App() {
   return (
     <>
       {showNewDept && <NewDeptModal onClose={() => setShowNewDept(false)} onCreate={onCreateDept} />}
+
+      {showKeyModal && (
+        <div className="modal-mask" onClick={() => setShowKeyModal(false)}>
+          <div className="modal key-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>管理层口令</h3>
+            <p className="m-sub">输入管理口令才能进入派活界面。小助理没有口令，无法进入或改派。</p>
+            <input
+              type="password" autoFocus value={keyInput}
+              onChange={(e) => setKeyInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') submitKey() }}
+              placeholder="请输入管理口令"
+            />
+            {keyErr && <div className="m-err">{keyErr}</div>}
+            <div className="m-actions">
+              <button className="btn ghost" onClick={() => setShowKeyModal(false)}>取消</button>
+              <button className="btn primary" onClick={submitKey}>进入</button>
+            </div>
+            <p className="m-tip">默认口令为 <b>sutuo</b>，首次使用请在下方「修改口令」中改掉。</p>
+          </div>
+        </div>
+      )}
+
+      {showKeySettings && (
+        <div className="modal-mask" onClick={() => setShowKeySettings(false)}>
+          <div className="modal key-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>修改管理口令</h3>
+            <p className="m-sub">新口令保护派活 / 提交 / 导出等接口。留空 = 重置为默认口令。</p>
+            <input type="password" value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="新口令" />
+            <input type="password" value={newKey2} onChange={(e) => setNewKey2(e.target.value)} placeholder="再次输入新口令" />
+            {settingsErr && <div className="m-err">{settingsErr}</div>}
+            <div className="m-actions">
+              <button className="btn ghost" onClick={() => setShowKeySettings(false)}>取消</button>
+              <button className="btn primary" onClick={submitNewKey}>保存</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {toast && <div className="toast">{toast}</div>}
       {view === 'landing' ? (
-        <Landing orgs={orgs} onEnter={enterDept} onNewDept={() => setShowNewDept(true)} />
+        <Landing
+          orgs={orgs}
+          onEnter={enterDept}
+          onNewDept={() => setShowNewDept(true)}
+          role={role}
+          onRole={setRole}
+          onAssistEnter={(id) => { setAssistDept(id); setView('assist') }}
+        />
       ) : view === 'branch' ? (
         <BranchView
           orgName={curOrgName}
-          onWorkbench={async () => {
-            try { await loadOrg(deptId); setView('workbench') }
-            catch (e: any) { say('进入失败：' + e.message) }
-          }}
+          onWorkbench={() => goWorkbench(deptId)}
           onWeb4={() => setView('web4')}
           onBack={() => setView('landing')}
         />
+      ) : view === 'assist' ? (
+        <AssistantView deptId={assistDept} onBack={() => setView('landing')} />
       ) : view === 'web4' ? (
         <Web4View url={WEB_APPS[deptId]!} orgName={curOrgName} onBack={() => setView('branch')} />
       ) : (
@@ -744,6 +845,9 @@ export default function App() {
         </div>
         {view === 'workbench' && (
           <button className="btn ghost l-back" onClick={() => (WEB_APPS[deptId] ? setView('branch') : setView('landing'))} title="返回部门选择">← 部门</button>
+        )}
+        {view === 'workbench' && (
+          <button className="btn ghost" onClick={() => { setNewKey(''); setNewKey2(''); setSettingsErr(''); setShowKeySettings(true) }} title="修改保护派活/提交/导出的口令">修改口令</button>
         )}
         <div className="deptsel">
           <label>部门</label>

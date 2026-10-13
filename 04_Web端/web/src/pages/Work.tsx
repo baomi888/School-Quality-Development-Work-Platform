@@ -355,9 +355,13 @@ export default function Work() {
             <section className="card">
               <div className="card-head">
                 <span className="card-no">01</span>
-                <h2 className="card-title">上传本周活动登记表</h2>
+                <h2 className="card-title">上传活动登记表</h2>
               </div>
-              <p className="card-desc">支持规划部发的总表，也支持已经拆好的单校区表。格式会原样保留（宋体、边框、标题合并）。</p>
+              <p className="card-desc">
+                支持规划部发的本周总表、已拆好的单校区表，也支持<strong>历史总表</strong>。
+                文件名或表格标题里含「第 X 周」即可自动识别并归档到对应周次，方便长期补录台账。
+                格式会原样保留（宋体、边框、标题合并）。
+              </p>
               <div
                 className={`dropzone ${over ? 'over' : ''}`}
                 role="button"

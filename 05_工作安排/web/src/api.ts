@@ -183,4 +183,28 @@ export const api = {
   // 修改管理口令（须在已登录状态下调用）
   saveManageKey: (newKey: string) =>
     req<{ ok: boolean }>('/api/settings', { method: 'POST', body: JSON.stringify({ new_key: newKey }) }),
+  // 导入历史安排表：force=false 仅解析预览，force=true 写入台账
+  async importHistory(dept: string, week: number | null, file: File, force = false) {
+    const form = new FormData()
+    form.append('file', file)
+    const q = `dept=${encodeURIComponent(dept)}&force=${force}` + (week != null ? `&week=${week}` : '')
+    const res = await fetch(BASE + `/api/import-history?${q}`, {
+      method: 'POST',
+      headers: API_KEY ? { 'X-Manage-Key': API_KEY } : {},
+      body: form,
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      const msg = data.detail || data.message || `导入失败 HTTP ${res.status}`
+      throw Object.assign(new Error(msg), data)
+    }
+    return data as {
+      ok: boolean
+      week: number
+      detected_week: number | null
+      committed: Record<string, Record<string, string[]>>
+      unmatched_names: string[]
+      unmatched_tasks: string[]
+    }
+  },
 }

@@ -32,7 +32,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from fastapi import Depends, FastAPI, HTTPException, Header
+from fastapi import Depends, FastAPI, HTTPException, Header, UploadFile, File
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -46,6 +46,7 @@ from core.models import (  # noqa: E402
 )
 from core import duty as duty_data  # noqa: E402
 from core import exporter  # noqa: E402
+from core import importer  # noqa: E402
 from core.assigner import Assigner, load_stats  # noqa: E402
 
 DATA_DIR = Path(os.environ.get("ZJB_WORK_DATA", BASE / "data"))
@@ -526,6 +527,79 @@ def update_settings(req: KeyReq, _: bool = Depends(require_manage)):
     """修改管理口令：须在 Header 带旧口令（X-Manage-Key），body 传 new_key。"""
     save_manage_key(req.new_key)
     return {"ok": True}
+
+
+# ------------------------------------------------------------ 导入历史安排表（恢复台账）
+
+@app.post("/api/import-history")
+def import_history(
+    file: UploadFile = File(...),
+    dept: str = "zjb",
+    week: int | None = None,
+    force: bool = False,
+    _: bool = Depends(require_manage),
+):
+    """上传历史「第 X 周工作安排表」xlsx，解析后写入台账 + plan。
+
+    两步调用：
+      1) force=false（默认）只解析并返回预览，不写入；
+      2) 前端确认无未匹配项后，force=true 再写入。
+    """
+    store = get_store(dept)
+    org = registry.get(dept) or {}
+    people = _people_rows(store)
+    # 给 tasks 补齐 id（旧数据可能缺失），导入按 id 落 plan.json
+    tasks = []
+    for i, r in enumerate(store.tasks(), start=1):
+        d = dict(r)
+        d.setdefault("id", f"t_{i:02d}")
+        tasks.append(d)
+    slots = org.get("slots") or ["西城", "官渡"]
+
+    # 保存上传文件到临时目录
+    suffix = Path(file.filename or "schedule.xlsx").suffix or ".xlsx"
+    import tempfile
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+    try:
+        tmp.write(file.file.read())
+        tmp.close()
+
+        preview = importer.preview_import(str(tmp.name), people, tasks, slots)
+        detected_week = preview.get("week")
+        target_week = week if week is not None else (detected_week or WEEK_NO)
+
+        unmatched_names = preview.get("unmatched_names", [])
+        unmatched_tasks = preview.get("unmatched_tasks", [])
+
+        if not force and (unmatched_names or unmatched_tasks):
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "week": target_week,
+                    "detected_week": detected_week,
+                    "unmatched_names": unmatched_names,
+                    "unmatched_tasks": unmatched_tasks,
+                    "preview": preview.get("rows", []),
+                    "detail": "存在未匹配的人名或任务，确认无误后再传 force=true 写入",
+                },
+            )
+
+        # force=true 或无未匹配项：写入
+        importer.commit_import(store, target_week, preview["assign"], people, tasks)
+        return {
+            "ok": True,
+            "week": target_week,
+            "detected_week": detected_week,
+            "committed": preview.get("assign", {}),
+            "unmatched_names": unmatched_names,
+            "unmatched_tasks": unmatched_tasks,
+        }
+    finally:
+        try:
+            Path(tmp.name).unlink(missing_ok=True)
+        except Exception:
+            pass
 
 
 # ------------------------------------------------------------ 前端静态页

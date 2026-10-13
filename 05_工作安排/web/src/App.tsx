@@ -526,6 +526,12 @@ export default function App() {
   const [newKey, setNewKey] = useState('')
   const [newKey2, setNewKey2] = useState('')
   const [settingsErr, setSettingsErr] = useState('')
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [importFile, setImportFile] = useState<File | null>(null)
+  const [importWeek, setImportWeek] = useState<string>(String(week))
+  const [importPreview, setImportPreview] = useState<any>(null)
+  const [importErr, setImportErr] = useState<string>('')
 
   // 管理层口令同步给 api（只读的小助理接口不带它）
   useEffect(() => { setApiKey(manageKey) }, [manageKey])
@@ -720,7 +726,56 @@ export default function App() {
     }
   }
 
-  const clearWeek = async () => {
+  const askClearWeek = () => {
+    if (!ledger[String(week)]) return
+    setShowClearConfirm(true)
+  }
+
+  const onImportPick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setImportFile(f)
+    setImportPreview(null)
+    setImportErr('')
+    previewImport(f)
+  }
+
+  const previewImport = async (file: File) => {
+    setBusy(true)
+    try {
+      const r = await api.importHistory(deptId, Number(importWeek) || week, file, false)
+      setImportPreview(r)
+      setImportErr('')
+    } catch (e: any) {
+      setImportPreview(e)
+      setImportErr(e.message || '解析失败')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const doImportHistory = async () => {
+    if (!importFile) return
+    setBusy(true)
+    try {
+      await api.importHistory(deptId, Number(importWeek) || week, importFile, true)
+      const b = await api.bootstrap(deptId)
+      setLedger(b.ledger?.weeks || {})
+      setAssign(b.ledger?.weeks?.[String(importWeek)] ? {} : assign)
+      say(`第${importWeek}周历史表已导入台账`)
+      setShowImportModal(false)
+      setImportFile(null)
+      setImportPreview(null)
+      setImportErr('')
+    } catch (e: any) {
+      setImportErr(e.message || '导入失败')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const confirmClearWeek = async () => {
+    setShowClearConfirm(false)
     setBusy(true)
     try {
       await api.clearWeek(deptId, week)
@@ -815,6 +870,83 @@ export default function App() {
         </div>
       )}
 
+      {showClearConfirm && (
+        <div className="modal-mask" onClick={() => setShowClearConfirm(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>确认撤销台账？</h3>
+            <p className="m-sub">
+              第 <b>{week}</b> 周的台账将被删除，且无法恢复。<br />
+              小助理的「本周我负责」也会同步清空。
+            </p>
+            <div className="m-actions">
+              <button className="btn ghost" onClick={() => setShowClearConfirm(false)}>取消</button>
+              <button className="btn primary" onClick={confirmClearWeek}>确认删除</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showImportModal && (
+        <div className="modal-mask" onClick={() => setShowImportModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ width: 'min(560px, 92vw)' }}>
+            <h3>导入历史安排表</h3>
+            <p className="m-sub">
+              上传像「质检部第 7 周工作安排表」这样的历史 xlsx，自动恢复台账和「本周我负责」。
+              表头需包含 <b>西城 / 官渡</b>，第一列为工作内容。
+            </p>
+            <div className="modal-body" style={{ gap: 12 }}>
+              <div>
+                <label>目标周次</label>
+                <input
+                  className="narrow" type="number" value={importWeek}
+                  onChange={(e) => { setImportWeek(e.target.value); setImportPreview(null) }}
+                  style={{ width: 90, marginLeft: 8 }}
+                />
+                <span className="small muted" style={{ marginLeft: 8 }}>会从标题自动识别，也可手动指定</span>
+              </div>
+              <div>
+                <input
+                  type="file" accept=".xlsx,.xls" id="import-history-input"
+                  hidden onChange={onImportPick}
+                />
+                <label htmlFor="import-history-input" className="btn">
+                  {importFile ? importFile.name : '选择 xlsx'}
+                </label>
+              </div>
+
+              {importPreview && (
+                <div>
+                  {importPreview.ok === false && (
+                    <div className="m-err" style={{ marginBottom: 8 }}>
+                      以下名字/任务在系统里找不到，强行导入会跳过它们：
+                      {importPreview.unmatched_names?.length > 0 && (
+                        <div>未匹配人名：{importPreview.unmatched_names.join('、')}</div>
+                      )}
+                      {importPreview.unmatched_tasks?.length > 0 && (
+                        <div>未匹配任务：{importPreview.unmatched_tasks.join('、')}</div>
+                      )}
+                    </div>
+                  )}
+                  {importPreview.ok !== false && (
+                    <div className="alert alert-ok" style={{ marginBottom: 8 }}>
+                      识别到第 {importPreview.detected_week ?? importPreview.week} 周，共 {Object.keys(importPreview.committed || {}).length} 条任务分配。
+                    </div>
+                  )}
+                </div>
+              )}
+              {importErr && <div className="m-err">{importErr}</div>}
+            </div>
+            <div className="m-actions">
+              <button className="btn ghost" onClick={() => setShowImportModal(false)}>取消</button>
+              <button className="btn" onClick={() => importFile && previewImport(importFile)} disabled={busy || !importFile}>
+                重新解析
+              </button>
+              <button className="btn primary" onClick={doImportHistory} disabled={busy || !importFile}>确认导入</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {toast && <div className="toast">{toast}</div>}
       {view === 'landing' ? (
         <Landing
@@ -893,9 +1025,10 @@ export default function App() {
             </button>
             <button className="btn" onClick={copyText} disabled={busy || !hasResult}>复制文字版</button>
             <button className="btn" onClick={commit} disabled={busy || !hasResult}>存入台账</button>
-            <button className="btn ghost" onClick={clearWeek} disabled={busy || !ledger[String(week)]}>
+            <button className="btn ghost" onClick={askClearWeek} disabled={busy || !ledger[String(week)]}>
               撤销本周台账
             </button>
+            <button className="btn" onClick={() => setShowImportModal(true)} disabled={busy}>导入历史表</button>
             <button className="btn" onClick={doExport} disabled={busy || !hasResult}>导出 xlsx</button>
             <button className="btn ghost" onClick={() => setShowPool(!showPool)}>
               {showPool ? '收起' : '编辑人员与工作内容'}

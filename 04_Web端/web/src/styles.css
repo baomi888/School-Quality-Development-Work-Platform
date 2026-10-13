@@ -1548,3 +1548,130 @@ button { font-family: inherit; }
   .hub-wk .bar span { transition: none; transform: scaleY(1); }
   .hub-act::before { transition: none; }
 }
+
+/* ============================================================
+   导入历史表弹窗 —— 与档案台同源：零圆角、线分层、正红唯一信号
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(20, 21, 26, 0.46);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 7vh 16px 24px;
+  overflow-y: auto;
+}
+
+.modal {
+  width: 100%;
+  max-width: 660px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  padding: var(--sp-7);
+  animation: modal-in var(--t-base) var(--ease-out);
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--sp-5);
+}
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-title);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-serif);
+  margin: 0;
+  color: var(--text);
+}
+.modal-kicker {
+  display: block;
+  margin-top: var(--sp-1);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-tag);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.modal-close {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line-control);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.modal-close:hover { border-color: var(--accent); color: var(--accent); }
+
+.modal-desc {
+  font-size: var(--fs-md);
+  line-height: var(--lh-snug);
+  color: var(--text-2);
+  margin: 0 0 var(--sp-5);
+}
+.modal-desc strong { color: var(--text); font-weight: var(--fw-medium); }
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--fill-2);
+  padding: 1px 5px;
+  color: var(--text);
+}
+
+.modal-field {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  margin: 0 0 var(--sp-5);
+  font-size: var(--fs-label);
+  color: var(--text-2);
+}
+.modal-field span { white-space: nowrap; }
+.modal-field input {
+  width: 96px;
+  height: var(--ctrl-md);
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line-control);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+}
+.modal-field input:focus { outline: none; border-color: var(--accent); }
+
+.modal-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--line-2);
+  margin: 0 0 var(--sp-2);
+}
+.modal-scroll .table { border: 0; }
+.modal-scroll .table th,
+.modal-scroll .table td { font-size: var(--fs-caption); }
+
+.modal-result .modal-list {
+  list-style: none;
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+}
+.modal-result .modal-list li {
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--line-2);
+  font-size: var(--fs-md);
+  color: var(--text-2);
+}
+.modal-result .modal-list li b { color: var(--text); margin-right: 4px; }
+.modal-result .modal-list li:last-child { border-bottom: 0; }

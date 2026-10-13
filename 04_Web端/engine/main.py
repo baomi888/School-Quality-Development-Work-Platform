@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import uuid
@@ -388,6 +389,74 @@ def do_ingest(cfg, src: Path, week, campus: Optional[str]) -> dict:
                             "assistants": asst_map.get(a["row"]) or []} for a in acts]}
 
 
+def do_import_history(cfg, src: Path, week, force: bool = False) -> dict:
+    """导入历史活动登记表：不重排，直接读取表里已有的检查学院/助理并补录台账。
+    - 支持单校区表与多校区总表（自动按校区分组后分别入账）
+    - 周次从文件名/表格标题识别，也可通过参数指定
+    - 原文件归档到 data/history/第X周/ 长期留存
+    """
+    wb = openpyxl.load_workbook(src)
+    ws = wb.active
+    header_row, header_map = zjb.find_header_row(ws)
+    acts = zjb.read_activities(ws, header_row, header_map, cfg)
+    if not acts:
+        raise HTTPException(400, "表中没有活动数据行，无法导入")
+    week = guess_week(cfg, ws, src, week)
+    if not week:
+        raise HTTPException(400, "无法识别周次，请在参数里指定 week")
+
+    c_col, checker_map = zjb.read_checkers(ws, header_row, cfg["checker_column"], cfg)
+    a_col, asst_map = zjb.read_checkers(ws, header_row, cfg["assistant_column"], cfg)
+    if not checker_map and not asst_map:
+        raise HTTPException(400, "表中没有找到检查学院/检查助理数据（历史表应已安排好检查方）")
+
+    # 按校区分组；校区列缺失时尝试从文件名推断
+    groups: Dict[str, List[dict]] = {}
+    for a in acts:
+        campus = zjb.normalize_campus(a.get("campus"), cfg) or "未知"
+        groups.setdefault(campus, []).append(a)
+    if list(groups.keys()) == ["未知"]:
+        known = zjb.campus_in_name(src, cfg)
+        if known:
+            groups = {known: acts}
+
+    # 归档原档（长期留存）—— 尽力而为：目标被占用或已存在时换名/跳过，不影响台账补录
+    hist_dir = DATA_DIR / "history" / f"第{week}周"
+    hist_dir.mkdir(parents=True, exist_ok=True)
+    dest_hist = hist_dir / src.name
+    try:
+        shutil.copy2(src, dest_hist)
+    except OSError:
+        try:
+            ts = datetime.now().strftime("%H%M%S")
+            dest_hist = hist_dir / f"{dest_hist.stem}_{ts}{dest_hist.suffix}"
+            shutil.copy2(src, dest_hist)
+        except OSError:
+            dest_hist = None
+
+    ledger = zjb.load_ledger(cfg)
+    campuses_out = []
+    for campus, cacts in groups.items():
+        cfg2 = cfg_for_campus(cfg, campus)
+        rows = {a["row"] for a in cacts}
+        ck = sum(len(checker_map.get(r, [])) for r in rows)
+        ast = sum(len(asst_map.get(r, [])) for r in rows)
+        if checker_map:
+            zjb.record_to_ledger(ledger, cfg2, week, campus, cacts, checker_map, "colleges")
+        if asst_map:
+            zjb.record_to_ledger(ledger, cfg2, week, campus, cacts, asst_map, "assistants")
+        campuses_out.append({"campus": campus, "activities": len(cacts),
+                             "checker_records": ck, "assistant_records": ast})
+    zjb.save_ledger(cfg, ledger)
+
+    return {
+        "week": week,
+        "archived_to": str(dest_hist) if dest_hist else "（归档跳过：目标文件被占用）",
+        "campuses": campuses_out,
+        "total_activities": sum(len(v) for v in groups.values()),
+    }
+
+
 # ---------------------------------------------------------------- 统计
 
 def build_stats(cfg) -> dict:
@@ -455,6 +524,12 @@ class SimpleIn(BaseModel):
     file_id: str
     week: Optional[int] = None
     campus: Optional[str] = None
+
+
+class ImportHistoryIn(BaseModel):
+    file_id: str
+    week: Optional[int] = None
+    force: bool = False
 
 
 # ---------------------------------------------------------------- App
@@ -546,6 +621,19 @@ def check(body: SimpleIn):
 def ingest(body: SimpleIn):
     cfg = get_cfg()
     return do_ingest(cfg, resolve(body.file_id), body.week, body.campus)
+
+
+@app.post("/api/import-history")
+def import_history(body: ImportHistoryIn):
+    """导入历史活动登记表并补录台账（不重排、不另存表、归档原档）。"""
+    cfg = get_cfg()
+    src = resolve(body.file_id)
+    try:
+        return do_import_history(cfg, src, body.week, body.force)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"历史表导入失败：{e}")
 
 
 @app.get("/api/ledger")

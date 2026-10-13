@@ -151,4 +151,11 @@ export const api = {
     }>('/api/stats'),
 
   downloadUrl: (fileId: string) => `${API_BASE}/api/files/${fileId}/download`,
+
+  importHistory: (fileId: string, week?: number | null) =>
+    req<any>('/api/import-history', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ file_id: fileId, week }),
+    }),
 }

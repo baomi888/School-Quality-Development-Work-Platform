@@ -3,7 +3,7 @@
    数据尽量来自真接口：台账决定的周次状态、统计决定的周活动量。 */
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { api } from '../api'
+import { api, type FileRef, type TableInfo } from '../api'
 
 interface HubProps {
   onNavigate: (key: 'work' | 'ledger' | 'stats' | 'guide') => void
@@ -102,6 +102,55 @@ export default function Hub({ onNavigate }: HubProps) {
 
   const heroNow = currentWeek ?? FIRST_WEEK
 
+  // ---------- 导入历史表（补录台账）----------
+  const [histOpen, setHistOpen] = useState(false)
+  const [histFile, setHistFile] = useState<FileRef | null>(null)
+  const [histInfo, setHistInfo] = useState<TableInfo | null>(null)
+  const [histWeek, setHistWeek] = useState<number | null>(null)
+  const [histBusy, setHistBusy] = useState('')
+  const [histError, setHistError] = useState<{ message: string; problems?: string[] } | null>(null)
+  const [histResult, setHistResult] = useState<any>(null)
+  const histInputRef = useRef<HTMLInputElement>(null)
+
+  function closeHist() {
+    setHistOpen(false)
+    setHistFile(null)
+    setHistInfo(null)
+    setHistWeek(null)
+    setHistResult(null)
+    setHistError(null)
+  }
+
+  async function onHistPick(file: File) {
+    setHistError(null)
+    setHistResult(null)
+    setHistBusy('上传并解析中…')
+    try {
+      const r = await api.upload(file)
+      setHistFile(r.file)
+      setHistInfo(r.info)
+      setHistWeek(r.info.week)
+    } catch (e: any) {
+      setHistError({ message: e?.message ?? '上传失败' })
+    } finally {
+      setHistBusy('')
+    }
+  }
+
+  async function doHistImport() {
+    if (!histFile) return
+    setHistBusy('补录中…')
+    setHistError(null)
+    try {
+      const r = await api.importHistory(histFile.id, histWeek)
+      setHistResult(r)
+    } catch (e: any) {
+      setHistError({ message: e?.message ?? '导入失败', problems: e?.problems })
+    } finally {
+      setHistBusy('')
+    }
+  }
+
   return (
     <div className="hub">
       <div className="hub-inner">
@@ -123,6 +172,9 @@ export default function Hub({ onNavigate }: HubProps) {
             </button>
             <button className="hub-act" onClick={() => onNavigate('guide')}>
               先看它怎么跑
+            </button>
+            <button className="hub-act" onClick={() => setHistOpen(true)}>
+              导入历史表
             </button>
           </div>
         </section>
@@ -220,6 +272,199 @@ export default function Hub({ onNavigate }: HubProps) {
           </div>
         </section>
       </div>
+
+      {/* ---------- 导入历史表弹窗 ---------- */}
+      {histOpen && (
+        <div className="modal-overlay" onClick={closeHist}>
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="导入历史活动登记表"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-head">
+              <div>
+                <h3 className="modal-title">导入历史活动登记表</h3>
+                <span className="modal-kicker">补录台账 · 不重排</span>
+              </div>
+              <button className="modal-close" onClick={closeHist} aria-label="关闭">
+                ×
+              </button>
+            </div>
+
+            <p className="modal-desc">
+              选一份<strong>已安排好检查学院 / 助理</strong>的历史总表或单校区表。系统按文件名或标题识别周次，
+              直接读取已有安排补录进台账，<strong>不会重新排班</strong>；原文件会归档到{' '}
+              <span className="mono">data/history/</span> 长期保存。
+            </p>
+
+            {!histFile && (
+              <div
+                className="dropzone"
+                role="button"
+                tabIndex={0}
+                aria-label="选择或拖入历史 Excel 表"
+                onClick={() => histInputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    histInputRef.current?.click()
+                  }
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  const f = e.dataTransfer.files?.[0]
+                  if (f) onHistPick(f)
+                }}
+              >
+                <div className="dropzone-title">点击选择，或把 Excel 拖到这里</div>
+                <div className="dropzone-sub">.xlsx / .xls</div>
+              </div>
+            )}
+            <input
+              ref={histInputRef}
+              type="file"
+              accept=".xlsx,.xls,.xlsm"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0]
+                if (f) onHistPick(f)
+              }}
+            />
+
+            {histBusy && (
+              <div className="alert" style={{ marginTop: 12 }}>
+                ⏳ {histBusy}
+              </div>
+            )}
+            {histError && (
+              <div className="alert alert-danger" style={{ marginTop: 12 }}>
+                <strong>{histError.message}</strong>
+                {histError.problems && histError.problems.length > 0 && (
+                  <ul>
+                    {histError.problems.map((p, i) => (
+                      <li key={i}>{p}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+
+            {histInfo && !histResult && (
+              <div style={{ marginTop: 14 }}>
+                <div className="btn-row" style={{ marginBottom: 10 }}>
+                  <span className="tag tag-brand">第 {histInfo.week ?? '?'} 周</span>
+                  {histInfo.campuses.map((c) => (
+                    <span key={c} className="tag">
+                      {c}
+                    </span>
+                  ))}
+                  <span className="tag">{histInfo.activity_count} 个活动</span>
+                </div>
+
+                <label className="modal-field">
+                  <span>周次（识别有误可手动改）</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={30}
+                    value={histWeek ?? ''}
+                    onChange={(e) => setHistWeek(e.target.value ? Number(e.target.value) : null)}
+                  />
+                </label>
+
+                <div className="modal-scroll">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: 40 }}>#</th>
+                        <th>活动名称</th>
+                        <th style={{ width: 150 }}>主办学院</th>
+                        <th style={{ width: 140 }}>时间</th>
+                        <th style={{ width: 64 }}>校区</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {histInfo.activities.map((a) => (
+                        <tr key={a.row}>
+                          <td className="num">{a.no ?? a.row}</td>
+                          <td className="name">{a.name}</td>
+                          <td>{a.host_college || '—'}</td>
+                          <td className="small">{a.time || '—'}</td>
+                          <td className="small">{a.campus || '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="btn-row" style={{ marginTop: 16 }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={doHistImport}
+                    disabled={histBusy !== '' || histWeek == null}
+                  >
+                    补录到台账
+                  </button>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      setHistFile(null)
+                      setHistInfo(null)
+                      setHistWeek(null)
+                    }}
+                  >
+                    重新选文件
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {histResult && (
+              <div className="modal-result" style={{ marginTop: 14 }}>
+                <div className="alert alert-ok">
+                  ✅ 已补录第 {histResult.week} 周台账（共 {histResult.total_activities} 个活动）
+                </div>
+                <ul className="modal-list">
+                  {histResult.campuses.map((c: any) => (
+                    <li key={c.campus}>
+                      <b>{c.campus}</b>：{c.activities} 个活动 · {c.checker_records} 条检查学院记录
+                      {c.assistant_records ? ` · ${c.assistant_records} 条助理记录` : ''}
+                    </li>
+                  ))}
+                </ul>
+                <div className="small muted" style={{ wordBreak: 'break-all' }}>
+                  原文件已归档：{histResult.archived_to}
+                </div>
+                <div className="btn-row" style={{ marginTop: 12 }}>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={() => {
+                      setHistFile(null)
+                      setHistInfo(null)
+                      setHistWeek(null)
+                      setHistResult(null)
+                    }}
+                  >
+                    再导入一份
+                  </button>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => {
+                      closeHist()
+                      onNavigate('ledger')
+                    }}
+                  >
+                    查看台账
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

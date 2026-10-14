@@ -19,6 +19,7 @@ import re
 import shutil
 import subprocess
 import sys
+import urllib.request
 import uuid
 import math
 from copy import copy
@@ -36,6 +37,7 @@ from typing import Optional, Dict, Any, List
 BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE))
 import core.zjb as zjb  # noqa: E402
+import core.merge as mergemod  # noqa: E402
 
 WORK_DIR = BASE / "work"
 OUT_DIR = BASE / "output"
@@ -43,6 +45,8 @@ DATA_DIR = BASE / "data"
 PREVIEW_DIR = BASE / "preview"
 REGISTRY = DATA_DIR / "registry.json"
 WEB_DIST = BASE / "web_dist"
+# 「活动登记表汇总」工具页：零构建的独立页面，不依赖 web_dist（前端重建失败也能用）
+MERGE_TOOL = BASE / "merge_tool.html"
 # OfficeCLI 为可选渲染器（用于高保真预览），缺失时自动回退内置渲染
 OFFICECLI = BASE / "bin" / ("officecli.exe" if os.name == "nt" else "officecli")
 
@@ -459,6 +463,46 @@ def do_import_history(cfg, src: Path, week, force: bool = False) -> dict:
 
 # ---------------------------------------------------------------- 统计
 
+def do_sync_assistants(cfg, source_week: int, target_week: int, task: str,
+                        plan_url: str = "http://127.0.0.1:8766/api/plan") -> dict:
+    """联动：从 05 工作安排台取第 source_week 周「安排助理检查活动」的西城/官渡助理名单，
+    按校区写回 04 第 target_week 周台账各活动的 assistants 字段。
+
+    场景：第 7 周（在 05 安排）处理的是第 6 周开展的活动（在 04 台账），
+    于是第 6 周每个活动上要显示第 7 周被安排去检查的助理。"""
+    url = f"{plan_url}?dept=zjb&week={source_week}"
+    try:
+        with urllib.request.urlopen(url, timeout=6) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        raise HTTPException(502, f"连不上工作安排台（05，端口 8766）：{e}。请先启动工作安排台再同步。")
+    grid = data.get("assign") or {}
+    task_cells = grid.get(task) or {}
+    xc = task_cells.get("西城", []) or []
+    gd = task_cells.get("官渡", []) or []
+    if not xc and not gd:
+        return {"ok": True, "synced": 0,
+                "note": f"第{source_week}周计划中「{task}」没有西城/官渡助理，未写入"}
+    ledger = zjb.load_ledger(cfg)
+    weeks = ledger.get("weeks", {})
+    target_keys = [k for k in weeks if k.startswith(f"W{target_week}-")]
+    if not target_keys:
+        raise HTTPException(404, f"04 台账里没有第{target_week}周记录（请先导入第{target_week}周活动登记表）")
+    synced = 0
+    for key in target_keys:
+        campus = weeks[key].get("campus")
+        names = gd if campus == "官渡" else xc
+        if not names:
+            continue
+        for a in weeks[key].get("activities", []):
+            a["assistants"] = list(names)
+            synced += 1
+    zjb.save_ledger(cfg, ledger)
+    return {"ok": True, "synced": synced, "target_week": target_week,
+            "西城助理": xc, "官渡助理": gd, "weeks": target_keys}
+
+
+
 def build_stats(cfg) -> dict:
     ledger = zjb.load_ledger(cfg)
     weeks = ledger.get("weeks", {})
@@ -532,6 +576,13 @@ class ImportHistoryIn(BaseModel):
     force: bool = False
 
 
+class SyncAssistIn(BaseModel):
+    source_week: int = 7
+    target_week: int = 6
+    task: str = "t_03"
+    plan_url: str = "http://127.0.0.1:8766/api/plan"
+
+
 # ---------------------------------------------------------------- App
 
 app = FastAPI(title="质检部周工作自动化", version="1.0.0")
@@ -589,6 +640,85 @@ def split(body: SplitIn):
     return do_split(cfg, src, outdir, body.all_campuses)
 
 
+# ------------------------------------------------- 活动登记表汇总（规划部）
+# 现有链路是「一张总表 → 按校区拆开 → 安排二级学院/助理」；
+# 这里是它的反向：把各学院/各校区交上来的 N 份单表合成一张总表。
+
+MERGE_LABELS = {
+    "total": "总表（表二 · 质检部）",
+    "publicity": "表一（宣传部）",
+    "timetable": "时间表",
+    "report": "汇总校验报告",
+}
+
+
+@app.post("/api/merge")
+async def merge_tables(files: List[UploadFile] = File(...), week: Optional[int] = None):
+    """多份单表 → 总表 / 表一（宣传部）/ 时间表 / 校验报告。
+
+    规划部过去逐个学院下载再手工拼表，这里一次全部丢进来即可。
+    不做文件名假设：来源按「内容里的校区列 + 文件名线索」双重判定；
+    输入混了多个周次时按周分组、各出一套产物，绝不跨周混表。
+    """
+    if not files:
+        raise HTTPException(400, "请至少上传一份活动登记表")
+    cfg = get_cfg()
+    folder = WORK_DIR / ("merge_" + uuid.uuid4().hex[:10])
+    folder.mkdir(parents=True, exist_ok=True)
+    for f in files:
+        name = Path(f.filename or "未命名.xlsx").name
+        if not name.lower().endswith((".xlsx", ".xlsm")):
+            raise HTTPException(400, f"只支持 .xlsx / .xlsm：{name}（.xls 请先另存为 .xlsx）")
+        safe = re.sub(r'[\\/:*?"<>|]', "_", name)
+        (folder / safe).write_bytes(await f.read())
+
+    outdir = OUT_DIR / uuid.uuid4().hex[:8]
+    try:
+        result = mergemod.run_merge([folder], outdir, cfg, week)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+
+    outputs = {}
+    for key, path in (result.get("outputs") or {}).items():
+        p = Path(path)
+        if not p.exists():
+            continue
+        reg = register(p, "merge-" + key, {"week": result.get("week")})
+        outputs[key] = {
+            "key": key,
+            "label": MERGE_LABELS.get(key, key),
+            "file_id": reg["id"],
+            "name": p.name,
+            "size": p.stat().st_size,
+            "url": f"/api/files/{reg['id']}/download",
+        }
+    result["outputs"] = outputs
+
+    # 额外周次的产物也要能下载
+    for extra in result.get("extra_weeks") or []:
+        outs = {}
+        for key, path in (extra.get("outputs") or {}).items():
+            p = Path(path)
+            if not p.exists():
+                continue
+            reg = register(p, "merge-" + key, {"week": extra.get("week")})
+            outs[key] = {
+                "key": key, "label": MERGE_LABELS.get(key, key), "file_id": reg["id"],
+                "name": p.name, "size": p.stat().st_size,
+                "url": f"/api/files/{reg['id']}/download",
+            }
+        extra["outputs"] = outs
+    return result
+
+
+@app.get("/merge")
+def merge_page():
+    """零构建的汇总工具页（不依赖 web_dist 构建产物）"""
+    if not MERGE_TOOL.exists():
+        raise HTTPException(404, "汇总工具页 merge_tool.html 缺失")
+    return HTMLResponse(MERGE_TOOL.read_text(encoding="utf-8"))
+
+
 @app.get("/api/recommend")
 def recommend(file_id: str, week: Optional[int] = None):
     cfg = get_cfg()
@@ -643,6 +773,24 @@ def ledger():
     return {"ledger_file": str(zjb.ledger_file(cfg)), "weeks": data.get("weeks", {})}
 
 
+@app.post("/api/sync-assistants")
+def sync_assistants(body: SyncAssistIn):
+    """联动：把 05 工作安排台某周的助理安排，写回 04 台账对应周次活动的「检查助理」。"""
+    cfg = get_cfg()
+    return do_sync_assistants(cfg, body.source_week, body.target_week, body.task, body.plan_url)
+
+
+@app.get("/api/plan-meta")
+def plan_meta(plan_url: str = "http://127.0.0.1:8766/api/plan/weeks"):
+    """联动面板用：问 05 工作安排台有哪些周的计划、各任务叫什么，供下拉选择（服务端代理，免跨域）。"""
+    try:
+        with urllib.request.urlopen(plan_url, timeout=6) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        return {"ok": True, "weeks": data.get("weeks", []), "tasks": data.get("tasks", {})}
+    except Exception as e:
+        return {"ok": False, "error": str(e), "weeks": [], "tasks": {}}
+
+
 @app.delete("/api/ledger")
 def ledger_reset(week: Optional[int] = None, campus: Optional[str] = None):
     cfg = get_cfg()
@@ -662,6 +810,35 @@ def ledger_reset(week: Optional[int] = None, campus: Optional[str] = None):
 @app.get("/api/stats")
 def stats():
     return build_stats(get_cfg())
+
+
+@app.get("/api/history")
+def history():
+    """已上传/生成的历史文件清单，按周分组，供前端「历史归档」浏览与下载。
+
+    数据来自 registry.json（每次上传、拆分、安排、助理都会登记），
+    含 path/week/campus/kind/created_at；这里补全 download_url 与文件是否存在。"""
+    reg = load_registry()
+    groups: Dict[int, List[dict]] = {}
+    for fid, item in reg.items():
+        w = item.get("week")
+        if w is None:
+            continue
+        groups.setdefault(int(w), []).append({
+            "id": fid,
+            "name": item.get("name"),
+            "kind": item.get("kind"),
+            "campus": item.get("campus"),
+            "week": w,
+            "created_at": item.get("created_at"),
+            "download_url": f"/api/files/{fid}/download",
+            "exists": Path(item.get("path", "")).exists(),
+        })
+    out = []
+    for w in sorted(groups.keys()):
+        files = sorted(groups[w], key=lambda x: x.get("created_at") or "")
+        out.append({"week": w, "files": files})
+    return {"weeks": out, "total": len(reg)}
 
 
 @app.get("/api/slots/template")

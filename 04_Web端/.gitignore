@@ -14,3 +14,8 @@ engine/bin/officecli.exe
 engine/bin/officecli.exe.update
 # 落地页设计期的截图/审计脚本（硬编码本机路径，非运行时代码）
 landing/tools/
+# 回归门禁运行时生成的合成素材与产物（_probe_merge.py 每次运行自建）
+engine/_probe_fixtures/
+engine/_probe_out/
+# 界面实拍留档
+engine/_shots_merge/

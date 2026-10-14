@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>活动登记表汇总 · 校素拓规划部</title>
+<style>
+  :root{
+    --canvas:#F7F5F0; --surface:#FCFBF8; --surface-2:#F1EEE7;
+    --text:#14151A; --text-2:#55575E; --text-3:#6B6D74; --text-4:#9A9C9F;
+    --line:#DFDAD0; --line-2:#E9E4DA; --line-strong:#14151A; --line-control:#C9C3B6;
+    --accent:#B72C24; --accent-soft:#FBF0EE;
+    --warning:#8A6410; --warning-soft:#F6EFDF;
+    --font-serif:"Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+    --font-sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --font-mono:"SFMono-Regular",Consolas,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--text);font-family:var(--font-sans);
+       font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--text)}
+  .wrap{max-width:1260px;margin:0 auto;padding:0 clamp(18px,4.2vw,44px)}
+  header{border-bottom:1px solid var(--line-strong);background:var(--surface)}
+  .bar{display:flex;align-items:baseline;gap:16px;height:64px}
+  .kick{font-size:11px;letter-spacing:.16em;color:var(--text-3);text-transform:uppercase}
+  h1{font-family:var(--font-serif);font-size:20px;margin:0;letter-spacing:.005em}
+  main{padding:32px 0 84px}
+  .lede{max-width:62ch;color:var(--text-2);margin:0 0 8px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:20px 0 0;
+         display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .steps li{counter-increment:s;background:var(--surface);padding:12px 16px;
+            display:flex;gap:12px;align-items:flex-start}
+  .steps li::before{content:counter(s);font-family:var(--font-mono);font-size:11px;
+                    color:var(--text-3);border:1px solid var(--line-control);
+                    min-width:20px;height:20px;display:grid;place-items:center;flex:none}
+  section{margin-top:40px}
+  h2{font-family:var(--font-serif);font-size:16px;margin:0 0 4px;letter-spacing:.005em}
+  .sub{color:var(--text-3);font-size:13px;margin:0 0 16px}
+  .drop{border:1px dashed var(--line-control);background:var(--surface);padding:36px 20px;
+        text-align:center;cursor:pointer;transition:background .25s cubic-bezier(.16,1,.3,1),
+        border-color .25s}
+  .drop:hover,.drop.over{background:var(--surface-2);border-color:var(--text)}
+  .drop b{font-family:var(--font-serif);font-size:15px;display:block;margin-bottom:4px}
+  .drop span{color:var(--text-3);font-size:13px}
+  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}
+  label.f{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2)}
+  input[type=number]{width:90px;height:38px;padding:0 10px;border:1px solid var(--line-control);
+        background:var(--surface);color:var(--text);font-family:var(--font-mono);font-size:13px}
+  button{height:44px;padding:0 22px;border:1px solid var(--text);background:var(--text);
+         color:var(--text-on-brand,#F7F5F0);font-size:14px;font-weight:500;cursor:pointer;
+         font-family:inherit;transition:opacity .15s}
+  button:hover{opacity:.86}
+  button[disabled]{opacity:.4;cursor:not-allowed}
+  button.ghost{background:transparent;color:var(--text)}
+  .files{margin-top:16px;border:1px solid var(--line);background:var(--surface)}
+  .files div{display:flex;justify-content:space-between;gap:12px;padding:8px 14px;
+             border-bottom:1px solid var(--line-2);font-size:13px}
+  .files div:last-child{border-bottom:0}
+  .files .n{font-family:var(--font-mono);font-size:11px;color:var(--text-4)}
+  table{width:100%;border-collapse:collapse;background:var(--surface);font-size:13px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--surface-2);font-size:11px;letter-spacing:.08em;color:var(--text-2);
+     font-weight:500;text-transform:uppercase;white-space:nowrap}
+  td.num{font-family:var(--font-mono);text-align:right;white-space:nowrap}
+  .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
+      background:var(--line);border:1px solid var(--line)}
+  .kv div{background:var(--surface);padding:14px 16px}
+  .kv .v{font-family:var(--font-mono);font-size:26px;line-height:1.2;letter-spacing:-.01em}
+  .kv .k{font-size:11px;letter-spacing:.08em;color:var(--text-3);text-transform:uppercase}
+  .out{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .out a{background:var(--surface);padding:14px 16px;display:flex;justify-content:space-between;
+         gap:16px;align-items:center;text-decoration:none;transition:background .15s}
+  .out a:hover{background:var(--surface-2)}
+  .out .t{font-weight:500}
+  .out .d{color:var(--text-3);font-size:12px}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.04em;padding:1px 7px;
+       border:1px solid var(--line-control);color:var(--text-2);white-space:nowrap}
+  .tag.err{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .tag.warn{border-color:var(--warning);color:var(--warning);background:var(--warning-soft)}
+  .note{border-left:2px solid var(--warning);background:var(--warning-soft);
+        padding:10px 14px;margin:12px 0;font-size:13px}
+  .note.err{border-color:var(--accent);background:var(--accent-soft)}
+  .empty{color:var(--text-4);padding:20px 0;font-size:13px}
+  .busy{color:var(--text-3);font-size:13px;margin-top:12px}
+  .scroll{max-height:520px;overflow:auto;border:1px solid var(--line)}
+  .scroll table{border:0}
+  .scroll th{position:sticky;top:0;z-index:1}
+  footer{border-top:1px solid var(--line);padding:20px 0;color:var(--text-4);font-size:12px}
+  code{font-family:var(--font-mono);font-size:12px;background:var(--surface-2);padding:1px 5px}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <span class="kick">校素拓 · 规划部</span>
+  <h1>活动登记表汇总</h1>
+</div></header>
+
+<main class="wrap">
+  <p class="lede">把各二级学院／机构交上来的单表一次性丢进来，自动合并成 <b>总表</b>，
+     并同时产出 <b>表一（宣传部）</b>、<b>时间表</b> 和 <b>校验报告</b>。
+     来源按「内容里的校区列 + 文件名线索」双重判定，不对文件名做假设。</p>
+
+  <ol class="steps">
+    <li><span>把本周收到的单表全部选中（可以一次拖一整个文件夹里的 <code>.xlsx</code>）</span></li>
+    <li><span>需要时填周次；不填则从表格标题或文件名自动识别。混了不同周次也<b>不会跨周混表</b>，会按周各出一套</span></li>
+    <li><span>点「开始汇总」，核对校验报告里的错误与疑似重复，再下载产物</span></li>
+  </ol>
+
+  <section>
+    <div class="drop" id="drop">
+      <b>把单表拖到这里，或点击选择</b>
+      <span>支持多选 · .xlsx / .xlsm · 原始文件不会被修改</span>
+    </div>
+    <input type="file" id="pick" multiple accept=".xlsx,.xlsm" hidden>
+    <div class="files" id="filelist" hidden></div>
+    <div class="row">
+      <label class="f">周次 <input type="number" id="week" min="1" max="30" placeholder="自动"></label>
+      <button id="go" disabled>开始汇总</button>
+      <button class="ghost" id="clear" hidden>清空</button>
+    </div>
+    <div class="busy" id="busy" hidden>正在读取并汇总，请稍候…</div>
+  </section>
+
+  <div id="result" hidden>
+    <section>
+      <h2>汇总结果</h2>
+      <p class="sub" id="restitle"></p>
+      <div class="kv" id="counts"></div>
+      <div id="notes"></div>
+    </section>
+
+    <section>
+      <h2>产物下载</h2>
+      <p class="sub">总表即「表二（质检部）」；表一已按规则剔除「活动对象＝协会会员」的活动。</p>
+      <div class="out" id="outputs"></div>
+    </section>
+
+    <section>
+      <h2>校验问题</h2>
+      <p class="sub">规则来自《每周活动登记表注意事项》与培训 PPT：活动名称三段式、活动级别与活动对象对应、
+         项目类别三选一、时间格式、加分分值、英文标点、列宽容纳等。</p>
+      <div class="row" style="margin:0 0 12px">
+        <button class="ghost" id="fAll" style="height:30px;padding:0 14px;font-size:12px">全部</button>
+        <button class="ghost" id="fErr" style="height:30px;padding:0 14px;font-size:12px">只看错误</button>
+      </div>
+      <div class="scroll" id="issues"></div>
+    </section>
+
+    <section>
+      <h2>疑似重复</h2>
+      <p class="sub">同名但时间／地点不同：可能是同一活动的不同场次，也可能是重复上报，<b>只标记不自动删</b>。</p>
+      <div class="scroll" id="dups"></div>
+    </section>
+
+    <section>
+      <h2>来源文件</h2>
+      <p class="sub">每份单表读到了几行、识别到第几周、有没有表头问题。</p>
+      <div class="scroll" id="sources"></div>
+    </section>
+  </div>
+</main>
+
+<footer><div class="wrap">校素拓规划部 · 活动登记表汇总 · 本地运行，文件不出本机</div></footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const kb = n => n < 1024 ? n + ' B' : (n/1024).toFixed(1) + ' KB';
+let picked = [];
+let allIssues = [];
+
+function renderFiles(){
+  const box = $('#filelist');
+  box.hidden = picked.length === 0;
+  box.innerHTML = picked.map(f =>
+    `<div><span>${esc(f.name)}</span><span class="n">${kb(f.size)}</span></div>`).join('');
+  $('#go').disabled = picked.length === 0;
+  $('#clear').hidden = picked.length === 0;
+}
+
+$('#drop').addEventListener('click', () => $('#pick').click());
+$('#pick').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
+['dragenter','dragover'].forEach(ev => $('#drop').addEventListener(ev, e => {
+  e.preventDefault(); $('#drop').classList.add('over'); }));
+['dragleave','drop'].forEach(ev => $('#drop').addEventListener(ev, e => {
+  e.preventDefault(); $('#drop').classList.remove('over'); }));
+$('#drop').addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+function addFiles(list){
+  const ok = [...list].filter(f => /\.(xlsx|xlsm)$/i.test(f.name));
+  const bad = [...list].filter(f => !/\.(xlsx|xlsm)$/i.test(f.name));
+  const seen = new Set(picked.map(f => f.name + ':' + f.size));
+  ok.forEach(f => { const k = f.name + ':' + f.size; if(!seen.has(k)){ seen.add(k); picked.push(f); } });
+  if (bad.length) alert('已忽略非 Excel 文件：' + bad.map(f => f.name).join('、') +
+    '\n（.xls 请先用 Excel 另存为 .xlsx）');
+  renderFiles();
+}
+
+$('#clear').addEventListener('click', () => {
+  picked = []; renderFiles(); $('#result').hidden = true;
+});
+
+$('#go').addEventListener('click', async () => {
+  if (!picked.length) return;
+  $('#go').disabled = true; $('#busy').hidden = false; $('#result').hidden = true;
+  const fd = new FormData();
+  picked.forEach(f => fd.append('files', f, f.name));
+  const w = $('#week').value.trim();
+  let url = '/api/merge' + (w ? ('?week=' + encodeURIComponent(w)) : '');
+  try {
+    const r = await fetch(url, { method: 'POST', body: fd });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || ('HTTP ' + r.status));
+    show(data);
+  } catch (err) {
+    alert('汇总失败：' + err.message);
+  } finally {
+    $('#busy').hidden = true; $('#go').disabled = false;
+  }
+});
+
+function show(d){
+  $('#result').hidden = false;
+  const c = d.counts || {};
+  $('#restitle').textContent =
+    `第 ${d.week ?? '?'} 周 · 文件名主干 ${d.base_name || ''}`;
+  $('#counts').innerHTML = [
+    ['输入文件', c.input_files], ['原始行', c.raw_rows], ['去重后活动', c.unique],
+    ['自动合并重复', c.exact_merged], ['表一行数', c.publicity_rows],
+    ['校验错误', c.activity_errors], ['校验提醒', c.activity_warnings],
+    ['疑似重复组', c.suspect_groups]
+  ].map(([k, v]) => `<div><div class="k">${k}</div><div class="v">${v ?? 0}</div></div>`).join('');
+
+  const notes = [];
+  (d.notes || []).forEach(n => notes.push(`<div class="note">${esc(n)}</div>`));
+  (d.dropped_files || []).forEach(x =>
+    notes.push(`<div class="note err">已排除 ${esc(x.file)}：${esc(x.reason)}</div>`));
+  (d.extra_weeks || []).forEach(x => {
+    const links = Object.values(x.outputs || {}).map(o =>
+      `<a href="${o.url}">${esc(o.label)}</a>`).join(' · ');
+    notes.push(`<div class="note">另检测到 <b>第 ${x.week} 周</b>：
+      ${x.counts.unique} 个活动（未与本周混合）→ ${links}</div>`);
+  });
+  $('#notes').innerHTML = notes.join('');
+
+  $('#outputs').innerHTML = Object.values(d.outputs || {}).map(o =>
+    `<a href="${o.url}"><span><span class="t">${esc(o.label)}</span><br>
+     <span class="d">${esc(o.name)}</span></span><span class="d">${kb(o.size)} ↓</span></a>`).join('');
+
+  allIssues = [];
+  (d.activities || []).forEach(a => (a.issues || []).forEach(i =>
+    allIssues.push({ no: a.no, name: a.name, campus: a.campus, src: (a.sources || []).join('、'), ...i })));
+  (d.sources || []).forEach(s => (s.issues || []).forEach(i =>
+    allIssues.push({ no: '', name: s.file, campus: '', src: s.file, ...i })));
+  renderIssues('all');
+
+  const dups = d.suspects || [];
+  $('#dups').innerHTML = dups.length ? `<table><thead><tr>
+    <th>活动名称</th><th>来源文件</th><th>开展时间</th><th>地点</th></tr></thead><tbody>` +
+    dups.flatMap(g => g.rows.map(r => `<tr><td>${esc(g.name)}</td><td>${esc(r.file)} #${r.row}</td>
+      <td>${esc(r.time)}</td><td>${esc(r.place)}</td></tr>`)).join('') +
+    `</tbody></table>` : `<div class="empty">没有发现同名不同时间/地点的活动。</div>`;
+
+  $('#sources').innerHTML = `<table><thead><tr><th>文件</th><th>识别周次</th>
+    <th>读到行数</th><th>识别来源</th><th>状态</th></tr></thead><tbody>` +
+    (d.sources || []).map(s => `<tr><td>${esc(s.file)}</td><td class="num">${s.week ?? '—'}</td>
+      <td class="num">${s.rows}</td><td>${esc(s.label || '')}</td>
+      <td>${s.ok ? '<span class="tag">已解析</span>'
+                 : '<span class="tag err">表头未识别</span>'}</td></tr>`).join('') +
+    `</tbody></table>`;
+}
+
+function renderIssues(mode){
+  const list = mode === 'err' ? allIssues.filter(i => i.level === 'error') : allIssues;
+  $('#issues').innerHTML = list.length ? `<table><thead><tr><th>级别</th><th>编号</th>
+    <th>活动名称</th><th>字段</th><th>问题</th><th>建议</th></tr></thead><tbody>` +
+    list.map(i => `<tr>
+      <td><span class="tag ${i.level === 'error' ? 'err' : 'warn'}">${i.level === 'error' ? '错误' : '提醒'}</span></td>
+      <td class="num">${esc(i.no)}</td>
+      <td>${esc(i.name)}</td>
+      <td>${esc(i.field)}</td>
+      <td>${esc(i.message)}</td>
+      <td>${esc(i.advice)}</td></tr>`).join('') +
+    `</tbody></table>` : `<div class="empty">没有校验问题。</div>`;
+}
+$('#fAll').addEventListener('click', () => renderIssues('all'));
+$('#fErr').addEventListener('click', () => renderIssues('err'));
+
+renderFiles();
+</script>
+</body>
+</html>

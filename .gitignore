@@ -9,6 +9,9 @@
 **/duty_roster.json
 # 含真实姓名的验收脚本（依赖本地 people.json，开源克隆无法运行）
 05_工作安排/web/e2e.cjs
+# 会议/培训材料的本地暂存（学校培训 PPT、注意事项、加分截图与提取文本，
+# 属内部采集资料，含官方邮箱与可能的真名，仅作开发参考不入库）
+_inbox_meeting/
 
 # WorkBuddy 本地工作记忆（含项目记忆，不公开）
 .workbuddy/

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>事务智体 · 演示</title>
+<style>
+  :root{
+    --canvas:#F7F5F0;--surface:#FCFBF8;--surface-2:#F1EEE7;
+    --text:#14151A;--text-2:#55575E;--text-3:#6B6D74;--text-4:#9A9C9F;
+    --line:#DFDAD0;--line-2:#E9E4DA;--line-control:#C9C3B6;
+    --accent:#B72C24;--accent-soft:#FBF0EE;--warning:#8A6410;--warning-soft:#F6EFDF;
+    --font-serif:"Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+    --font-sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --font-mono:"SFMono-Regular",Consolas,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--text);font-family:var(--font-sans);
+       font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+  header{border-bottom:1px solid var(--text);background:var(--surface)}
+  .bar{display:flex;align-items:baseline;gap:16px;height:64px}
+  .kick{font-size:11px;letter-spacing:.16em;color:var(--text-3);text-transform:uppercase}
+  h1{font-family:var(--font-serif);font-size:20px;margin:0}
+  main{padding:28px 0 80px}
+  .lede{max-width:64ch;color:var(--text-2);margin:0 0 20px}
+  .grid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:28px;align-items:start}
+  @media (max-width:940px){.grid{grid-template-columns:1fr}}
+  h2{font-family:var(--font-serif);font-size:15px;margin:0 0 10px}
+  .sub{color:var(--text-3);font-size:12px;margin:0 0 10px}
+  input[type=text],textarea{width:100%;border:1px solid var(--line-control);background:var(--surface);
+        color:var(--text);padding:9px 11px;font-family:inherit;font-size:14px;resize:vertical}
+  textarea{min-height:66px}
+  button{height:40px;padding:0 18px;border:1px solid var(--text);background:var(--text);
+         color:var(--canvas);font-size:13px;cursor:pointer;font-family:inherit}
+  button:hover{opacity:.86} button[disabled]{opacity:.4;cursor:not-allowed}
+  button.ghost{background:transparent;color:var(--text)}
+  .presets{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:18px}
+  .presets button{background:var(--surface);color:var(--text);border:0;text-align:left;
+                  height:auto;padding:11px 13px;line-height:1.45}
+  .presets button:hover{background:var(--surface-2)}
+  .presets b{display:block;font-weight:500}
+  .presets span{color:var(--text-3);font-size:12px}
+  .fields{display:grid;gap:10px;margin:12px 0}
+  label.f{display:block;font-size:12px;color:var(--text-3);margin-bottom:4px;letter-spacing:.03em}
+  .trace{border:1px solid var(--line);background:var(--surface)}
+  .step{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line-2)}
+  .step:last-child{border-bottom:0}
+  .badge{flex:none;width:74px;font-family:var(--font-mono);font-size:10px;
+         letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);padding-top:3px}
+  .badge.act{color:var(--accent)} .badge.plan{color:var(--text)}
+  .body{flex:1;min-width:0}
+  .thought{color:var(--text-2);font-size:13px}
+  .act{font-family:var(--font-mono);font-size:12px;background:var(--surface-2);
+       padding:2px 6px;display:inline-block;margin:3px 0;word-break:break-all}
+  .note{font-size:13px;margin-top:5px}
+  .ok{color:var(--text)} .bad{color:var(--accent)}
+  .mark{font-family:var(--font-mono);font-size:12px;margin-right:6px}
+  .pill{display:inline-block;font-size:11px;border:1px solid var(--line-control);
+        padding:0 6px;color:var(--text-2);margin-right:5px}
+  .pill.err{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .pill.warn{border-color:var(--warning);color:var(--warning);background:var(--warning-soft)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+  th{background:var(--surface-2);font-size:11px;letter-spacing:.06em;color:var(--text-2);font-weight:500}
+  .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;
+      background:var(--line);border:1px solid var(--line);margin:10px 0}
+  .kv div{background:var(--surface);padding:10px 12px}
+  .kv .v{font-family:var(--font-mono);font-size:22px;line-height:1.2}
+  .kv .k{font-size:10px;letter-spacing:.08em;color:var(--text-3);text-transform:uppercase}
+  .ai{border-left:2px solid var(--warning);background:var(--warning-soft);padding:9px 13px;
+      font-size:12px;margin-top:10px;font-family:var(--font-mono)}
+  .empty{color:var(--text-4);padding:26px 16px;font-size:13px}
+  .summary{border:1px solid var(--line);background:var(--surface);padding:14px 16px;margin-bottom:16px}
+  .verdict{font-family:var(--font-serif);font-size:17px;margin-bottom:2px}
+  pre{white-space:pre-wrap;font-family:var(--font-mono);font-size:12px;
+      background:var(--surface-2);padding:10px 12px;margin:8px 0 0;border:1px solid var(--line-2)}
+  footer{border-top:1px solid var(--line);padding:18px 0;color:var(--text-4);font-size:12px}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <span class="kick">事务智体 · CampusOps</span>
+  <h1>智能体演示：一句话跑完整闭环</h1>
+</div></header>
+
+<main class="wrap">
+  <p class="lede">用自然语言说明本周要做什么，智能体自己完成
+     <b>感知 → 规划 → 行动 → 反思</b>。判定类的工作全部落在确定性工具里；
+     未配置大模型时自动降级为确定性规划器，工具与结果完全一致。</p>
+
+  <div class="grid">
+    <section>
+      <h2>选一个目标</h2>
+      <p class="sub">预设场景，点一下即填入</p>
+      <div class="presets" id="presets"></div>
+
+      <h2>目标</h2>
+      <div class="fields">
+        <div><label class="f">自然语言目标</label>
+          <textarea id="goal" placeholder="例如：把本周登记表汇总一下并生成简报"></textarea></div>
+        <div><label class="f">收件目录 inbox</label>
+          <input type="text" id="inbox" placeholder="_probe_fixtures"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="f">周次 week</label><input type="text" id="week" placeholder="可留空"></div>
+          <div><label class="f">校区 campus</label><input type="text" id="campus" placeholder="如 官渡"></div>
+        </div>
+        <div><label class="f">表 / 文档路径 table · doc</label>
+          <input type="text" id="table" placeholder="校区表 .xlsx 路径"></div>
+        <div><input type="text" id="doc" placeholder="申报书 .docx 路径"></div>
+      </div>
+      <button id="go">运行智能体</button>
+      <button class="ghost" id="clear" style="margin-left:8px">清空轨迹</button>
+    </section>
+
+    <section>
+      <div id="summary"></div>
+      <h2>执行轨迹</h2>
+      <p class="sub">每一步的想法、调用的工具、观测结果与反思结论</p>
+      <div class="trace" id="trace"><div class="empty">还没有运行。左边选一个目标，或自己写一句。</div></div>
+      <div id="detail"></div>
+    </section>
+  </div>
+</main>
+<footer><div class="wrap">事务智体 · 本页内容由 AI 辅助生成的文本会带显式标识 · 数据不出本机</div></footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let PRESETS = [];
+fetch('/api/agent/presets').then(r => r.json()).then(d => {
+  PRESETS = d.presets || [];
+  $('#presets').innerHTML = PRESETS.map((p, i) =>
+    `<button data-i="${i}"><b>${esc(p.goal)}</b><span>${esc(p.hint)}</span></button>`).join('');
+  $('#presets').addEventListener('click', e => {
+    const b = e.target.closest('button[data-i]'); if (!b) return;
+    $('#goal').value = PRESETS[+b.dataset.i].goal;
+  });
+}).catch(() => { $('#presets').innerHTML = '<div class="empty">预设加载失败</div>'; });
+
+$('#clear').addEventListener('click', () => {
+  $('#trace').innerHTML = '<div class="empty">已清空。</div>';
+  $('#summary').innerHTML = ''; $('#detail').innerHTML = '';
+});
+
+$('#go').addEventListener('click', async () => {
+  const goal = $('#goal').value.trim();
+  if (!goal) { alert('先写一个目标'); return; }
+  const body = { goal };
+  ['inbox','week','table','campus','doc'].forEach(k => {
+    const v = $('#' + k).value.trim();
+    if (v) body[k] = (k === 'week') ? Number(v) : v;
+  });
+  $('#go').disabled = true;
+  $('#trace').innerHTML = '<div class="empty">运行中…</div>';
+  $('#summary').innerHTML = ''; $('#detail').innerHTML = '';
+  try {
+    const r = await fetch('/api/agent', { method: 'POST',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || ('HTTP ' + r.status));
+    render(d);
+  } catch (e) {
+    $('#trace').innerHTML = `<div class="empty">运行失败：${esc(e.message)}</div>`;
+  } finally { $('#go').disabled = false; }
+});
+
+function render(d) {
+  const okAll = d.ok;
+  $('#summary').innerHTML = `
+    <div class="summary">
+      <div class="verdict">${okAll ? '闭环达成' : '未完全达成'}</div>
+      <div class="sub" style="margin:0">规划器：${esc(d.planner_note || d.planner)}</div>
+      ${(d.needs_human || []).length ? `<div class="ai">需要人工处理：${esc(d.needs_human.join('；'))}</div>` : ''}
+    </div>`;
+
+  const rows = (d.steps || []).map(s => {
+    const ph = esc(s.phase);
+    if (s.phase === 'perceive')
+      return step(ph, `<div class="thought">${esc(s.thought || '')}</div>`);
+    if (s.phase === 'plan') {
+      const obs = s.observation;
+      const items = Array.isArray(obs)
+        ? obs.map(p => `<span class="pill">${esc(p.tool)}</span>`).join('')
+        : '';
+      return step(ph, `<div class="thought">${esc(s.thought || '')}</div>${items}`);
+    }
+    if (s.phase === 'act') {
+      const args = Object.entries(s.args || {})
+        .filter(([, v]) => v !== '' && v !== null && v !== undefined)
+        .map(([k, v]) => `${k}=${shortArg(v)}`).join('　');
+      return step(ph, `<span class="act">${esc(s.action)}</span>
+        <div class="thought">${esc(args)}</div>`, 'act');
+    }
+    const mark = s.ok ? '<span class="mark ok">✓</span>' : '<span class="mark bad">✗</span>';
+    return step(ph, `${mark}<span class="${s.ok ? 'note ok' : 'note bad'}">${esc(s.note || '')}</span>`);
+  }).join('');
+  $('#trace').innerHTML = rows || '<div class="empty">无步骤</div>';
+  $('#detail').innerHTML = renderResults(d.results || {}) +
+    (d.ai_marker ? `<div class="ai">隐式标识：AI 生成=${d.ai_marker.ai_generated} ·
+      生成方=${esc(d.ai_marker.producer)} · 内容编号=${esc(d.ai_marker.content_id)}
+      · 依据：${esc(d.ai_marker.basis)}</div>` : '');
+}
+
+// 路径参数只显示末两段：完整绝对路径会带出 C:\Users\<用户名>\，
+// 录屏等于把身份信息送进画面；末两段足够说明「用的是哪个目录」。
+function shortArg(v) {
+  const s = String(v);
+  if (!/[/\\]/.test(s)) return s.length > 44 ? s.slice(0, 44) + '…' : s;
+  const parts = s.split(/[/\\]+/).filter(Boolean);
+  const tail = parts.slice(-2).join('/');
+  return (parts.length > 2 ? '…/' : '') + tail;
+}
+
+function step(phase, inner, cls) {  return `<div class="step"><div class="badge ${cls || ''}">${phase}</div>
+    <div class="body">${inner}</div></div>`;
+}
+
+function renderResults(res) {
+  let out = '';
+  const mg = res.merge_registrations;
+  if (mg && mg.ok) {
+    const c = mg.counts || {};
+    out += `<h2 style="margin-top:22px">汇总结果</h2><div class="kv">` +
+      [['去重后活动', c.unique], ['自动合并', c.exact_merged], ['校验错误', c.activity_errors],
+       ['校验提醒', c.activity_warnings], ['疑似重复', c.suspect_groups]]
+        .map(([k, v]) => `<div><div class="k">${k}</div><div class="v">${v ?? 0}</div></div>`).join('') +
+      `</div>`;
+    // 跨周保护的证据：要么是「按周分组」的提示，要么是「已排除」的具体原因
+    const notes = (mg.notes || []).concat(
+      (mg.dropped_files || []).map(x => `已排除 ${x.file}：${x.reason}`));
+    if (notes.length) {
+      out += `<h2 style="margin-top:22px">跨周保护</h2>` +
+        notes.map(n => `<div class="ai">${esc(n)}</div>`).join('');
+    }
+    const extra = mg.extra_weeks || [];
+    if (extra.length) {
+      out += `<p class="sub" style="margin-top:8px">另有独立的一套产物：` +
+        extra.map(x => `第 ${x.week} 周（${(x.counts || {}).unique ?? '?'} 个活动）`).join('、') +
+        `　—— 没有与本周混表。</p>`;
+    }
+  }
+  const lm = res.list_missing;
+  if (lm && lm.ok) {
+    out += `<h2 style="margin-top:22px">未交名单</h2>
+      <p class="sub">应交 ${lm.expected} 个单位，未交 ${(lm.missing || []).length} 个</p>
+      <div>${(lm.missing || []).map(x => `<span class="pill err">${esc(x)}</span>`).join('') || '无'}</div>`;
+  }
+  const qp = res.query_policy;
+  if (qp && qp.ok) {
+    out += `<h2 style="margin-top:22px">原文摘录</h2>
+      <p class="sub">${esc(qp.source)} · ${esc(qp.note)}</p>` +
+      (qp.hits || []).map(h => `<pre>${esc(h.text.slice(0, 420))}</pre>`).join('');
+  }
+  const pc = res.plan_checkers;
+  if (pc && pc.ok) {
+    out += `<h2 style="margin-top:22px">派活试算</h2>
+      <table><thead><tr><th>编号</th><th>活动</th><th>受派方</th></tr></thead><tbody>` +
+      (pc.plan || []).map(p => `<tr><td>${esc(p.no)}</td><td>${esc(p.name)}</td>
+        <td>${esc((p.checkers || []).join('、'))}</td></tr>`).join('') + `</tbody></table>` +
+      ((pc.problems || []).length
+        ? `<div class="ai">${esc(pc.problems.join('；'))}</div>` : '');
+  }
+  const pr = res.pre_review_application;
+  if (pr && pr.ok) {
+    out += `<h2 style="margin-top:22px">预审结论</h2>
+      <table><thead><tr><th>规则</th><th>结论</th><th>说明</th></tr></thead><tbody>` +
+      (pr.checks || []).map(c => {
+        const cls = c.verdict === 'fail' ? 'err' : (c.verdict === 'unknown' ? 'warn' : '');
+        const label = c.verdict === 'fail' ? '必改' : (c.verdict === 'unknown' ? '无法判断' : '通过');
+        return `<tr><td>${esc(c.id)} ${esc(c.rule)}</td>
+          <td><span class="pill ${cls}">${label}</span></td>
+          <td>${esc(c.detail)}</td></tr>`;
+      }).join('') + `</tbody></table>`;
+  }
+  const nt = res.draft_notice;
+  if (nt && nt.ok) {
+    const txt = nt.text_labeled || nt.text;
+    out += `<h2 style="margin-top:22px">生成的文案</h2><pre>${esc(txt)}</pre>`;
+  }
+  return out;
+}
+</script>
+</body>
+</html>

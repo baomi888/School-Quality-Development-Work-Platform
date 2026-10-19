@@ -87,7 +87,15 @@ VALID_LEVELS = {"市级", "校级", "院级", "跨市级", "省级", "跨省级"
 LEVEL_ALIASES = {"院（系）级": "院级", "院(系)级": "院级", "系级": "院级", "院系级": "院级"}
 VALID_CATEGORIES = {"学术科技与专业技能", "文化艺术与体育竞技", "社会实践与志愿服务"}
 VALID_TYPES = {"临时", "常规"}
-VALID_CAMPUSES = {"西城", "官渡", "光华"}
+# 校区的默认值仅作兜底：实际校验以 config["campuses"] 为准，
+# 否则「换一个学校/校区不用改代码」这条就不成立（曾因硬编码导致自定义校区全被报错）。
+DEFAULT_CAMPUSES = {"西城", "官渡", "光华"}
+
+
+def valid_campuses(cfg: dict) -> set:
+    """按配置取合法校区集合，配置缺失时才退回默认值。"""
+    configured = {str(c).strip() for c in (cfg or {}).get("campuses") or [] if str(c).strip()}
+    return configured or set(DEFAULT_CAMPUSES)
 
 # 全角 → 半角（不含顿号「、」：注意事项明确要求用顿号分隔并列项）
 FULLWIDTH_MAP = {
@@ -670,9 +678,11 @@ def validate(rec: Record, cfg: dict, time_parsed: bool = True) -> List[Issue]:
     if not campus:
         add("CAMPUS_MISSING", "error", "校区", "校区为空",
             "校内活动填举办校区；校外活动看活动对象所处校区")
-    elif campus not in VALID_CAMPUSES:
-        add("CAMPUS_INVALID", "warning", "校区", f"校区「{campus}」不是西城/官渡/光华",
-            "多个校区用空格隔开，顺序：西城 官渡 光华")
+    elif campus not in valid_campuses(cfg):
+        names = sorted(valid_campuses(cfg))
+        add("CAMPUS_INVALID", "warning", "校区",
+            f"校区「{campus}」不在配置的校区清单内（{'/'.join(names)}）",
+            f"多个校区用空格隔开，顺序：{' '.join(names)}")
 
     # —— 全角标点
     for key, label in STD_COLUMNS:

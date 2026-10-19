@@ -117,6 +117,55 @@ one = [p for p in allx if p.name == '建工学院.xlsx']
 st, d1 = post_files('/api/merge', one)
 check(st == 200 and d1.get('counts', {}).get('unique') == 1, '8. 单文件汇总正常')
 
+
+# 9) 智能体接口（HTTP 层；函数层由 _probe_agent.py 覆盖）
+def post_json(path, obj):
+    body = json.dumps(obj, ensure_ascii=False).encode('utf-8')
+    req = urllib.request.Request(BASE + path, data=body, method='POST')
+    req.add_header('Content-Type', 'application/json')
+    try:
+        with urllib.request.urlopen(req, timeout=180) as r:
+            return r.status, json.loads(r.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        return e.code, json.loads(e.read().decode('utf-8'))
+
+
+st, raw = get('/api/agent/presets')
+pre = json.loads(raw)
+check(st == 200 and len(pre.get('presets') or []) >= 4, '9. 智能体预设接口')
+check(bool(pre.get('colleges')), '9. 预设里带应交单位名单')
+
+st, raw = get('/agent')
+check(st == 200 and '/api/agent' in raw.decode('utf-8'), '9. /agent 演示页可访问')
+
+st, ra = post_json('/api/agent', {'goal': '学分办法里比赛类怎么算分'})
+check(st == 200 and ra.get('ok') is True, '9. 学分检索目标达成', str(ra.get('needs_human'))[:120])
+qp = ra.get('results', {}).get('query_policy') or {}
+check(len(qp.get('hits') or []) > 0, '9. 检索命中原文条款')
+
+st, rb = post_json('/api/agent', {'goal': '哪些学院还没交表',
+                                  'inbox': str(FIX)})
+check(st == 200 and rb.get('ok') is True, '9. 催报目标达成')
+lm = rb.get('results', {}).get('list_missing') or {}
+check(lm.get('expected', 0) >= 20, '9. 应交单位数来自配置', str(lm.get('expected')))
+nt = (rb.get('results', {}).get('draft_notice') or {}).get('text_labeled') or ''
+check('本内容由AI辅助生成' in nt, '9. 生成文案带回传的显式标识')
+check(bool(rb.get('ai_marker', {}).get('content_id')), '9. 返回隐式标识')
+
+# 缺上下文时如实追问，而不是 500
+st, rc = post_json('/api/agent', {'goal': '把本周登记表汇总一下'})
+check(st == 200 and rc.get('ok') is False, '9. 缺上下文返回未达成而非 500')
+check(bool(rc.get('needs_human')), '9. 缺上下文进了 needs_human')
+
+# 轨迹结构完整
+st, rd = post_json('/api/agent', {'goal': '把本周登记表汇总一下并生成简报',
+                                  'inbox': str(FIX), 'week': 4})
+phases = {s.get('phase') for s in (rd.get('steps') or [])}
+for ph in ('perceive', 'plan', 'act', 'reflect'):
+    check(ph in phases, f'9. 轨迹含 {ph} 阶段')
+check(rd.get('planner') in ('rule', 'llm'), '9. 标明所用规划器', str(rd.get('planner')))
+
+
 print(f'\nWeb API 端到端：通过 {passes[0]} 项，失败 {len(fails)} 项')
 if fails:
     print('\n失败项：')

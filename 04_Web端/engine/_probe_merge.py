@@ -18,6 +18,7 @@
 """
 from __future__ import annotations
 
+import json
 import shutil
 import sys
 import traceback
@@ -199,6 +200,17 @@ def run():
     # 6b. 疑似重复
     eq(len(result["suspects"]), 1, "6. 同名不同时间 → 1 组疑似重复")
     eq(result["suspects"][0]["name"], A[1], "6. 疑似重复活动名正确")
+
+    # 6d. 校区校验必须读配置，而不是硬编码 —— 否则「换学校不用改代码」不成立
+    custom_cfg = json.loads(json.dumps(cfg))
+    custom_cfg["campuses"] = ["校区甲", "校区乙"]
+    custom = merge.build_record({**A_RAW, "campus": "校区甲"}, custom_cfg)
+    check("CAMPUS_INVALID" not in {i.code for i in custom.issues},
+          "6d. 配置里的自定义校区不被误报",
+          str([i.message for i in custom.issues if i.code == "CAMPUS_INVALID"]))
+    off = merge.build_record({**A_RAW, "campus": "不存在的校区"}, custom_cfg)
+    check("CAMPUS_INVALID" in {i.code for i in off.issues},
+          "6d. 不在配置清单里的校区仍要报")
 
     # 3. 表一剔除协会会员
     c = result["counts"]

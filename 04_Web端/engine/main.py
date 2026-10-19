@@ -38,6 +38,8 @@ BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE))
 import core.zjb as zjb  # noqa: E402
 import core.merge as mergemod  # noqa: E402
+import core.planner as planner  # noqa: E402
+import core.agent as agentmod  # noqa: E402
 
 WORK_DIR = BASE / "work"
 OUT_DIR = BASE / "output"
@@ -224,23 +226,8 @@ def do_arrange(cfg, src: Path, week, colleges: List[str], outdir: Path, force: b
 
     last, _ = zjb.last_week_checkers(ledger, week, cfg2)
     per = cfg["per_activity_colleges"]
-    load = {c: 0 for c in pool}
-    plan: Dict[int, List[str]] = {}
-    problems: List[str] = []
-    for a in acts:
-        host = a["host_college"]
-        cand = [c for c in pool if c != host]
-        if len(cand) < per:
-            problems.append(f"活动「{a['name']}」可选学院不足 {per} 个（主办={host}）")
-            continue
-        cand.sort(key=lambda c: (1 if c in last else 0, load[c], c))
-        chosen = cand[:per]
-        for c in chosen:
-            load[c] += 1
-        plan[a["row"]] = chosen
-        dup = [c for c in chosen if c in last]
-        if dup:
-            problems.append(f"活动「{a['name']}」安排了上周已检查的学院：" + "、".join(dup))
+    # 排序链抽在 core/planner.py：智能体工具与 Web 接口共用同一份确定性实现
+    plan, load, problems = planner.plan_checkers(acts, pool, last, per)
 
     if problems and not force:
         alt = [c for c in cfg["colleges"] if c not in last and c not in pool]
@@ -717,6 +704,69 @@ def merge_page():
     if not MERGE_TOOL.exists():
         raise HTTPException(404, "汇总工具页 merge_tool.html 缺失")
     return HTMLResponse(MERGE_TOOL.read_text(encoding="utf-8"))
+
+
+# ------------------------------------------------- 智能体（编排层）
+# 网页只做"提问 + 展示执行轨迹"，规划与裁决都在 core/agent.py 里。
+# 未配置 LLM 时自动降级为确定性规划器，所以这个演示页离线也能跑。
+
+AGENT_DEMO = BASE / "agent_demo.html"
+
+
+class AgentIn(BaseModel):
+    goal: str
+    inbox: Optional[str] = None
+    week: Optional[int] = None
+    table: Optional[str] = None
+    campus: Optional[str] = None
+    pool: Optional[str] = None
+    doc: Optional[str] = None
+
+
+@app.post("/api/agent")
+def agent_run(body: AgentIn):
+    """跑一次智能体闭环，返回完整执行轨迹（感知/规划/行动/反思）。"""
+    ctx = {k: v for k, v in {
+        "inbox": body.inbox, "week": body.week, "table": body.table,
+        "campus": body.campus, "pool": body.pool, "doc": body.doc,
+    }.items() if v not in (None, "")}
+    try:
+        return agentmod.run(body.goal, **ctx)
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(500, f"智能体运行失败：{type(exc).__name__}: {exc}")
+
+
+@app.get("/agent")
+def agent_page():
+    if not AGENT_DEMO.exists():
+        raise HTTPException(404, "智能体演示页 agent_demo.html 缺失")
+    return HTMLResponse(AGENT_DEMO.read_text(encoding="utf-8"))
+
+
+@app.get("/api/agent/presets")
+def agent_presets():
+    """演示页的目标预设：把"能说一句话就让智能体干活"的场景摆出来。"""
+    cfg = get_cfg()
+    return {
+        "presets": [
+            {"goal": "把本周登记表汇总一下并生成简报",
+             "hint": "收件目录 → 去重合并 → 校验 → 起草简报",
+             "fields": ["inbox", "week"]},
+            {"goal": "哪些学院还没交表",
+             "hint": "扫描收件 → 对照应交单位算差集 → 生成催报通知",
+             "fields": ["inbox"]},
+            {"goal": "学分办法里比赛类怎么算分",
+             "hint": "在规范性文件原文里检索，返回原文摘录", "fields": []},
+            {"goal": "安排二级学院检查",
+             "hint": "对校区表跑确定性排序链，只试算不写回",
+             "fields": ["table", "campus"]},
+            {"goal": "预审这份申报书",
+             "hint": "按硬规则逐条预审，输出必改项 / 通过 / 无法判断",
+             "fields": ["doc"]},
+        ],
+        "colleges": cfg.get("colleges", []),
+        "campuses": cfg.get("campuses", []),
+    }
 
 
 @app.get("/api/recommend")

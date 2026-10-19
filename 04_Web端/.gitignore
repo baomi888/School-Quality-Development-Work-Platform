@@ -14,8 +14,12 @@ engine/bin/officecli.exe
 engine/bin/officecli.exe.update
 # 落地页设计期的截图/审计脚本（硬编码本机路径，非运行时代码）
 landing/tools/
-# 回归门禁运行时生成的合成素材与产物（_probe_merge.py 每次运行自建）
+# 回归门禁运行时生成的合成素材与产物（_probe_merge.py / _probe_agent.py 每次运行自建）
 engine/_probe_fixtures/
 engine/_probe_out/
+engine/_probe_agent_out/
 # 界面实拍留档
 engine/_shots_merge/
+# 智能体知识库：校规原文含学校名称与文号，属内部采集资料，本地提供不入库
+# （缺该文件时 query_policy 会明确报「知识库缺失」，不会编造答案）
+engine/core/data/

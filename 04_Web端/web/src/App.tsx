@@ -25,14 +25,41 @@ const TABS: { key: Tab; label: string }[] = [
 // 嵌入页走 iframe，本身已经有内边距，不要再套 container 的留白
 const EMBED_TABS: Tab[] = ['merge', 'agent']
 
+const TAB_KEYS = TABS.map((t) => t.key) as Tab[]
+
+/** 地址栏 hash ↔ tab 双向同步：可以收藏 / 分享直达链接，如 #agent */
+function readHash(): Tab | null {
+  const h = (window.location.hash || '').replace(/^#/, '').trim()
+  return h && (TAB_KEYS as string[]).includes(h) ? (h as Tab) : null
+}
+
 export default function App() {
-  const [tab, setTab] = useState<Tab>('hub')
+  const [tab, setTab] = useState<Tab>(() => readHash() ?? 'hub')
   const [term, setTerm] = useState('')
   const [offline, setOffline] = useState(false)
 
   useEffect(() => {
     // 构建时间戳也打到控制台，方便远程排查「你看到的到底是哪一版」
     console.info(`[质检部周工作平台] 构建时间 ${__BUILD_STAMP__}`)
+  }, [])
+
+  // tab → hash
+  useEffect(() => {
+    const want = tab === 'hub' ? '' : `#${tab}`
+    if ((window.location.hash || '') !== want) {
+      history.replaceState(null, '', want || window.location.pathname)
+    }
+  }, [tab])
+
+  // 浏览器前进/后退 ↔ hash → tab
+  useEffect(() => {
+    const onPop = () => setTab(readHash() ?? 'hub')
+    window.addEventListener('popstate', onPop)
+    window.addEventListener('hashchange', onPop)
+    return () => {
+      window.removeEventListener('popstate', onPop)
+      window.removeEventListener('hashchange', onPop)
+    }
   }, [])
 
   useEffect(() => {

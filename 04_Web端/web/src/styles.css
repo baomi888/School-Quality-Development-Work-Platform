@@ -154,6 +154,42 @@ button { font-family: inherit; }
 }
 
 /* ============================================================
+   嵌入页（活动汇总 / 智能体）
+   这两个页面是后端直接托管的独立 HTML，用 iframe 接进主系统：
+   顶栏导航始终在，用户不用记 /merge、/agent 这类地址。
+   ============================================================ */
+.container-embed {
+  max-width: none;
+  padding: 16px var(--gut) 20px;
+}
+.embedded-wrap {
+  display: flex; flex-direction: column;
+  height: calc(100vh - var(--topbar-h) - 44px);
+  min-height: 620px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.embedded-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  flex: none;
+}
+.embedded-title {
+  font-size: var(--fs-label); color: var(--text-2);
+  letter-spacing: var(--ls-caption);
+}
+.embedded-open {
+  font-size: var(--fs-caption); color: var(--text-3);
+  text-decoration: none; white-space: nowrap;
+}
+.embedded-open:hover { color: var(--text); text-decoration: underline; }
+.embedded-frame {
+  flex: 1; width: 100%; border: 0; display: block; background: var(--canvas);
+}
+
+/* ============================================================
    页头 —— 编辑部式 Hero
    左：绿色小标签 + 衬线大标题；右：一组读数卡。
    ============================================================ */

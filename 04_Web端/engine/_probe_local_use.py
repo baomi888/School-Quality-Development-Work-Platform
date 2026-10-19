@@ -10,32 +10,17 @@
 """
 import io
 import json
-import os
+import re
 import sys
 import urllib.request
 import uuid
 from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-B = 'http://127.0.0.1:' + os.environ.get('ZJB_PORT', '8830')
-
-ENGINE = Path(__file__).resolve().parent
-ROOT = ENGINE.parent.parent
-# 演示数据可能在 _inbox_comp/demo（本地开发）或 _demo（随包分发）；
-# 都没有就现场生成一份，保证这个门禁在任何一份工程里都能独立跑。
-_cands = [ROOT / '_inbox_comp' / 'demo', ROOT / '_demo']
-DEMO = next((p for p in _cands if (p / '收件箱').exists()), None)
-if DEMO is None:
-    DEMO = ROOT / '_demo'
-    gen = ENGINE / 'make_demo_data.py'
-    if gen.exists():
-        import subprocess
-        subprocess.run([sys.executable, str(gen), '--out', str(DEMO)],
-                       check=True, timeout=180)
-    else:
-        raise SystemExit('缺少演示数据，且找不到生成脚本 make_demo_data.py')
-INBOX = DEMO / '收件箱'
-DOC = DEMO / '申报书_待预审.docx'
+B = 'http://127.0.0.1:8830'
+ROOT = Path(r'C:\Users\HUAWEI\Desktop\质检部工作自动化')
+INBOX = ROOT / '_inbox_comp' / 'demo' / '收件箱'
+DOC = ROOT / '_inbox_comp' / 'demo' / '申报书_待预审.docx'
 
 fails, passes = [], [0]
 
@@ -78,8 +63,21 @@ def post_files(path, files):
         return r.status, json.loads(r.read())
 
 
-print('（前提：已在另一个终端启动 python main.py）\n')
-print('=== 1. 健康检查 ===')
+print('=== 0. 主系统导航（智能体是否已接进系统）===')
+st, html = get('/')
+page = html.decode('utf-8', errors='replace')
+m = re.search(r'assets/index-[\w-]+\.js', page)
+check(bool(m), '主系统首页引用了主包 JS')
+if m:
+    _, jsraw = get('/' + m.group(0))
+    code = jsraw.decode('utf-8', errors='replace')
+    for kw, label in (('活动汇总', '「活动汇总」导航项'),
+                      ('智能体', '「智能体」导航项'),
+                      ('/merge', '嵌入汇总页'),
+                      ('/agent', '嵌入智能体页')):
+        check(kw in code, f'主系统含{label}')
+
+print('\n=== 1. 健康检查 ===')
 st, raw = get('/api/health')
 h = json.loads(raw)
 check(st == 200 and h.get('ok') is True, '服务在线', str(st))

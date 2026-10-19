@@ -4,18 +4,26 @@ import Work from './pages/Work'
 import LedgerView from './pages/LedgerView'
 import Guide from './pages/Guide'
 import Hub from './pages/Hub'
+import HistoryView from './pages/HistoryView'
+import Embedded from './pages/Embedded'
 
 // ECharts 体积大、且只有「数据看板」用到 —— 按需加载，首屏不为它买单
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 
-type Tab = 'hub' | 'work' | 'ledger' | 'stats' | 'guide'
+type Tab = 'hub' | 'work' | 'merge' | 'agent' | 'ledger' | 'stats' | 'guide' | 'history'
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'work', label: '本周工作' },
+  { key: 'merge', label: '活动汇总' },
+  { key: 'agent', label: '智能体' },
   { key: 'ledger', label: '排班台账' },
   { key: 'stats', label: '数据看板' },
+  { key: 'history', label: '历史归档' },
   { key: 'guide', label: '使用说明' },
 ]
+
+// 嵌入页走 iframe，本身已经有内边距，不要再套 container 的留白
+const EMBED_TABS: Tab[] = ['merge', 'agent']
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('hub')
@@ -70,7 +78,15 @@ export default function App() {
         )}
       </header>
 
-      <main className={tab === 'hub' ? 'container hub-container' : 'container'}>
+      <main
+        className={
+          tab === 'hub'
+            ? 'container hub-container'
+            : EMBED_TABS.includes(tab)
+              ? 'container container-embed'
+              : 'container'
+        }
+      >
         {offline && tab !== 'hub' && (
           <div className="alert alert-danger" style={{ marginTop: 20 }}>
             连不上引擎服务（127.0.0.1:8765）。请先运行 <span className="mono">启动.bat</span>，再刷新本页。
@@ -79,8 +95,11 @@ export default function App() {
         <Suspense fallback={<div className="empty"><div className="empty-title">正在加载…</div></div>}>
           {tab === 'hub' && <Hub onNavigate={setTab} />}
           {tab === 'work' && <Work />}
+          {tab === 'merge' && <Embedded src="/merge" title="活动登记表汇总" />}
+          {tab === 'agent' && <Embedded src="/agent" title="智能体" />}
           {tab === 'ledger' && <LedgerView />}
           {tab === 'stats' && <Dashboard />}
+          {tab === 'history' && <HistoryView />}
           {tab === 'guide' && <Guide />}
         </Suspense>
       </main>

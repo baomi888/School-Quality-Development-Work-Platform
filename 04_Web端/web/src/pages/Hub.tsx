@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { api, type FileRef, type TableInfo } from '../api'
 
 interface HubProps {
-  onNavigate: (key: 'work' | 'ledger' | 'stats' | 'guide') => void
+  onNavigate: (key: 'work' | 'merge' | 'agent' | 'ledger' | 'stats' | 'guide' | 'history') => void
 }
 
 const FEATURES = [
@@ -18,22 +18,43 @@ const FEATURES = [
     desc: '上传总表 → 拆分校区 → 勾选学院安排 → 填时段安排助理。每一步产物可单独下载，写完自动出表格预览与下载前体检。',
   },
   {
-    key: 'ledger' as const,
+    key: 'merge' as const,
     no: '02',
+    tag: '收表',
+    title: '活动汇总',
+    desc: '把各学院交上来的单表一次全拖进去，自动合成总表、表一（宣传部）、时间表与校验报告。跨来源重复自动合并，混进来的其它周次单独分出去。',
+  },
+  {
+    key: 'agent' as const,
+    no: '03',
+    tag: '智能体',
+    title: '智能体',
+    desc: '直接用一句话说明本周要做什么：哪些学院没交表、把表汇总一下出简报、这份申报书能不能过、学分怎么算。判定全部由内核给出，可复现可解释。',
+  },
+  {
+    key: 'ledger' as const,
+    no: '04',
     tag: '历史',
     title: '排班台账',
     desc: '哪一周、哪个校区、哪个活动、由哪两个学院检查，一查便知。与命令行技能共用同一份台账。',
   },
   {
     key: 'stats' as const,
-    no: '03',
+    no: '05',
     tag: '分析',
     title: '数据看板',
     desc: '各学院出动次数排行、每周工作量趋势、校区分布，还会列出从没排到过的学院。',
   },
   {
+    key: 'history' as const,
+    no: '06',
+    tag: '归档',
+    title: '历史归档',
+    desc: '所有上传、拆分、安排过的 Excel 原表都在这里留档，按周归类，随时回看、预览、重新下载。',
+  },
+  {
     key: 'guide' as const,
-    no: '04',
+    no: '07',
     tag: '手册',
     title: '使用说明',
     desc: '操作手册、排班铁律、素拓政策速查、常见问题，给质检部干事看的完整指南。',
@@ -252,7 +273,7 @@ export default function Hub({ onNavigate }: HubProps) {
         {/* ---------- 功能入口 ---------- */}
         <section className="hub-func">
           <div className="hub-sec-head">
-            <h2>四个工作台</h2>
+            <h2>七个工作台</h2>
             <span className="sub">点进去开始干活</span>
           </div>
           <div className="hub-bento">

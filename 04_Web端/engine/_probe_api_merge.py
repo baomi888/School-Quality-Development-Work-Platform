@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-PORT = os.environ.get('ZJB_PORT', '8799')
+PORT = os.environ.get('ZJB_PORT', '8765')
 BASE = f'http://127.0.0.1:{PORT}'
 ENGINE = Path(__file__).resolve().parent
 FIX = ENGINE / '_probe_fixtures'

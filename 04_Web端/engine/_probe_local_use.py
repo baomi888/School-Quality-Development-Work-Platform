@@ -10,6 +10,7 @@
 """
 import io
 import json
+import os
 import re
 import sys
 import urllib.request
@@ -17,7 +18,7 @@ import uuid
 from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-B = 'http://127.0.0.1:8830'
+B = 'http://127.0.0.1:' + os.environ.get('ZJB_PORT', '8765')
 ROOT = Path(r'C:\Users\HUAWEI\Desktop\质检部工作自动化')
 INBOX = ROOT / '_inbox_comp' / 'demo' / '收件箱'
 DOC = ROOT / '_inbox_comp' / 'demo' / '申报书_待预审.docx'
@@ -74,7 +75,9 @@ if m:
     for kw, label in (('活动汇总', '「活动汇总」导航项'),
                       ('智能体', '「智能体」导航项'),
                       ('/merge', '嵌入汇总页'),
-                      ('/agent', '嵌入智能体页')):
+                      ('/agent', '嵌入智能体页'),
+                      ('embedded-frame', '嵌入 iframe 样式'),
+                      ('container-embed', '嵌入专用容器（防塌高）')):
         check(kw in code, f'主系统含{label}')
 
 print('\n=== 1. 健康检查 ===')

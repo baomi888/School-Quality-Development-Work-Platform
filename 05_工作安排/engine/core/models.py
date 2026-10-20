@@ -362,12 +362,52 @@ class Store:
             data.get("weeks", {}).pop(str(week), None)
             self._write(LEDGER_FILE, data)
 
-    # ---- 本周完整分配网格（含校区/搭档），供小助理只读反查
+    # ---- 本周完整分配网格（含校区/搭档），供小助理只读反查 / 04↔05 联动
     def save_plan(self, week: int | str, assign: dict) -> None:
-        """保存某一周「完整分配网格」{task_id: {列: [pid...]}}，用于小助理视图。"""
-        with self._lock:
-            self._write(PLAN_FILE, {"week": int(week), "assign": assign})
+        """保存某一周「完整分配网格」{task_id: {列: [pid...]}}。
 
-    def load_plan(self) -> dict | None:
+        按周存储：plan.json = {weeks: {str(week): assign, ...}}，
+        这样联动可以精确取「第 7 周」的网格，而不被后续提交覆盖。
+        兼容旧格式 {week, assign}（迁移进 weeks）。"""
         with self._lock:
-            return self._read(PLAN_FILE, None)
+            data = self._read(PLAN_FILE, {"weeks": {}})
+            if not isinstance(data, dict) or "weeks" not in data:
+                # 旧格式 {week, assign} → 迁进来
+                old_assign = data.get("assign") if isinstance(data, dict) else None
+                old_week = data.get("week", week) if isinstance(data, dict) else week
+                data = {"weeks": {str(old_week): old_assign} if old_assign is not None else {}}
+            data.setdefault("weeks", {})[str(week)] = assign
+            self._write(PLAN_FILE, data)
+
+    def load_plan(self, week: int | str | None = None) -> dict | None:
+        """取分配网格 {task_id: {列: [pid...]}}。
+
+        week 指定 → 返回该周；week=None → 返回已存的最新一周。
+        旧格式 {week, assign} 也兼容（直接返回 assign）。无数据返回 None。"""
+        with self._lock:
+            data = self._read(PLAN_FILE, None)
+            if not data or not isinstance(data, dict):
+                return None
+            weeks = data.get("weeks")
+            if isinstance(weeks, dict) and weeks:
+                if week is not None:
+                    return weeks.get(str(week))
+                latest = max((int(w) for w in weeks.keys() if str(w).isdigit()), default=None)
+                return weeks.get(str(latest)) if latest is not None else None
+            # 旧格式
+            if "assign" in data:
+                return data.get("assign")
+            return None
+
+    def plan_weeks(self) -> list[int]:
+        """已存计划的周次列表（升序），供联动校验"""
+        with self._lock:
+            data = self._read(PLAN_FILE, None)
+            if not data or not isinstance(data, dict):
+                return []
+            weeks = data.get("weeks")
+            if isinstance(weeks, dict):
+                return sorted(int(w) for w in weeks.keys() if str(w).isdigit())
+            if "assign" in data:
+                return [int(data.get("week", 0))]
+            return []

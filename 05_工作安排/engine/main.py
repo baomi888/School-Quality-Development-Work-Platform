@@ -446,6 +446,42 @@ def ledger(dept: str = "zjb", _: bool = Depends(require_manage)):
     return {"ok": True, "ledger": store.ledger()}
 
 
+@app.get("/api/plan")
+def plan(dept: str = "zjb", week: int | None = None):
+    """只读：返回某一周（默认最新一周）的「完整分配网格」，姓名已解析。
+
+    供 04 周工作平台做联动（如：第 7 周安排的助理 → 显示在第 6 周活动上）。
+    开放的只读接口，不需要管理口令（04 跨服务调用）。"""
+    store = get_store(dept)
+    grid = store.load_plan(week)
+    if not grid:
+        return {"ok": True, "week": week, "assign": {}}
+    people = _people_objs(store)
+    nm = {p.id: p.name for p in people}
+    named = {
+        tid: {slot: [nm.get(pid, pid) for pid in pids] for slot, pids in cells.items()}
+        for tid, cells in grid.items()
+    }
+    pweeks = store.plan_weeks()
+    return {
+        "ok": True,
+        "week": week if week is not None else (pweeks[-1] if pweeks else None),
+        "assign": named,
+        "tasks": {t.id: t.name for t in _task_objs(store)},
+    }
+
+
+@app.get("/api/plan/weeks")
+def plan_weeks(dept: str = "zjb"):
+    """只读：返回 05 已存计划的周次列表 + 全部任务名映射，供 04 联动面板做下拉选择。"""
+    store = get_store(dept)
+    return {
+        "ok": True,
+        "weeks": store.plan_weeks(),
+        "tasks": {t.id: t.name for t in _task_objs(store)},
+    }
+
+
 @app.post("/api/export")
 def export(req: ExportReq, dept: str = "zjb", _: bool = Depends(require_manage)):
     store = get_store(dept)
@@ -501,11 +537,10 @@ def my_tasks(dept: str = "zjb", name: str = ""):
     target = next((p for p in people if p.name.strip() == name.strip()), None)
     if not target:
         raise HTTPException(404, f"在「{dept}」部门里找不到名为「{name}」的人员")
-    plan = store.load_plan()
-    if not plan or not plan.get("assign"):
+    grid = store.load_plan()              # {task_id: {列: [pid...]}}（按周存储，取最新一周）
+    if not grid:
         return {"ok": True, "week": WEEK_NO, "committed": False,
                 "name": target.name, "tasks": []}
-    grid = plan["assign"]                 # {task_id: {列: [pid...]}}
     meta = {t.id: t for t in _task_objs(store)}
     rows: list[dict] = []
     for tid, cells in grid.items():
@@ -518,7 +553,8 @@ def my_tasks(dept: str = "zjb", name: str = ""):
                     "note": t.note if t else "",
                     "tag": t.tag if t else "routine",
                 })
-    return {"ok": True, "week": plan.get("week", WEEK_NO), "committed": True,
+    pweeks = store.plan_weeks()
+    return {"ok": True, "week": pweeks[-1] if pweeks else WEEK_NO, "committed": True,
             "name": target.name, "tasks": rows}
 
 

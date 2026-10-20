@@ -150,7 +150,29 @@ export const api = {
       ledger_file: string
     }>('/api/stats'),
 
+  // 历史归档：已上传/生成的所有 Excel 文件，按周分组，可下载/预览
+  history: () =>
+    req<{
+      weeks: { week: number; files: {
+        id: string; name: string; kind: string; campus?: string
+        week: number; created_at?: string; download_url: string; exists: boolean
+      }[] }[]
+      total: number
+    }>('/api/history'),
+
   downloadUrl: (fileId: string) => `${API_BASE}/api/files/${fileId}/download`,
+
+  // 联动面板：问 05 工作安排台有哪些周的计划、各任务叫什么
+  planMeta: () =>
+    req<{ ok: boolean; weeks: number[]; tasks: Record<string, string>; error?: string }>('/api/plan-meta'),
+
+  // 联动：把 05 工作安排台某周（默认第7周）的助理安排，写回 04 台账（默认第6周）活动的检查助理
+  syncAssistants: (body: { source_week?: number; target_week?: number; task?: string }) =>
+    req<any>('/api/sync-assistants', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }),
 
   importHistory: (fileId: string, week?: number | null) =>
     req<any>('/api/import-history', {

@@ -64,6 +64,9 @@ def get_cfg() -> dict:
     env_ledger = os.environ.get("ZJB_LEDGER")
     if env_ledger:
         cfg["ledger_path"] = env_ledger
+    elif (BASE / ".portable").exists():
+        # 便携模式（免安装包）：只认本目录的台账，绝不读开发机上的共享技能目录
+        cfg["ledger_path"] = str(DATA_DIR / "ledger.json")
     else:
         shared = Path.home() / ".workbuddy" / "skills" / "zhijianbu-weekly" / "data" / "ledger.json"
         cfg["ledger_path"] = str(shared if shared.parent.exists() else (DATA_DIR / "ledger.json"))
@@ -137,10 +140,16 @@ def guess_week(cfg, ws, src: Path, week: Optional[int]):
 def summarize(wb, ws, header_row, header_map, cfg, src: Path, week) -> dict:
     acts = zjb.read_activities(ws, header_row, header_map, cfg)
     campuses = sorted({a["campus"] for a in acts if a["campus"]})
+    _, checker_map = zjb.read_checkers(ws, header_row, cfg["checker_column"], cfg)
+    _, assistant_map = zjb.read_checkers(ws, header_row, cfg["assistant_column"], cfg)
     return {
         "week": week,
         "campuses": campuses,
         "activity_count": len(acts),
+        "checker_records": sum(len(v) for v in checker_map.values()),
+        "assistant_records": sum(len(v) for v in assistant_map.values()),
+        "has_checkers": bool(checker_map),
+        "has_assistants": bool(assistant_map),
         "activities": [
             {
                 "row": a["row"], "no": a.get("no"), "name": a.get("name"),
@@ -381,7 +390,9 @@ def do_ingest(cfg, src: Path, week, campus: Optional[str]) -> dict:
 
 
 def do_import_history(cfg, src: Path, week, force: bool = False) -> dict:
-    """导入历史活动登记表：不重排，直接读取表里已有的检查学院/助理并补录台账。
+    """导入历史活动登记表：不重排。
+    - 有安排列：读取既有检查学院/助理，补录完整台账
+    - 无安排列：作为共享原表归档，并只记录活动；不会伪造检查或助理
     - 支持单校区表与多校区总表（自动按校区分组后分别入账）
     - 周次从文件名/表格标题识别，也可通过参数指定
     - 原文件归档到 data/history/第X周/ 长期留存
@@ -398,8 +409,7 @@ def do_import_history(cfg, src: Path, week, force: bool = False) -> dict:
 
     c_col, checker_map = zjb.read_checkers(ws, header_row, cfg["checker_column"], cfg)
     a_col, asst_map = zjb.read_checkers(ws, header_row, cfg["assistant_column"], cfg)
-    if not checker_map and not asst_map:
-        raise HTTPException(400, "表中没有找到检查学院/检查助理数据（历史表应已安排好检查方）")
+    has_arrangements = bool(checker_map or asst_map)
 
     # 按校区分组；校区列缺失时尝试从文件名推断
     groups: Dict[str, List[dict]] = {}
@@ -427,21 +437,51 @@ def do_import_history(cfg, src: Path, week, force: bool = False) -> dict:
 
     ledger = zjb.load_ledger(cfg)
     campuses_out = []
+    warnings: List[str] = []
     for campus, cacts in groups.items():
         cfg2 = cfg_for_campus(cfg, campus)
         rows = {a["row"] for a in cacts}
         ck = sum(len(checker_map.get(r, [])) for r in rows)
         ast = sum(len(asst_map.get(r, [])) for r in rows)
+        # 即使没有安排列，也保存活动本身；空安排不会计入学院轮值或助理统计。
+        key = zjb.record_to_ledger(
+            ledger, cfg2, week, campus, cacts,
+            {a["row"]: [] for a in cacts}, "activities")
         if checker_map:
             zjb.record_to_ledger(ledger, cfg2, week, campus, cacts, checker_map, "colleges")
         if asst_map:
             zjb.record_to_ledger(ledger, cfg2, week, campus, cacts, asst_map, "assistants")
+        entry = ledger["weeks"][key]
+        has_existing = bool(
+            entry.get("checkers")
+            or any(a.get("assistants") for a in entry.get("activities", []))
+        )
+        entry["source_status"] = (
+            "assigned" if checker_map and asst_map
+            else "partially-assigned" if has_arrangements
+            else "existing-assignments" if has_existing
+            else "activities-only"
+        )
         campuses_out.append({"campus": campus, "activities": len(cacts),
-                             "checker_records": ck, "assistant_records": ast})
+                             "checker_records": ck, "assistant_records": ast,
+                             "checker_rows": len([a for a in cacts if checker_map.get(a["row"])]),
+                             "assistant_rows": len([a for a in cacts if asst_map.get(a["row"])])})
+    if not checker_map:
+        warnings.append("未找到检查学院列，本次只记录活动，不计入学院轮值。")
+    elif any(c["checker_rows"] < c["activities"] for c in campuses_out):
+        warnings.append("部分活动没有检查学院，未填写的活动会保留为空。")
+    if not asst_map:
+        warnings.append("未找到检查助理列，助理安排会保留为空。")
+    elif any(c["assistant_rows"] < c["activities"] for c in campuses_out):
+        warnings.append("部分活动没有检查助理，未填写的活动会保留为空。")
     zjb.save_ledger(cfg, ledger)
 
     return {
         "week": week,
+        "mode": "ledger" if has_arrangements else "activities_only",
+        "arrangements_imported": has_arrangements,
+        "ledger_updated": True,
+        "warnings": list(dict.fromkeys(warnings)),
         "archived_to": str(dest_hist) if dest_hist else "（归档跳过：目标文件被占用）",
         "campuses": campuses_out,
         "total_activities": sum(len(v) for v in groups.values()),
@@ -592,8 +632,8 @@ def health():
 
 @app.post("/api/upload")
 async def upload(file: UploadFile = File(...)):
-    if not file.filename.lower().endswith((".xlsx", ".xlsm", ".xls")):
-        raise HTTPException(400, "只支持 Excel 文件（.xlsx）")
+    if not file.filename.lower().endswith((".xlsx", ".xlsm")):
+        raise HTTPException(400, "只支持 .xlsx / .xlsm；旧版 .xls 请先用 Excel 或 WPS 另存为 .xlsx")
     cfg = get_cfg()
     folder = WORK_DIR / uuid.uuid4().hex[:12]
     folder.mkdir(parents=True, exist_ok=True)
@@ -602,7 +642,15 @@ async def upload(file: UploadFile = File(...)):
     with dest.open("wb") as f:
         f.write(await file.read())
 
-    wb, ws, header_row, header_map = open_sheet(dest)
+    try:
+        wb, ws, header_row, header_map = open_sheet(dest)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            400,
+            f"无法读取这个 Excel：{exc}。请确认它是可正常打开的 .xlsx，并可尝试在 Excel / WPS 中另存为 .xlsx 后重试。",
+        )
     week = guess_week(cfg, ws, dest, None)
     info = summarize(wb, ws, header_row, header_map, cfg, dest, week)
     reg = register(dest, "upload", {"week": week})
@@ -704,6 +752,25 @@ def merge_page():
     if not MERGE_TOOL.exists():
         raise HTTPException(404, "汇总工具页 merge_tool.html 缺失")
     return HTMLResponse(MERGE_TOOL.read_text(encoding="utf-8"))
+
+
+# ------------------------------------------------- 新手引导
+# 免安装包里引导页放在包根（本文件的上一级目录的上一级）；
+# 开发环境回落到项目根的 打包模板/，方便直接在 8765 预览。
+GUIDE_CANDIDATES = [
+    BASE.parent / "00-新手引导.html",                        # 包内：包根/00-新手引导.html
+    BASE.parent / "新手引导.html",                           # 兼容旧包名
+    BASE.parent.parent / "打包模板" / "00-新手引导.html",     # 开发环境预览
+]
+
+
+@app.get("/guide")
+def guide_page():
+    """新手引导页：启动后自动打开的第一个页面。"""
+    for p in GUIDE_CANDIDATES:
+        if p.exists():
+            return HTMLResponse(p.read_text(encoding="utf-8"))
+    raise HTTPException(404, "新手引导页缺失（00-新手引导.html）")
 
 
 # ------------------------------------------------- 智能体（编排层）

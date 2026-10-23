@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新手引导 · 质检部工作安排台</title>
+<style>
+  :root{
+    --paper:#F7F5F0;
+    --card:#FDFBF6;
+    --ink:#14151A;
+    --ink-2:#4A4A46;
+    --muted:#8A8676;
+    --line:#DED8C9;
+    --red:#B72C24;
+    --taupe:#6F6044;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.85;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 28px 96px;}
+
+  /* ---------- 头部 ---------- */
+  header.masthead{
+    border-bottom:1px solid var(--ink);
+    padding:56px 0 28px;
+    margin-bottom:8px;
+  }
+  .kicker{
+    font-size:.75rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--red);font-weight:700;margin-bottom:22px;
+  }
+  h1{
+    font-family:"Source Han Serif SC","Songti SC","SimSun",serif;
+    font-size:clamp(2.6rem,7vw,4.2rem);
+    line-height:1.08;margin:0 0 18px;font-weight:700;letter-spacing:.02em;
+  }
+  .lede{font-size:1.15rem;color:var(--ink-2);margin:0 0 24px;max-width:34em;}
+  .facts{
+    display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .facts div{
+    flex:1 1 180px;padding:14px 18px 14px 0;
+    border-right:1px solid var(--line);font-size:.9rem;
+  }
+  .facts div:last-child{border-right:0;}
+  .facts b{display:block;font-size:.72rem;letter-spacing:.18em;color:var(--muted);font-weight:700;margin-bottom:4px;}
+
+  /* ---------- 顶部行动按钮 ---------- */
+  .cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:26px 0 0;}
+  .cta a{
+    display:inline-block;text-decoration:none;font-weight:700;font-size:.98rem;
+    padding:12px 22px;border:1px solid var(--ink);
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .cta .btn-primary{background:var(--red);border-color:var(--red);color:#fff;}
+  .cta .btn-primary:hover{background:var(--ink);border-color:var(--ink);}
+  .cta .btn-ghost{color:var(--ink);background:transparent;}
+  .cta .btn-ghost:hover{background:var(--ink);color:var(--paper);}
+  .cta-hint{flex:1 1 100%;font-size:.82rem;color:var(--muted);line-height:1.7;}
+
+  /* ---------- 目录 ---------- */
+  nav.toc{
+    margin:36px 0 8px;padding:22px 0;border-bottom:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 28px;
+  }
+  nav.toc a{
+    color:var(--ink);text-decoration:none;font-size:.95rem;
+    border-left:2px solid var(--line);padding-left:12px;display:block;
+  }
+  nav.toc a:hover{border-left-color:var(--red);color:var(--red);}
+  nav.toc a span{color:var(--muted);font-size:.8rem;margin-right:8px;font-variant-numeric:tabular-nums;}
+
+  /* ---------- 章节 ---------- */
+  section{padding:52px 0 8px;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:0;}
+  h2{
+    font-family:"Source Han Serif SC","Songti SC","SimSun",serif;
+    font-size:1.85rem;line-height:1.3;margin:0 0 8px;font-weight:700;
+    display:flex;align-items:baseline;gap:16px;
+  }
+  h2 .no{
+    font-family:Georgia,"Times New Roman",serif;
+    color:var(--red);font-size:1rem;letter-spacing:.1em;font-weight:400;
+    flex:0 0 auto;transform:translateY(-2px);
+  }
+  .sub{color:var(--muted);margin:0 0 28px;font-size:.95rem;}
+  h3{
+    font-size:1.02rem;margin:34px 0 10px;font-weight:700;
+    letter-spacing:.02em;
+  }
+  h3::before{content:"";display:inline-block;width:14px;height:2px;background:var(--red);vertical-align:middle;margin-right:10px;transform:translateY(-3px);}
+  p{margin:0 0 14px;}
+  ul,ol{margin:0 0 16px;padding-left:1.4em;}
+  li{margin:0 0 8px;}
+  code{
+    font-family:Consolas,"Courier New",monospace;font-size:.9em;
+    background:#EDE8DC;padding:2px 6px;border:1px solid var(--line);
+  }
+  b,strong{font-weight:700;}
+
+  /* ---------- 步骤卡 ---------- */
+  .steps{counter-reset:s;margin:0 0 8px;padding:0;list-style:none;}
+  .steps li{
+    counter-increment:s;position:relative;
+    padding:20px 0 20px 74px;border-top:1px solid var(--line);margin:0;
+  }
+  .steps li:last-child{border-bottom:1px solid var(--line);}
+  .steps li::before{
+    content:counter(s,decimal-leading-zero);
+    position:absolute;left:0;top:16px;
+    font-family:Georgia,serif;font-size:1.6rem;color:var(--red);
+    line-height:1;letter-spacing:.02em;
+  }
+  .steps .t{font-weight:700;display:block;margin-bottom:2px;}
+  .steps .d{color:var(--ink-2);font-size:.95rem;}
+
+  /* ---------- 表格 ---------- */
+  table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:.95rem;}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{
+    font-size:.75rem;letter-spacing:.16em;color:var(--muted);
+    font-weight:700;border-bottom:1px solid var(--ink);
+  }
+  td:first-child{font-weight:700;white-space:nowrap;}
+  .mono{font-family:Consolas,"Courier New",monospace;font-size:.88em;}
+
+  /* ---------- 提示块 ---------- */
+  .note{
+    background:var(--card);border:1px solid var(--line);border-left:3px solid var(--taupe);
+    padding:16px 20px;margin:20px 0;font-size:.95rem;
+  }
+  .note.warn{border-left-color:var(--red);}
+  .note .h{
+    font-weight:700;display:block;margin-bottom:4px;font-size:.86rem;
+    letter-spacing:.14em;color:var(--taupe);
+  }
+  .note.warn .h{color:var(--red);}
+  .note p:last-child{margin-bottom:0;}
+
+  /* ---------- FAQ ---------- */
+  dl.faq{margin:0;}
+  dl.faq dt{
+    font-weight:700;margin:22px 0 6px;padding-top:18px;border-top:1px solid var(--line);
+  }
+  dl.faq dt:first-child{border-top:0;padding-top:0;margin-top:6px;}
+  dl.faq dd{margin:0 0 4px;color:var(--ink-2);}
+
+  /* ---------- 页脚 ---------- */
+  footer{
+    margin-top:56px;padding-top:24px;border-top:1px solid var(--ink);
+    font-size:.85rem;color:var(--muted);
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  }
+
+  /* ---------- 打印 ---------- */
+  @media print{
+    body{background:#fff;font-size:11pt;}
+    .wrap{max-width:none;padding:0;}
+    nav.toc{display:none;}
+    section{break-inside:avoid;}
+    .note{background:#fafafa;}
+  }
+  @media (max-width:520px){
+    .wrap{padding:0 18px 64px;}
+    header.masthead{padding-top:36px;}
+    .steps li{padding-left:56px;}
+    td:first-child{white-space:normal;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="kicker">校素拓 · 质检部</div>
+    <h1>新手引导</h1>
+    <p class="lede">给部长：从解压到把这一周的活排下去。不用装任何软件，不用联网，跟着点就行。</p>
+    <div class="facts">
+      <div><b>运行方式</b>双击一个 bat，浏览器自动打开</div>
+      <div><b>数据位置</b>只在这台电脑上，不外传</div>
+      <div><b>需要时间</b>首次约 10 秒启动</div>
+    </div>
+    <div class="cta">
+      <a class="btn-primary" href="http://127.0.0.1:8766" target="_blank" rel="noopener">进入工作安排台 →</a>
+      <a class="btn-ghost" href="http://127.0.0.1:8765" target="_blank" rel="noopener">周工作平台</a>
+      <span class="cta-hint">点不开？说明服务还没启动 —— 先回到文件夹双击「启动.bat」，等黑窗口出现「就绪」再点。</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <a href="#s1"><span>01</span>三分钟跑起来</a>
+    <a href="#s2"><span>02</span>第一次进入：身份与口令</a>
+    <a href="#s3"><span>03</span>两个系统分别管什么</a>
+    <a href="#s4"><span>04</span>一周标准流程</a>
+    <a href="#s5"><span>05</span>小助理怎么用</a>
+    <a href="#s6"><span>06</span>常见问题</a>
+    <a href="#s7"><span>07</span>数据与安全</a>
+  </nav>
+
+  <!-- 01 -->
+  <section id="s1">
+    <h2><span class="no">01</span>三分钟跑起来</h2>
+    <p class="sub">第一次用只做三件事，之后每次只要第二件。</p>
+
+    <ol class="steps">
+      <li>
+        <span class="t">把压缩包解压到硬盘</span>
+        <span class="d">右键压缩包 → 解压到当前文件夹。得到一个叫「质检部工作安排台」的文件夹。
+        建议放在 <span class="mono">D:\</span> 或桌面，<b>不要</b>放在 OneDrive / 微信文件缓存目录里（同步会锁文件，容易启动失败）。
+        如果双击后提示「没有权限」或窗口一闪就没，把整个文件夹挪到 <span class="mono">D:\</span> 下重试。</span>
+      </li>
+      <li>
+        <span class="t">双击文件夹里的「启动.bat」</span>
+        <span class="d">会弹出一个黑窗口，刷几行字。等它出现「就绪」两个字，浏览器会自动打开界面。
+        <b>这个黑窗口从头到尾不要关</b>——它就是服务本身，关了网页就打不开了。</span>
+      </li>
+      <li>
+        <span class="t">用完后关掉黑窗口</span>
+        <span class="d">直接点黑窗口右上角的 × 就行。下次要用再双击「启动.bat」，数据不会丢。
+        如果窗口关了网页还打得开，双击一次「停止.bat」收尾。</span>
+      </li>
+    </ol>
+
+    <div class="note warn">
+      <span class="h">最常见的翻车点</span>
+      <p>双击后窗口一闪就没了——多半是杀毒软件（360 / 火绒 / 电脑管家）拦了。把整个文件夹加进白名单，或者把压缩包换台电脑试，再不行截图发我。</p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="s2">
+    <h2><span class="no">02</span>第一次进入：身份与口令</h2>
+    <p class="sub">界面第一屏是「部门大厅」，会看到一张「质检部」卡片。点进去会让你选身份，这一步选错了权限就不一样。</p>
+
+    <h3>你是部长 → 选「管理层」</h3>
+    <ul>
+      <li>选择管理层后，会弹出一个口令框，<b>默认口令是 <code>sutuo</code></b>（素拓的拼音）。</li>
+      <li>输进去就能进派活工作台，可以改人员、改任务、派活、导出表格。</li>
+    </ul>
+
+    <div class="note warn">
+      <span class="h">第一件事：把口令改掉</span>
+      <p>进到工作台后，找到「修改口令」，把 <code>sutuo</code> 换成只有管理层知道的。默认口令写在程序里，谁拿到这个包都能猜到——这是目前唯一的安全口子。</p>
+    </div>
+
+    <h3>你不是部长 → 选「小助理」</h3>
+    <p>小助理只需要在下拉里选中自己的名字，进来看到的就是「我本周负责哪几件事」，只读，看不到别人的，也改不了任何东西。</p>
+
+    <div class="note">
+      <span class="h">关于口令记住</span>
+      <p>口令会存在浏览器里，同一台电脑同一个浏览器不用每次输。换电脑、换浏览器（Edge 换 Chrome）要重新输一次。</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="s3">
+    <h2><span class="no">03</span>两个系统分别管什么</h2>
+    <p class="sub">包里其实是两个程序，打包在一起，一次启动同时跑起来。别被两个端口号吓到，你只需要记住「左边管派活，右边管拆表」。</p>
+
+    <table>
+      <thead>
+        <tr><th>入口</th><th>它管什么</th><th>你什么时候用</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>工作安排台<br><span class="mono">127.0.0.1:8766</span></td>
+          <td>按校区把活派到人头上，导出官方格式的安排表，看谁这周接了几件活。</td>
+          <td>周一排这周的活、周五导出表发群。</td>
+        </tr>
+        <tr>
+          <td>周工作平台<br><span class="mono">127.0.0.1:8765</span></td>
+          <td>上传活动登记表总表，拆成西城/官渡两份，安排二级学院、安排检查助理，存台账。</td>
+          <td>周四处理登记表、周末现场检查后补台账。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>怎么进第二个</h3>
+    <p>进「质检部」之后会看到两个大按钮：</p>
+    <ul>
+      <li><b>工作安排类</b> —— 就是安排台，派活、导出、台账。</li>
+      <li><b>质检部 Web 端</b> —— 直接把周工作平台嵌在页面里，不用另开浏览器标签。</li>
+    </ul>
+
+    <div class="note">
+      <span class="h">两个系统的联动</span>
+      <p>在安排台排好「第 N 周」，回到周工作平台的「排班台账」，每周会有一个「从安排台同步助理」的按钮。点一下，安排台里这周派给谁检查，就会自动填到台账对应周次的活动上——不用两边各填一遍。</p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="s4">
+    <h2><span class="no">04</span>一周标准流程</h2>
+    <p class="sub">照着你平时的工作节奏来，一周五次操作，每次两三分钟。</p>
+
+    <table>
+      <thead>
+        <tr><th>时间</th><th>做什么</th><th>在哪个系统</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>周一</td>
+          <td>收各学院的空闲时间表，把这一周的活建起来：<br>派「收集空闲时间表」「安排二级学院检查活动」「安排助理检查活动」等任务，每项分西城 / 官渡两列填人。</td>
+          <td>安排台</td>
+        </tr>
+        <tr>
+          <td>周二</td>
+          <td>派「整理邮箱」。顺手在安排台点提交，确认这周的派活结果已经存下来。</td>
+          <td>安排台</td>
+        </tr>
+        <tr>
+          <td>周三 / 周四</td>
+          <td>派「与规划部交接」；有空档的把「发布值班请假登记表」一并派掉。</td>
+          <td>安排台</td>
+        </tr>
+        <tr>
+          <td>周四</td>
+          <td>拿到活动登记表总表 → 上传 → 拆分校区 → 勾选二级学院 → 填检查助理。<br>同时把安排台这周的分配同步回台账。</td>
+          <td>周工作平台</td>
+        </tr>
+        <tr>
+          <td>周五</td>
+          <td>导出官方格式的安排表，发交流群。<b>发共享表，不要发文件</b>（防止版本混乱）。</td>
+          <td>安排台</td>
+        </tr>
+        <tr>
+          <td>周末</td>
+          <td>现场检查完，把实际检查情况补进「排班台账」；错过的活动也在这里补。</td>
+          <td>周工作平台</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>周工作平台的四个步骤</h3>
+    <ol>
+      <li><b>上传总表</b> —— 拖进本周的活动登记表，系统自动认周次和校区。</li>
+      <li><b>拆分校区</b> —— 一键拆成西城、官渡两份，原表格式（字体、边框、合并单元格）会保留。</li>
+      <li><b>安排学院</b> —— 每个活动勾两个检查学院，系统会提示有没有排重、有没有漏排。</li>
+      <li><b>安排助理</b> —— 填时段和助理，或者直接用安排台同步过来的结果。</li>
+    </ol>
+
+    <p>每一步的产物都能单独下载，做完会自动出一份表格预览，下载前还会体检一遍。</p>
+  </section>
+
+  <!-- 05 -->
+  <section id="s5">
+    <h2><span class="no">05</span>小助理怎么用</h2>
+    <p class="sub">这里有个必须先说清楚的限制。</p>
+
+    <div class="note warn">
+      <span class="h">现在只能在同一台电脑上用</span>
+      <p>这套程序跑在「本机」上（127.0.0.1 的意思就是这台电脑自己）。别的电脑、手机，即使连同一个 WiFi 也打不开。所以目前小助理要看自己的任务，只能在你电脑上看，或者由你把安排截图发群。</p>
+      <p>要让十几个人各自在自己电脑上登录，需要把程序部署到一台服务器上——这是下一步的事，不在这个包里。</p>
+    </div>
+
+    <h3>如果小助理就在你旁边用这台电脑</h3>
+    <ol>
+      <li>在部门大厅选「小助理」。</li>
+      <li>下拉选自己的名字。</li>
+      <li>看到的就是这一周自己负责的事，只读。看完选「退出」换下一个人。</li>
+    </ol>
+  </section>
+
+  <!-- 06 -->
+  <section id="s6">
+    <h2><span class="no">06</span>常见问题</h2>
+
+    <dl class="faq">
+      <dt>双击「启动.bat」，黑窗口一闪就没了</dt>
+      <dd>多半被杀毒软件拦了。把整个文件夹加进白名单重试。也可能是解压不完整——重新解压一次，别在压缩包里直接双击运行。</dd>
+
+      <dt>黑窗口开着，但浏览器没自动打开</dt>
+      <dd>手动在地址栏输 <span class="mono">127.0.0.1:8766</span> 回车。还打不开就看黑窗口里最后几行，有没有「超时」字样。</dd>
+
+      <dt>提示端口被占用 / 页面一直转圈</dt>
+      <dd>说明上次没关干净。先双击「停止.bat」，再重新「启动.bat」。还不行就重启电脑，最省事。</dd>
+
+      <dt>用着用着页面白屏，点什么都没反应</dt>
+      <dd>黑窗口是不是被关掉了？它是服务本体。重新双击「启动.bat」，然后刷新网页（Ctrl+F5）。</dd>
+
+      <dt>忘记口令了</dt>
+      <dd>打开 <span class="mono">engine\data\manage_key.txt</span>，里面就是当前口令。<b>如果没有这个文件</b>，说明从来没改过，口令还是默认的 <code>sutuo</code>。把该文件删掉再重启，也会回到默认口令。</dd>
+
+      <dt>数据会不会传到网上？</dt>
+      <dd>不会。整套程序只在这台电脑上跑，不联网、不上传、不需要账号。断网也能用。</dd>
+
+      <dt>「智能体」那个页面点进去没反应</dt>
+      <dd>它需要额外配置一个模型密钥才能用，属于试验功能，日常派活和拆表都用不到它，暂时忽略。</dd>
+
+      <dt>能发给别人一起用吗？</dt>
+      <dd>包本身可以复制给别的部门（他们改自己的人员名单就行），但同一时间只能一人在自己电脑上用，不能多人共享同一份数据。</dd>
+
+      <dt>怎么升级到新版本？</dt>
+      <dd>把新的压缩包解压到<b>另一个文件夹</b>，然后把旧文件夹里的 <span class="mono">engine\data</span> 和 <span class="mono">web4\data</span> 这两个目录复制过去覆盖。这样人员、任务、台账都保留。</dd>
+    </dl>
+  </section>
+
+  <!-- 07 -->
+  <section id="s7">
+    <h2><span class="no">07</span>数据与安全</h2>
+    <p class="sub">三条必须知道的红线，都不难，但很要命。</p>
+
+    <h3>一、数据存在哪</h3>
+    <table>
+      <thead><tr><th>目录</th><th>装什么</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">engine\data</td><td>安排台的数据：人员名单、任务清单、每周派活台账、口令</td></tr>
+        <tr><td class="mono">web4\data</td><td>周工作平台的数据：活动台账、上传过的登记表登记信息、历史归档</td></tr>
+      </tbody>
+    </table>
+    <p><b>备份就是复制这两个文件夹</b>。建议每周五导出完表，顺手把 <span class="mono">engine\data</span> 和 <span class="mono">web4\data</span> 复制一份到 U 盘或自己的网盘。</p>
+
+    <h3>二、里面有真实姓名</h3>
+    <p>人员名单里是干事和助理的真实姓名。<b>这个包不要发到大群、不要传公开网盘、不要上传到任何代码仓库</b>。只发管理层。</p>
+
+    <h3>三、改掉默认口令</h3>
+    <p>默认口令 <code>sutuo</code> 是公开的。第一次进去就改，改完把新口令只告诉管理层。</p>
+
+    <div class="note">
+      <span class="h">一句话备忘</span>
+      <p>两个端口：<span class="mono">8766</span> 安排台、<span class="mono">8765</span> 周工作平台。两个数据目录：<span class="mono">engine\data</span>、<span class="mono">web4\data</span>。启动双击 bat，用完关黑窗口。</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>质检部工作安排台 · 新手引导</span>
+    <span>2026-10-23 · 内部使用，请勿外传</span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -10,8 +10,9 @@
   --line-2: #c7c4bc;
   --red: #b3261e;
   --red-soft: #f7e9e7;
-  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
-  --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', -apple-system, sans-serif;
+  /* 字体全部系统栈：离线/内网可用，不请求外部字体 CDN */
+  --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
+  --font-sans: 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', -apple-system, system-ui, sans-serif;
   --ls-title: 0.02em;
 
   /* ---- 字号与密度（由界面右上角调节，存 localStorage）----

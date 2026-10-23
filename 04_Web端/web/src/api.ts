@@ -26,6 +26,10 @@ export interface TableInfo {
   week: number | null
   campuses: string[]
   activity_count: number
+  checker_records: number
+  assistant_records: number
+  has_checkers: boolean
+  has_assistants: boolean
   activities: Activity[]
 }
 

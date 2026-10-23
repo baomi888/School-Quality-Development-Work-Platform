@@ -16,82 +16,82 @@
 
 :root {
   /* --- 表面 4 档：纸 → 卡片 → 次级容器 → 浮层 --- */
-  --canvas: #F7F5F0;          /* 暖纸画布 */
-  --surface: #FCFBF8;         /* 卡片（比画布略亮，靠线分层不靠阴影） */
-  --surface-2: #F1EEE7;       /* 次级容器 / 表格表头 */
-  --elevated: #FCFBF8;        /* 浮层 */
+  --canvas: #F3F2EF;          /* 低彩度石纸画布 */
+  --surface: #FCFCFC;         /* 卡片（比画布略亮，靠色差分层） */
+  --surface-2: #EBEAE5;       /* 次级容器 / 表格表头 */
+  --elevated: #FCFCFC;        /* 浮层 */
 
   /* --- 文本 3 档 + 反色 --- */
-  --text: #14151A;            /* 冷墨 */
-  --text-2: #55575E;
-  --text-3: #6B6D74;
-  --text-4: #9A9C9F;          /* 最弱：占位符 / 空态提示 */
-  --text-on-brand: #F7F5F0;
+  --text: #171815;            /* 墨色 */
+  --text-2: #555852;
+  --text-3: #666962;
+  --text-4: #8D9088;          /* 最弱：占位符 / 空态提示 */
+  --text-on-brand: #FCFCFC;
 
   /* --- 边框 3 级 --- */
-  --line: #DFDAD0;            /* 暖灰分隔线 */
-  --line-2: #E9E4DA;          /* 更浅的次级分隔线 */
-  --line-strong: #14151A;     /* 结构硬边（分节线、表头收口） */
-  --line-control: #C9C3B6;    /* 有面积的控件 */
+  --line: #DBD9D2;            /* 低对比结构线 */
+  --line-2: #E7E5DF;          /* 更浅的次级分隔线 */
+  --line-strong: #555852;     /* 少量结构收口 */
+  --line-control: #BDBAB1;    /* 有面积的控件 */
 
   /* --- 中性填充 4 级（同一墨色的半透明，叠任何底色都成立） --- */
-  --fill-1: rgba(20, 21, 26, 0.13);
-  --fill-2: rgba(20, 21, 26, 0.075);
-  --fill-3: rgba(20, 21, 26, 0.04);
-  --fill-4: rgba(20, 21, 26, 0.02);
+  --fill-1: rgba(23, 24, 21, 0.13);
+  --fill-2: rgba(23, 24, 21, 0.075);
+  --fill-3: rgba(23, 24, 21, 0.04);
+  --fill-4: rgba(23, 24, 21, 0.02);
 
   /* --- 品牌：墨黑（原校徽绿已按「跟落地页一致」换掉） --- */
-  --brand: #14151A;
-  --brand-ink: #14151A;
+  --brand: #171815;
+  --brand-ink: #171815;
   --brand-deep: #000000;
-  --brand-soft: #E9E4DA;
-  --brand-line: #C9C3B6;
+  --brand-soft: #E7E5DF;
+  --brand-line: #BDBAB1;
 
   /* --- 强调：质检正红（全站唯一彩色信号） --- */
-  --accent: #B72C24;
-  --accent-soft: #FBF0EE;
+  --accent: #B3261E;
+  --accent-soft: #F7E9E7;
 
   /* --- 深色带上的亮红（深底吃色，需提亮才能过 4.5:1） --- */
   --accent-on-dark: #F05A4C;
 
   /* --- 语义色 --- */
-  --success: #14151A;         /* 完成 = 墨黑，不用绿（绿会稀释红的告警强度） */
-  --success-ink: #14151A;
-  --success-soft: #E9E4DA;
+  --success: #171815;         /* 完成 = 墨黑，不用绿（绿会稀释红的告警强度） */
+  --success-ink: #171815;
+  --success-soft: #E7E5DF;
 
   --warning: #8A6410;         /* 压暗的赭黄：浅底上白字/深字都能过关 */
   --warning-ink: #6B4D0C;
   --warning-soft: #F6EFDF;
 
-  --danger: #B72C24;
+  --danger: #B3261E;
   --danger-ink: #8E211B;
-  --danger-soft: #FBF0EE;
+  --danger-soft: #F7E9E7;
 
-  --info: #14151A;
-  --info-ink: #14151A;
-  --info-soft: #E9E4DA;
+  --info: #171815;
+  --info-ink: #171815;
+  --info-soft: #E7E5DF;
 
   /* --- 深色反差带（落地页的 .dark 段，工作台里给课表/看板反相块用） --- */
-  --dark: #121316;
-  --dark-2: #1B1D21;
+  --dark: #171815;
+  --dark-2: #252621;
   --dark-line: #2C2F34;
-  --on-dark: #EDEBE6;
-  --on-dark-2: #A8ABB1;
-  --on-dark-3: #7E8189;
+  --on-dark: #F1F0EB;
+  --on-dark-2: #B9BBB4;
+  --on-dark-3: #8D9088;
 
   /* --- 字号八档 --- */
-  --fs-micro: 11px;
-  --fs-caption: 12px;
+  --fs-micro: 12px;
+  --fs-caption: 13px;
   --fs-label: 13px;
   --fs-sm: 13px;
-  --fs-md: 14px;
+  --fs-md: 16px;
   --fs-lead: 16px;
   --fs-title: 20px;
-  --fs-display: 30px;
-  --fs-hero: 40px;
+  --fs-display: 28px;
+  --fs-hero: 32px;
 
   /* 窄屏降档 */
-  --fs-hero-sm: 30px;
+  --fs-hero-sm: 26px;
 
   /* --- 字重三档 --- */
   --fw-normal: 400;

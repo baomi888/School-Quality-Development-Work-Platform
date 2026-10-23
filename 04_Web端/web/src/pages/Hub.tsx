@@ -12,49 +12,42 @@ interface HubProps {
 const FEATURES = [
   {
     key: 'work' as const,
-    no: '01',
     tag: '主战场',
     title: '本周工作',
     desc: '上传总表 → 拆分校区 → 勾选学院安排 → 填时段安排助理。每一步产物可单独下载，写完自动出表格预览与下载前体检。',
   },
   {
     key: 'merge' as const,
-    no: '02',
     tag: '收表',
     title: '活动汇总',
     desc: '把各学院交上来的单表一次全拖进去，自动合成总表、表一（宣传部）、时间表与校验报告。跨来源重复自动合并，混进来的其它周次单独分出去。',
   },
   {
     key: 'agent' as const,
-    no: '03',
     tag: '智能体',
     title: '智能体',
     desc: '直接用一句话说明本周要做什么：哪些学院没交表、把表汇总一下出简报、这份申报书能不能过、学分怎么算。判定全部由内核给出，可复现可解释。',
   },
   {
     key: 'ledger' as const,
-    no: '04',
     tag: '历史',
     title: '排班台账',
     desc: '哪一周、哪个校区、哪个活动、由哪两个学院检查，一查便知。与命令行技能共用同一份台账。',
   },
   {
     key: 'stats' as const,
-    no: '05',
     tag: '分析',
     title: '数据看板',
     desc: '各学院出动次数排行、每周工作量趋势、校区分布，还会列出从没排到过的学院。',
   },
   {
     key: 'history' as const,
-    no: '06',
     tag: '归档',
     title: '历史归档',
     desc: '所有上传、拆分、安排过的 Excel 原表都在这里留档，按周归类，随时回看、预览、重新下载。',
   },
   {
     key: 'guide' as const,
-    no: '07',
     tag: '手册',
     title: '使用说明',
     desc: '操作手册、排班铁律、素拓政策速查、常见问题，给质检部干事看的完整指南。',
@@ -117,11 +110,18 @@ export default function Hub({ onNavigate }: HubProps) {
 
   // 让「本周」格滚进视野
   useEffect(() => {
-    const el = weeksRef.current?.querySelector('.hub-wk.now')
-    if (el) el.scrollIntoView({ inline: 'center', block: 'nearest' })
+    const container = weeksRef.current
+    const el = container?.querySelector('.hub-wk.now') as HTMLElement | null
+    if (!container || !el) return
+    const target = el.offsetLeft + el.offsetWidth / 2 - container.clientWidth / 2
+    container.scrollTo({
+      left: Math.max(0, target),
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    })
   }, [currentWeek])
 
   const heroNow = currentWeek ?? FIRST_WEEK
+  const currentStat = perWeek.find((item) => item.week === heroNow)
 
   // ---------- 导入历史表（补录台账）----------
   const [histOpen, setHistOpen] = useState(false)
@@ -177,15 +177,15 @@ export default function Hub({ onNavigate }: HubProps) {
       <div className="hub-inner">
         {/* ---------- 首屏 ---------- */}
         <section className="hub-hero">
-          <span className="hub-kicker">广东石油化工学院 · 校素质拓展中心 · 质检部</span>
+          <div className="hub-hero-copy">
           <h1 className="hub-title">
-            一学期，
+            十八周，
             <br />
-            <span className="em">十八格</span>。
+            逐格排好。
           </h1>
           <p className="hub-sub">
-            每周一格。收表、拆分、安排检查学院、排助理、发交流群、周末现场检查——
-            重复的交给它，判断留给你。
+            广东石油化工学院校素拓质检部的每周工作台。收表、拆分、安排检查学院、
+            排助理、现场检查与归档都在这里完成；重复的交给它，判断留给你。
           </p>
           <div className="hub-acts">
             <button className="hub-act hub-act-p" onClick={() => onNavigate('work')}>
@@ -198,6 +198,37 @@ export default function Hub({ onNavigate }: HubProps) {
               导入历史表
             </button>
           </div>
+          </div>
+          <aside className="hub-preview" data-ui aria-label="本周台账概览">
+            <div className="hub-preview-head">
+              <span>本周台账</span>
+              <b>第 {heroNow} 周</b>
+            </div>
+            <div className="hub-preview-main">
+              <strong>{currentStat?.activities ?? 0}</strong>
+              <span>项活动已进入本周记录</span>
+            </div>
+            <div className="hub-preview-grid">
+              <div>
+                <span>检查学院</span>
+                <b>{currentStat?.colleges ?? 0}</b>
+                <small>人次</small>
+              </div>
+              <div>
+                <span>留档周数</span>
+                <b>{perWeek.length}</b>
+                <small>周</small>
+              </div>
+              <div>
+                <span>台账状态</span>
+                <b>{currentStat?.activities ? '有记录' : '待录入'}</b>
+                <small>本周</small>
+              </div>
+            </div>
+            <button className="hub-preview-open" onClick={() => onNavigate('work')}>
+              查看并处理本周工作 →
+            </button>
+          </aside>
         </section>
 
         <div className="hub-meta">
@@ -281,7 +312,6 @@ export default function Hub({ onNavigate }: HubProps) {
               <button key={f.key} className="hub-card" onClick={() => onNavigate(f.key)}>
                 <span className="hub-card-tag">{f.tag}</span>
                 <div className="hub-card-top">
-                  <span className="hub-card-no">{f.no}</span>
                   <h3 className="hub-card-title">{f.title}</h3>
                   <p className="hub-card-desc">{f.desc}</p>
                 </div>
@@ -315,9 +345,9 @@ export default function Hub({ onNavigate }: HubProps) {
             </div>
 
             <p className="modal-desc">
-              选一份<strong>已安排好检查学院 / 助理</strong>的历史总表或单校区表。系统按文件名或标题识别周次，
-              直接读取已有安排补录进台账，<strong>不会重新排班</strong>；原文件会归档到{' '}
-              <span className="mono">data/history/</span> 长期保存。
+              选一份历史总表或单校区表即可，<strong>不需要先手工拆分</strong>。
+              如果表里已经有检查学院/助理，系统会补全台账；如果只是共享活动表，
+              会归档活动并明确标记为“未安排”，不会伪造任何检查记录。
             </p>
 
             {!histFile && (
@@ -341,13 +371,14 @@ export default function Hub({ onNavigate }: HubProps) {
                 }}
               >
                 <div className="dropzone-title">点击选择，或把 Excel 拖到这里</div>
-                <div className="dropzone-sub">.xlsx / .xls</div>
+                <div className="dropzone-sub">共享总表、校区表、已安排表都支持 · .xlsx / .xlsm</div>
+                <div className="dropzone-sub">腾讯文档、WPS 在线表格请先导出为本地 .xlsx</div>
               </div>
             )}
             <input
               ref={histInputRef}
               type="file"
-              accept=".xlsx,.xls,.xlsm"
+              accept=".xlsx,.xlsm"
               hidden
               onChange={(e) => {
                 const f = e.target.files?.[0]
@@ -384,6 +415,25 @@ export default function Hub({ onNavigate }: HubProps) {
                   ))}
                   <span className="tag">{histInfo.activity_count} 个活动</span>
                 </div>
+
+                {(histInfo.has_checkers || histInfo.has_assistants) ? (
+                  <div className="alert alert-ok" style={{ marginBottom: 12 }}>
+                    <strong>已识别安排信息</strong>
+                    <div className="small">
+                      {histInfo.checker_records} 条检查学院记录
+                      {histInfo.has_assistants ? ` · ${histInfo.assistant_records} 条助理记录` : ' · 未发现助理列'}
+                      。导入后会更新台账。
+                    </div>
+                  </div>
+                ) : (
+                  <div className="alert alert-warn" style={{ marginBottom: 12 }}>
+                    <strong>这是一份共享活动表</strong>
+                    <div className="small">
+                      没有找到检查学院或助理列。可以归档活动，但不会计入学院轮值；
+                      如果你要安排这周工作，请进入“本周工作”上传同一张表。
+                    </div>
+                  </div>
+                )}
 
                 <label className="modal-field">
                   <span>周次（识别有误可手动改）</span>
@@ -427,7 +477,9 @@ export default function Hub({ onNavigate }: HubProps) {
                     onClick={doHistImport}
                     disabled={histBusy !== '' || histWeek == null}
                   >
-                    补录到台账
+                    {histInfo.has_checkers || histInfo.has_assistants
+                      ? '补录到台账'
+                      : '归档这份共享表'}
                   </button>
                   <button
                     className="btn"
@@ -439,14 +491,33 @@ export default function Hub({ onNavigate }: HubProps) {
                   >
                     重新选文件
                   </button>
+                  {!(histInfo.has_checkers || histInfo.has_assistants) && (
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        closeHist()
+                        onNavigate('work')
+                      }}
+                    >
+                      去本周工作
+                    </button>
+                  )}
                 </div>
               </div>
             )}
 
             {histResult && (
               <div className="modal-result" style={{ marginTop: 14 }}>
-                <div className="alert alert-ok">
-                  ✅ 已补录第 {histResult.week} 周台账（共 {histResult.total_activities} 个活动）
+                <div className={`alert ${histResult.arrangements_imported ? 'alert-ok' : 'alert-warn'}`}>
+                  <strong>
+                    {histResult.arrangements_imported ? '已补录到台账' : '共享表已归档'}
+                  </strong>
+                  <div>
+                    第 {histResult.week} 周，共 {histResult.total_activities} 个活动。
+                    {histResult.arrangements_imported
+                      ? '检查学院与助理记录已读取。'
+                      : '活动已记录，检查安排保持为空。'}
+                  </div>
                 </div>
                 <ul className="modal-list">
                   {histResult.campuses.map((c: any) => (
@@ -456,6 +527,14 @@ export default function Hub({ onNavigate }: HubProps) {
                     </li>
                   ))}
                 </ul>
+                {histResult.warnings?.length > 0 && (
+                  <div className="alert alert-warn" style={{ marginTop: 12 }}>
+                    <strong>导入说明</strong>
+                    <ul>
+                      {histResult.warnings.map((w: string, i: number) => <li key={i}>{w}</li>)}
+                    </ul>
+                  </div>
+                )}
                 <div className="small muted" style={{ wordBreak: 'break-all' }}>
                   原文件已归档：{histResult.archived_to}
                 </div>
@@ -475,10 +554,10 @@ export default function Hub({ onNavigate }: HubProps) {
                     className="btn btn-sm"
                     onClick={() => {
                       closeHist()
-                      onNavigate('ledger')
+                      onNavigate(histResult.arrangements_imported ? 'ledger' : 'history')
                     }}
                   >
-                    查看台账
+                    {histResult.arrangements_imported ? '查看台账' : '查看历史归档'}
                   </button>
                 </div>
               </div>

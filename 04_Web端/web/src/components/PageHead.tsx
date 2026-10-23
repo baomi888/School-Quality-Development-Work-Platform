@@ -1,6 +1,4 @@
-/* 页头 —— 瑞士排版的核心部件（对照 _风格预览/03-瑞士理性.html 的 .display）
-   左边：红色小标签 + 超大标题；右边：一组右对齐的读数。
-   每个页面至多一个。 */
+/* 页头：标题先说明这是什么，范围信息放在标题之后。每个页面至多一个。 */
 export default function PageHead({
   kicker,
   title,
@@ -22,7 +20,6 @@ export default function PageHead({
   return (
     <div className="display">
       <div className="display-main">
-        <p className="display-kicker">{kicker}</p>
         <h1>
           {title.split('\n').map((line, i) => (
             <span key={i} className="display-line">
@@ -30,6 +27,7 @@ export default function PageHead({
             </span>
           ))}
         </h1>
+        <p className="display-kicker">{kicker}</p>
       </div>
       {side && side.length > 0 && (
         <div className="display-side">

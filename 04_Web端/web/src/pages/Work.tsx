@@ -258,7 +258,7 @@ export default function Work() {
   // 页头读数：有表时显示周次与活动数，没表时给一句行动指令
   const headKicker = info
     ? `${info.week != null ? `第 ${info.week} 周` : '未识别周次'} · ${info.campuses.join(' / ') || '未识别校区'}`
-    : 'QUALITY INSPECTION · WEEKLY'
+    : '尚未载入总表 · 从上传开始'
   const headSide = info
     ? [{ label: '待安排', value: String(info.activity_count) }]
     : [{ label: '待安排', value: '—' }]
@@ -383,12 +383,12 @@ export default function Work() {
                 }}
               >
                 <div className="dropzone-title">{uploaded ? '已上传：' + uploaded.name : '点击选择，或把 Excel 拖到这里'}</div>
-                <div className="dropzone-sub">.xlsx / .xls</div>
+                <div className="dropzone-sub">.xlsx / .xlsm · 在线共享表请先导出为本地文件</div>
               </div>
               <input
                 ref={inputRef}
                 type="file"
-                accept=".xlsx,.xls,.xlsm"
+              accept=".xlsx,.xlsm"
                 hidden
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(f) }}
               />

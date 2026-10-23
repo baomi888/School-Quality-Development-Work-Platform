@@ -37,6 +37,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>(() => readHash() ?? 'hub')
   const [term, setTerm] = useState('')
   const [offline, setOffline] = useState(false)
+  const [navOpen, setNavOpen] = useState(false)
 
   useEffect(() => {
     // 构建时间戳也打到控制台，方便远程排查「你看到的到底是哪一版」
@@ -71,6 +72,11 @@ export default function App() {
 
   const goHub = () => setTab('hub')
 
+  const goTab = (next: Tab) => {
+    setTab(next)
+    setNavOpen(false)
+  }
+
   return (
     <div className="app">
       <header className="topbar">
@@ -86,8 +92,22 @@ export default function App() {
           构建 {__BUILD_STAMP__}
         </span>
         {tab !== 'hub' && (
-          <nav className="tabs" role="tablist" aria-label="主导航">
-            <button className="tab tab-back" onClick={goHub} aria-label="返回首页">
+          <>
+            <button
+              className="nav-toggle"
+              aria-expanded={navOpen}
+              aria-controls="main-navigation"
+              onClick={() => setNavOpen((open) => !open)}
+            >
+              {navOpen ? '收起导航' : '导航'}
+            </button>
+            <nav
+              id="main-navigation"
+              className={`tabs ${navOpen ? 'tabs-open' : ''}`}
+              role="tablist"
+              aria-label="主导航"
+            >
+            <button className="tab tab-back" onClick={() => { goHub(); setNavOpen(false) }} aria-label="返回首页">
               ← 首页
             </button>
             {TABS.map((t) => (
@@ -96,12 +116,13 @@ export default function App() {
                 role="tab"
                 aria-selected={tab === t.key}
                 className={`tab ${tab === t.key ? 'active' : ''}`}
-                onClick={() => setTab(t.key)}
+                onClick={() => goTab(t.key)}
               >
                 {t.label}
               </button>
             ))}
-          </nav>
+            </nav>
+          </>
         )}
       </header>
 
